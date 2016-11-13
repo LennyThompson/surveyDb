@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -23,7 +25,7 @@ import com.lenny.surveyingDB.adapters.InstrumentManufacturerAdapter;
 import com.lenny.surveyingDB.interfaces.ISurvey;
 
 
-public class InstrumentAdapter
+public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 {
 
         // Class implements IInstrument but only accessible through the InstrumentAdapter
@@ -175,6 +177,19 @@ public class InstrumentAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+                strJson += "\"ManufacturerID\":" + ((ISerialiseState) m_typeManufacturer).toJson();
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "Instrument";
@@ -203,6 +218,15 @@ public class InstrumentAdapter
     )
     {
         return new Instrument(nID, dateCreated, dateUpdated, strName, strDescription, typeManufacturer);
+    }
+
+    public IInstrument deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuilder.registerTypeAdapter(IInstrumentManufacturer.class, new InstrumentManufacturerAdapter());
+
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, InstrumentAdapter.Instrument.class);
     }
 
     public static IInstrument get(Connection connDb, int nIdGet) throws SQLException

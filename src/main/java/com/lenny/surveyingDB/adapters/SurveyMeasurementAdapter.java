@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -23,7 +25,7 @@ import com.lenny.surveyingDB.adapters.SurveyPointAdapter;
 import com.lenny.surveyingDB.interfaces.ITraverse;
 
 
-public class SurveyMeasurementAdapter
+public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasurement>
 {
 
         // Class implements ISurveyMeasurement but only accessible through the SurveyMeasurementAdapter
@@ -277,6 +279,22 @@ public class SurveyMeasurementAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"HorizDistance\":" + m_dHorizDistance + ",";
+                strJson += "\"VertDistance\":" + m_dVertDistance + ",";
+                strJson += "\"Bearing\":" + m_dBearing + ",";
+                strJson += "\"FromPtID\":" + ((ISerialiseState) m_typePointFrom).toJson() + ",";
+                strJson += "\"ToPtID\":" + ((ISerialiseState) m_typePointTo).toJson() + ",";
+                strJson += "\"SurveyID\":" + m_nSurveyID;
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "SurveyMeasurement";
@@ -311,6 +329,16 @@ public class SurveyMeasurementAdapter
     )
     {
         return new SurveyMeasurement(nID, dateCreated, dateUpdated, dHorizDistance, dVertDistance, dBearing, typePointFrom, typePointTo, nSurveyID);
+    }
+
+    public ISurveyMeasurement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, SurveyMeasurementAdapter.SurveyMeasurement.class);
     }
 
     public static ISurveyMeasurement get(Connection connDb, int nIdGet) throws SQLException

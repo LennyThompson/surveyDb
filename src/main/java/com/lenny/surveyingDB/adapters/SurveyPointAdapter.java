@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyImage;
 import com.lenny.surveyingDB.interfaces.ISurvey;
 
 
-public class SurveyPointAdapter
+public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
 {
 
         // Class implements ISurveyPoint but only accessible through the SurveyPointAdapter
@@ -355,6 +357,24 @@ public class SurveyPointAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"X\":" + m_dX + ",";
+                strJson += "\"Y\":" + m_dY + ",";
+                strJson += "\"Z\":" + m_dZ + ",";
+                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+                strJson += "\"PointTypeID\":" + ((ISerialiseState) m_typePointType).toJson() + ",";
+                strJson += "\"RefID\":" + ((ISerialiseState) m_typeReference).toJson() + ",";
+                strJson += "\"SurveyImage\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "SurveyPoint";
@@ -392,6 +412,17 @@ public class SurveyPointAdapter
     )
     {
         return new SurveyPoint(nID, dateCreated, dateUpdated, dX, dY, dZ, strName, strDescription, typePointType, typeReference, listSurveyImage);
+    }
+
+    public ISurveyPoint deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuilder.registerTypeAdapter(ISurveyPointType.class, new SurveyPointTypeAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyReference.class, new SurveyReferenceAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyImage.class, new SurveyImageAdapter());
+
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, SurveyPointAdapter.SurveyPoint.class);
     }
 
     public static ISurveyPoint get(Connection connDb, int nIdGet) throws SQLException

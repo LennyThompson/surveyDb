@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -26,7 +28,7 @@ import com.lenny.surveyingDB.interfaces.ITraverseClosure;
 import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 
 
-public class TraverseAdapter
+public class TraverseAdapter implements JsonDeserializer<ITraverse>
 {
 
         // Class implements ITraverse but only accessible through the TraverseAdapter
@@ -321,6 +323,23 @@ public class TraverseAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+                strJson += "\"StartPointID\":" + ((ISerialiseState) m_typeStartPoint).toJson() + ",";
+                strJson += "\"EndPointID\":" + ((ISerialiseState) m_typeEndPoint).toJson() + ",";
+                strJson += "\"SurveyID\":" + m_nSurveyID + ",";
+                strJson += "\"TraverseClosure\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "Traverse";
@@ -355,6 +374,18 @@ public class TraverseAdapter
     )
     {
         return new Traverse(nID, dateCreated, dateUpdated, strName, strDescription, typeStartPoint, typeEndPoint, nSurveyID, listTraverseClosure, listSurveyMeasurement);
+    }
+
+    public ITraverse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+        gsonBuilder.registerTypeAdapter(ITraverseClosure.class, new TraverseClosureAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
+
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, TraverseAdapter.Traverse.class);
     }
 
     public static ITraverse get(Connection connDb, int nIdGet) throws SQLException

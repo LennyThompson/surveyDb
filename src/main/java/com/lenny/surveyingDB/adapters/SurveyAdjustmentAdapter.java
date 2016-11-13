@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -22,7 +24,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
 
 
-public class SurveyAdjustmentAdapter
+public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustment>
 {
 
         // Class implements ISurveyAdjustment but only accessible through the SurveyAdjustmentAdapter
@@ -242,6 +244,21 @@ public class SurveyAdjustmentAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"DeltaX\":" + m_dDeltaX + ",";
+                strJson += "\"DeltaY\":" + m_dDeltaY + ",";
+                strJson += "\"DeltaZ\":" + m_dDeltaZ + ",";
+                strJson += "\"BearingAdj\":" + m_dBearingAdj + ",";
+                strJson += "\"MeasurementID\":" + ((ISerialiseState) m_typeMeasurement).toJson();
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "SurveyAdjustment";
@@ -274,6 +291,15 @@ public class SurveyAdjustmentAdapter
     )
     {
         return new SurveyAdjustment(nID, dateCreated, dateUpdated, dDeltaX, dDeltaY, dDeltaZ, dBearingAdj, typeMeasurement);
+    }
+
+    public ISurveyAdjustment deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
+
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, SurveyAdjustmentAdapter.SurveyAdjustment.class);
     }
 
     public static ISurveyAdjustment get(Connection connDb, int nIdGet) throws SQLException

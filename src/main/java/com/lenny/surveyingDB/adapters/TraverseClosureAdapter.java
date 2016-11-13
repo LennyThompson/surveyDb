@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -21,7 +23,7 @@ import com.lenny.surveyingDB.interfaces.ITraverseClosure;
 import java.util.Date;
 
 
-public class TraverseClosureAdapter
+public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure>
 {
 
         // Class implements ITraverseClosure but only accessible through the TraverseClosureAdapter
@@ -305,6 +307,23 @@ public class TraverseClosureAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"MiscZ\":" + m_dMiscZ + ",";
+                strJson += "\"MiscY\":" + m_dMiscY + ",";
+                strJson += "\"MiscX\":" + m_dMiscX + ",";
+                strJson += "\"BearingMisclose\":" + m_dBearingMisclose + ",";
+                strJson += "\"TraverseLength\":" + m_dTraverseLength + ",";
+                strJson += "\"Adjusted\":" + m_bAdjusted + ",";
+                strJson += "\"TraverseID\":" + m_nTraverseID;
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "TraverseClosure";
@@ -341,6 +360,13 @@ public class TraverseClosureAdapter
     )
     {
         return new TraverseClosure(nID, dateCreated, dateUpdated, dMiscZ, dMiscY, dMiscX, dBearingMisclose, dTraverseLength, bAdjusted, nTraverseID);
+    }
+
+    public ITraverseClosure deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, TraverseClosureAdapter.TraverseClosure.class);
     }
 
     public static ITraverseClosure get(Connection connDb, int nIdGet) throws SQLException

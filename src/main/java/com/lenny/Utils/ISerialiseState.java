@@ -8,4 +8,6 @@ public interface ISerialiseState
     boolean isUpdated();
     void setSaved();
     void setUpdated();
+
+    String toJson();
 }

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Nov 10 14:55:34 AEST 2016
+// Generated on Sat Nov 12 16:01:16 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.google.gson.*;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -20,7 +22,7 @@ import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.IProjection;
 
 
-public class ProjectionAdapter
+public class ProjectionAdapter implements JsonDeserializer<IProjection>
 {
 
         // Class implements IProjection but only accessible through the ProjectionAdapter
@@ -194,6 +196,19 @@ public class ProjectionAdapter
 
             public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
             public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+            public String toJson()
+            {
+                String strJson = "{";
+                strJson += "\"ID\":" + m_nID + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+                strJson += "\"Date\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateDate) + "\"" + ",";
+                strJson += "\"Description\":" + "\"" + m_strDescription + "\"";
+                strJson += "}";
+                return strJson;
+            }
         }
 
     public static final String TABLE_NAME = "Projection";
@@ -222,6 +237,13 @@ public class ProjectionAdapter
     )
     {
         return new Projection(nID, dateCreated, dateUpdated, strName, dateDate, strDescription);
+    }
+
+    public IProjection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        Gson gsonInstance = gsonBuilder.create();
+        return gsonInstance.fromJson(json, ProjectionAdapter.Projection.class);
     }
 
     public static IProjection get(Connection connDb, int nIdGet) throws SQLException

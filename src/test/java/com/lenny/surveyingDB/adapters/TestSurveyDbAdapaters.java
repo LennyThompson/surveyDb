@@ -1,10 +1,13 @@
 package com.lenny.surveyingDB.adapters;
 
+import com.google.gson.*;
+import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.surveyingDB.interfaces.*;
 import org.junit.Test;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -39,6 +42,9 @@ public class TestSurveyDbAdapaters
         }
 
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testLoadStatics.db");
+        GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuild.registerTypeAdapter(ISurveyPointType.class, new SurveyPointTypeAdapter());
+        gsonBuild.registerTypeAdapter(ISurveyReference.class, new SurveyReferenceAdapter());
 
         SurveyPointTypeAdapter.createInDatabase(connDb);
         SurveyReferenceAdapter.createInDatabase(connDb);
@@ -48,14 +54,41 @@ public class TestSurveyDbAdapaters
         assertEquals(15, listPointTypes.size());
         assertEquals("SM", listPointTypes.get(0).getAbbreviation());
         assertEquals("Survey Mark", listPointTypes.get(0).getName());
+        assertFalse(listPointTypes.get(0).getUserDefined());
+        String strJson = ((ISerialiseState) listPointTypes.get(0)).toJson();
+        Gson gsonInstance = gsonBuild.create();
+        ISurveyPointType ptTypeSerialised = gsonInstance.fromJson(strJson, ISurveyPointType.class);
+
+        assertEquals("SM", ptTypeSerialised.getAbbreviation());
+        assertEquals("Survey Mark", ptTypeSerialised.getName());
+        assertFalse(ptTypeSerialised.getUserDefined());
+        assertEquals(listPointTypes.get(0).getCreated(), ptTypeSerialised.getCreated());
+
         assertEquals("Trig", listPointTypes.get(3).getAbbreviation());
         assertEquals("Trig Point", listPointTypes.get(3).getName());
+        assertFalse(listPointTypes.get(3).getUserDefined());
         assertEquals("Tree", listPointTypes.get(6).getAbbreviation());
         assertEquals("Tree", listPointTypes.get(6).getName());
+        assertFalse(listPointTypes.get(6).getUserDefined());
         assertEquals("ToK", listPointTypes.get(13).getAbbreviation());
         assertEquals("Top of Kerb", listPointTypes.get(13).getName());
+        assertFalse(listPointTypes.get(13).getUserDefined());
         assertEquals("Dr", listPointTypes.get(14).getAbbreviation());
         assertEquals("Drain", listPointTypes.get(14).getName());
+        assertFalse(listPointTypes.get(14).getUserDefined());
+
+        ISurveyPointType survPtType = SurveyPointTypeAdapter.createNewSurveyPointType();
+        survPtType.setName("Custom Point");
+        survPtType.setAbbreviation("CP");
+        survPtType.setUserDefined(true);
+
+        SurveyPointTypeAdapter.add(connDb, survPtType);
+
+        listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
+        assertEquals(16, listPointTypes.size());
+        assertEquals("CP", listPointTypes.get(15).getAbbreviation());
+        assertEquals("Custom Point", listPointTypes.get(15).getName());
+        assertTrue(listPointTypes.get(15).getUserDefined());
 
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
 
@@ -66,6 +99,14 @@ public class TestSurveyDbAdapaters
         Calendar calDate = Calendar.getInstance();
         calDate.setTime(listRefs.get(0).getDate());
         assertEquals(2000, calDate.get(Calendar.YEAR));
+
+        strJson = ((ISerialiseState) listRefs.get(0)).toJson();
+        gsonInstance = gsonBuild.create();
+        ISurveyReference ptRefSerialised = gsonInstance.fromJson(strJson, ISurveyReference.class);
+        assertEquals("Current Survey", ptRefSerialised.getName());
+        assertEquals("No Ref", ptRefSerialised.getReference());
+        assertEquals("Current Survey", ptRefSerialised.getDescription());
+        assertEquals(listRefs.get(0).getDate(), ptRefSerialised.getDate());
     }
 
     @Test
@@ -113,6 +154,21 @@ public class TestSurveyDbAdapaters
         assertEquals("Trig", ptSurvey.getPointType().getAbbreviation());
         assertEquals("Current Survey", ptSurvey.getReference().getName());
         assertTrue(((UndoTarget) ptSurvey).isSaved());
+
+        // Test serialisation using adapter implemenation of JsonSerializer
+
+        String strJson = ((ISerialiseState) ptSurvey).toJson();
+        GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonBuild.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+        Gson gsonInstance = gsonBuild.create();
+        ISurveyPoint ptSerialised = gsonInstance.fromJson(strJson, ISurveyPoint.class);
+        assertEquals("First Point", ptSerialised.getName());
+        assertEquals("The first point in the survey", ptSerialised.getDescription());
+        assertEquals(1000.0, ptSerialised.getX(), 0.001);
+        assertEquals(2000.0, ptSerialised.getY(), 0.001);
+        assertEquals(500.0, ptSerialised.getZ(), 0.001);
+        assertEquals("Trig", ptSerialised.getPointType().getAbbreviation());
+        assertEquals("Current Survey", ptSerialised.getReference().getName());
     }
 
     @Test
@@ -346,5 +402,17 @@ public class TestSurveyDbAdapaters
         List<ISurvey> listSurveys = SurveyAdapter.getAll(connDb);
         assertEquals(1, listSurveys.size());
         assertEquals(1, listSurveys.get(0).getTraverses().size());
+
+        String strJson = ((ISerialiseState) listSurveys.get(0)).toJson();
+        GsonBuilder gsonBuild = new GsonBuilder()
+                                    .registerTypeAdapter(ISurvey.class, new SurveyAdapter())
+                                    .setDateFormat("yyyy-MM-dd hh:mm:ss");
+        Gson gsonInstance = gsonBuild.create();
+        ISurvey surveySerial = gsonInstance.fromJson(strJson, ISurvey.class);
+
+        assertEquals("Test Survey", surveySerial.getName());
+        assertEquals("Testing...", surveySerial.getDescription());
+        assertEquals(1, surveySerial.getTraverses().size());
+        assertEquals(3, surveySerial.getTraverses().get(0).getSurveyMeasurements().size());
     }
 }
