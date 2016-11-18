@@ -28,8 +28,7 @@ public class Main
                 {
                     try
                     {
-                        SurveyDbServer server = SurveyDbServer.createServer(cmdLineParser.getArg(PORT_ARG).asIntValue());
-                        server.initServer();
+                        SurveyDbServer server = SurveyDbServer.createServer(cmdLineParser.getArg(PORT_ARG).asIntValue(), "");
                     }
                     catch (SQLException e)
                     {

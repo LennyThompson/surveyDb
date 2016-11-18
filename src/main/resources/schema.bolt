@@ -1,0 +1,177 @@
+//* context=type_SurveyImage, output_name=SurveyImage
+type SurveyImage {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Path: String, //*output_name=Path
+    Description: String, //*output_name=Description
+    SurveyID: Survey, //*output_name=Survey
+    PointAtID: Number //*output_name=PointAtID
+}
+
+path /SurveyImages/{ID} is SurveyImage;
+
+//* context=type_InstrumentManufacturer, output_name=InstrumentManufacturer
+type InstrumentManufacturer {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Description: String //*output_name=Description
+}
+
+path /InstrumentManufacturers/{ID} is InstrumentManufacturer;
+
+//* context=type_TraverseClosure, output_name=TraverseClosure
+type TraverseClosure {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    MiscZ: Number, //*output_name=MiscZ
+    MiscY: Number, //*output_name=MiscY
+    MiscX: Number, //*output_name=MiscX
+    BearingMisclose: Number, //*output_name=BearingMisclose
+    TraverseLength: Number, //*output_name=TraverseLength
+    Adjusted: Number, //*output_name=Adjusted
+    TraverseID: Number //*output_name=TraverseID
+}
+
+path /TraverseClosures/{ID} is TraverseClosure;
+
+//* context=type_Projection, output_name=Projection
+type Projection {
+    ID: Number, //*output_name=ID,primary_key
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Date: Number, //*output_name=Date,use_as=date_type
+    Description: String //*output_name=Description
+}
+
+path /Projections/{ID} is Projection;
+
+//* context=type_SurveyReference, output_name=SurveyReference
+type SurveyReference {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Description: String, //*output_name=Description
+    Date: Number, //*output_name=Date,use_as=date_type
+    Reference: String //*output_name=Reference
+}
+
+path /SurveyReferences/{ID} is SurveyReference;
+
+//* context=type_SurveyPointType, output_name=SurveyPointType
+type SurveyPointType {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Abbreviation: String, //*output_name=Abbreviation
+    UserDefined: Number //*output_name=UserDefined
+}
+
+path /SurveyPointTypes/{ID} is SurveyPointType;
+
+//* context=type_Traverse, output_name=Traverse
+type Traverse {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Description: String, //*output_name=Description
+    StartPointID: SurveyPoint, //*output_name=StartPoint
+    EndPointID: SurveyPoint, //*output_name=EndPoint
+    SurveyID: Number, //*output_name=SurveyID
+    TraverseClosure: TraverseClosure[], //*output_name=TraverseClosure
+    SurveyMeasurement: SurveyMeasurement[] //*output_name=SurveyMeasurement
+}
+
+path /Traverses/{ID} is Traverse;
+// path /Traverses/{ID}/TraverseClosures/{TraverseClosure_ID} is TraverseClosure;
+// path /Traverses/{ID}/SurveyMeasurements/{SurveyMeasurement_ID} is SurveyMeasurement;
+
+
+//* context=type_SurveyMeasurement, output_name=SurveyMeasurement
+type SurveyMeasurement {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    HorizDistance: Number, //*output_name=HorizDistance
+    VertDistance: Number, //*output_name=VertDistance
+    Bearing: Number, //*output_name=Bearing
+    FromPtID: SurveyPoint, //*output_name=PointFrom
+    ToPtID: SurveyPoint, //*output_name=PointTo
+    SurveyID: Number //*output_name=SurveyID
+}
+
+path /SurveyMeasurements/{ID} is SurveyMeasurement;
+
+//* context=type_Survey, output_name=Survey
+type Survey {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Description: String, //*output_name=Description
+    ProjectionID: Projection, //*output_name=Projection
+    SurveyPoint: SurveyPoint[], //*output_name=SurveyPoint
+    Instrument: Instrument[], //*output_name=Instrument
+    Traverse: Traverse[], //*output_name=Traverse
+    SurveyMeasurement: SurveyMeasurement[] //*output_name=SurveyMeasurement
+}
+
+path /Surveys/{ID} is Survey;
+// path /Surveys/{ID}/SurveyPoints/{SurveyPoint_ID} is SurveyPoint;
+// path /Surveys/{ID}/Instruments/{Instrument_ID} is Instrument;
+// path /Surveys/{ID}/Traverses/{Traverse_ID} is Traverse;
+// path /Surveys/{ID}/SurveyMeasurements/{SurveyMeasurement_ID} is SurveyMeasurement;
+
+
+//* context=type_SurveyPoint, output_name=SurveyPoint
+type SurveyPoint {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    X: Number, //*output_name=X
+    Y: Number, //*output_name=Y
+    Z: Number, //*output_name=Z
+    Name: String, //*output_name=Name
+    Description: String, //*output_name=Description
+    PointTypeID: SurveyPointType, //*output_name=PointType
+    RefID: SurveyReference, //*output_name=Reference
+    SurveyImage: SurveyImage[] //*output_name=SurveyImage
+}
+
+path /SurveyPoints/{ID} is SurveyPoint;
+// path /SurveyPoints/{ID}/SurveyImages/{SurveyImage_ID} is SurveyImage;
+
+
+//* context=type_SurveyAdjustment, output_name=SurveyAdjustment
+type SurveyAdjustment {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    DeltaX: Number, //*output_name=DeltaX
+    DeltaY: Number, //*output_name=DeltaY
+    DeltaZ: Number, //*output_name=DeltaZ
+    BearingAdj: Number, //*output_name=BearingAdj
+    MeasurementID: SurveyMeasurement //*output_name=Measurement
+}
+
+path /SurveyAdjustments/{ID} is SurveyAdjustment;
+
+//* context=type_Instrument, output_name=Instrument
+type Instrument {
+    ID: Number, //*output_name=ID,primary_key,read_only
+    created: Number, //*output_name=Created,use_as=date_type,read_only
+    updated: Number, //*output_name=Updated,use_as=date_type,read_only
+    Name: String, //*output_name=Name
+    Description: String, //*output_name=Description
+    ManufacturerID: InstrumentManufacturer //*output_name=Manufacturer
+}
+
+path /Instruments/{ID} is Instrument;
+
