@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Nov 15 08:58:29 AEST 2016
+// Generated on Wed Dec 28 15:10:11 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -51,9 +51,9 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             @SerializedName("EndPointID")
             private ISurveyPoint m_typeEndPoint;
 
-            @SerializedName("TraverseClosure")
+            @SerializedName("Traverse")
             private List<ITraverseClosure> m_listTraverseClosure;
-            @SerializedName("SurveyMeasurement")
+            @SerializedName("Traverse_SurveyMeasurement")
             private List<ISurveyMeasurement> m_listSurveyMeasurement;
 
             @SerializedName("SurveyID")
@@ -328,15 +328,15 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             {
                 String strJson = "{";
                 strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
                 strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"StartPointID\":" + ((ISerialiseState) m_typeStartPoint).toJson() + ",";
                 strJson += "\"EndPointID\":" + ((ISerialiseState) m_typeEndPoint).toJson() + ",";
                 strJson += "\"SurveyID\":" + m_nSurveyID + ",";
-                strJson += "\"TraverseClosure\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "\"Traverse\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"Traverse_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
                 strJson += "}";
                 return strJson;
             }

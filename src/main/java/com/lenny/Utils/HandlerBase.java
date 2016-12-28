@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -90,6 +91,11 @@ public class HandlerBase
 //        httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_HEADERS, "x-prototype-version,x-requested-with");
         httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT");
         httpExchange.getResponseHeaders().add(CONTENT_TYPE, APPLICATION_JSON);
+    }
+
+    protected String getTimestamp()
+    {
+        return SQLiteConverter.convertDateTimeToString(new Date());
     }
 
 }

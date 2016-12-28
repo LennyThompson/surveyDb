@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Nov 15 08:58:28 AEST 2016
+// Generated on Wed Dec 28 15:10:11 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -215,8 +215,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 String strJson = "{";
                 strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
                 strJson += "\"Path\":" + "\"" + m_strPath + "\"" + ",";
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"SurveyID\":" + ((ISerialiseState) m_typeSurvey).toJson() + ",";

@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class SQLiteConverter
 {
-    static Format FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.ss");
-    static Format FORMAT_DATE_JS = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss.sssZ");
+    static Format FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    static Format FORMAT_DATE_JS = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'");
     public static int convertBooleanToInteger(boolean bValue)
     {
         return bValue ? 1 : 0;
@@ -27,6 +27,7 @@ public class SQLiteConverter
         }
         catch (ParseException exc)
         {
+            System.out.println("FORMAT_DATE.parseObject - exception: " + exc.getMessage());
         }
         return null;
     }

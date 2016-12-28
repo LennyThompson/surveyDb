@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Nov 15 08:58:29 AEST 2016
+// Generated on Wed Dec 28 15:10:11 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -182,8 +182,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 String strJson = "{";
                 strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
                 strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"ManufacturerID\":" + ((ISerialiseState) m_typeManufacturer).toJson();

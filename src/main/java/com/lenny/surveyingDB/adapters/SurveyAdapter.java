@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Nov 15 08:58:29 AEST 2016
+// Generated on Wed Dec 28 15:10:11 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -53,13 +53,13 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             @SerializedName("ProjectionID")
             private IProjection m_typeProjection;
 
-            @SerializedName("SurveyPoint")
+            @SerializedName("Survey_SurveyPoint")
             private List<ISurveyPoint> m_listSurveyPoint;
-            @SerializedName("Instrument")
+            @SerializedName("Survey_Instrument")
             private List<IInstrument> m_listInstrument;
-            @SerializedName("Traverse")
+            @SerializedName("Survey_Traverse")
             private List<ITraverse> m_listTraverse;
-            @SerializedName("SurveyMeasurement")
+            @SerializedName("Survey_SurveyMeasurement")
             private List<ISurveyMeasurement> m_listSurveyMeasurement;
 
             Survey()
@@ -335,15 +335,15 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             {
                 String strJson = "{";
                 strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
                 strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"ProjectionID\":" + ((ISerialiseState) m_typeProjection).toJson() + ",";
-                strJson += "\"SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Traverse\":[" + m_listTraverse.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"Survey_Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"Survey_Traverse\":[" + m_listTraverse.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"Survey_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
                 strJson += "}";
                 return strJson;
             }

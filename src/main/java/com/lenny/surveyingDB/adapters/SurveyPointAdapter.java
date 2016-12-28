@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Nov 15 08:58:29 AEST 2016
+// Generated on Wed Dec 28 15:10:11 AEST 2016
 
 package com.lenny.surveyingDB.adapters;
 
@@ -58,7 +58,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             @SerializedName("RefID")
             private ISurveyReference m_typeReference;
 
-            @SerializedName("SurveyImage")
+            @SerializedName("PointAt")
             private List<ISurveyImage> m_listSurveyImage;
 
             SurveyPoint()
@@ -362,8 +362,8 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             {
                 String strJson = "{";
                 strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToString(m_dateUpdated) + "\"" + ",";
+                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
                 strJson += "\"X\":" + m_dX + ",";
                 strJson += "\"Y\":" + m_dY + ",";
                 strJson += "\"Z\":" + m_dZ + ",";
@@ -371,7 +371,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"PointTypeID\":" + ((ISerialiseState) m_typePointType).toJson() + ",";
                 strJson += "\"RefID\":" + ((ISerialiseState) m_typeReference).toJson() + ",";
-                strJson += "\"SurveyImage\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "\"PointAt\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
                 strJson += "}";
                 return strJson;
             }
