@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -35,9 +35,9 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("HorizDistance")
             private double m_dHorizDistance;
             @SerializedName("VertDistance")
@@ -57,8 +57,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             SurveyMeasurement()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_dHorizDistance = 0.0;
                 m_dVertDistance = 0.0;
                 m_dBearing = 0.0;
@@ -70,7 +70,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyMeasurement(int nID, Date dateCreated, Date dateUpdated, double dHorizDistance, double dVertDistance, double dBearing, ISurveyPoint typePointFrom, ISurveyPoint typePointTo, int nSurveyID)
+            SurveyMeasurement(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, double dHorizDistance, double dVertDistance, double dBearing, ISurveyPoint typePointFrom, ISurveyPoint typePointTo, int nSurveyID)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -88,11 +88,11 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -318,8 +318,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     public static ISurveyMeasurement createSurveyMeasurement
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         double dHorizDistance,
         double dVertDistance,
         double dBearing,
@@ -331,9 +331,16 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         return new SurveyMeasurement(nID, dateCreated, dateUpdated, dHorizDistance, dVertDistance, dBearing, typePointFrom, typePointTo, nSurveyID);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as ISurveyMeasurement
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      ISurveyMeasurement serialised = gsonInstance.fromJson(strJson, ISurveyMeasurement.class);
+
     public ISurveyMeasurement deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
         gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
 
@@ -653,11 +660,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     }
     public static ISurveyMeasurement updateForTraverse(Connection connDb, ISurveyMeasurement typeUpdate, ITraverse typeParent) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
-        {
-            // A new object has to be added first
-            return addForTraverse(connDb, typeUpdate, typeParent);
-        }
+        // A new object has to be added first, and any new links created
+        addForTraverse(connDb, typeUpdate, typeParent);
         return update(connDb, typeUpdate);
     } 
     public static ISurveyMeasurement update(Connection connDb, ISurveyMeasurement typeUpdate) throws SQLException
@@ -667,35 +671,39 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setDouble(1, typeUpdate.getHorizDistance());
-            stmtSelect.setDouble(2, typeUpdate.getVertDistance());
-            stmtSelect.setDouble(3, typeUpdate.getBearing());
-            stmtSelect.setInt(4, typeUpdate.getPointFrom().getID());
-            stmtSelect.setInt(5, typeUpdate.getPointTo().getID());
-            stmtSelect.setInt(6, ((SurveyMeasurement) typeUpdate).m_nSurveyID);
-            stmtSelect.setInt(7, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setDouble(1, typeUpdate.getHorizDistance());
+                stmtSelect.setDouble(2, typeUpdate.getVertDistance());
+                stmtSelect.setDouble(3, typeUpdate.getBearing());
+                stmtSelect.setInt(4, typeUpdate.getPointFrom().getID());
+                stmtSelect.setInt(5, typeUpdate.getPointTo().getID());
+                stmtSelect.setInt(6, ((SurveyMeasurement) typeUpdate).m_nSurveyID);
+                stmtSelect.setInt(7, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static ISurveyMeasurement updateFromDatabase(Connection connDb, ISurveyMeasurement typeUpdate) throws SQLException
@@ -822,9 +830,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     {
         String strInsert = "INSERT OR IGNORE INTO TraverseMeasurement(" +
             "TraverseID" + ",  " +
-            "MeasurementID" + ",  " +
-            "TraverseID"
-            + ") VALUES (?,  ?,  ?)";
+            "MeasurementID"
+            + ") VALUES (?,  ?)";
         return strInsert;
     } 
     private static String getTraverseDeleteLinkQuery()

@@ -4,8 +4,8 @@ package com.lenny.Utils;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -95,7 +95,7 @@ public class HandlerBase
 
     protected String getTimestamp()
     {
-        return SQLiteConverter.convertDateTimeToString(new Date());
+        return SQLiteConverter.convertDateTimeToString(LocalDateTime.now());
     }
 
 }

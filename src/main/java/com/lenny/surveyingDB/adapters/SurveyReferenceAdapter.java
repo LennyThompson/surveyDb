@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -32,31 +32,31 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("Name")
             private String m_strName;
             @SerializedName("Description")
             private String m_strDescription;
             @SerializedName("Date")
-            private Date m_dateDate;
+            private LocalDateTime m_dateDate;
             @SerializedName("Reference")
             private String m_strReference;
 
             SurveyReference()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_strName = "";
                 m_strDescription = "";
-                m_dateDate = new Date();
+                m_dateDate = LocalDateTime.now();
                 m_strReference = "";
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyReference(int nID, Date dateCreated, Date dateUpdated, String strName, String strDescription, Date dateDate, String strReference)
+            SurveyReference(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strName, String strDescription, LocalDateTime dateDate, String strReference)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -72,11 +72,11 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -88,7 +88,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return  m_strDescription;
             }
-            public Date getDate()
+            public LocalDateTime getDate()
             {
                 return  m_dateDate;
             }
@@ -149,13 +149,13 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
                 m_strDescription = strSet;
                 setUpdated();
             }
-            public void setDate(Date dateSet)
+            public void setDate(LocalDateTime dateSet)
             {
                 addUndoProvider
                 (
                     new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Date = " + SurveyReference.this.m_dateDate)
                     {
-                        Date m_undoDate = SurveyReference.this.m_dateDate;
+                        LocalDateTime m_undoDate = SurveyReference.this.m_dateDate;
                         public boolean doUndo()
                         {
                             if(isPending())
@@ -239,20 +239,27 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     public static ISurveyReference createSurveyReference
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         String strName,
         String strDescription,
-        Date dateDate,
+        LocalDateTime dateDate,
         String strReference
     )
     {
         return new SurveyReference(nID, dateCreated, dateUpdated, strName, strDescription, dateDate, strReference);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as ISurveyReference
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(ISurveyReference.class, new SurveyReferenceAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      ISurveyReference serialised = gsonInstance.fromJson(strJson, ISurveyReference.class);
+
     public ISurveyReference deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         return gsonInstance.fromJson(json, SurveyReferenceAdapter.SurveyReference.class);
     }
@@ -462,33 +469,37 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setString(1, typeUpdate.getName());
-            stmtSelect.setString(2, typeUpdate.getDescription());
-            stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
-            stmtSelect.setString(4, typeUpdate.getReference());
-            stmtSelect.setInt(5, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setString(1, typeUpdate.getName());
+                stmtSelect.setString(2, typeUpdate.getDescription());
+                stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
+                stmtSelect.setString(4, typeUpdate.getReference());
+                stmtSelect.setInt(5, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static ISurveyReference updateFromDatabase(Connection connDb, ISurveyReference typeUpdate) throws SQLException

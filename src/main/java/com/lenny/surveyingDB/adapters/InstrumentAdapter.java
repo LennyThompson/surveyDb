@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -35,9 +35,9 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("Name")
             private String m_strName;
             @SerializedName("Description")
@@ -49,8 +49,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             Instrument()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_strName = "";
                 m_strDescription = "";
 
@@ -58,7 +58,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            Instrument(int nID, Date dateCreated, Date dateUpdated, String strName, String strDescription, IInstrumentManufacturer typeManufacturer)
+            Instrument(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strName, String strDescription, IInstrumentManufacturer typeManufacturer)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -73,11 +73,11 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -210,8 +210,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     public static IInstrument createInstrument
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         String strName,
         String strDescription,
         IInstrumentManufacturer typeManufacturer
@@ -220,9 +220,16 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         return new Instrument(nID, dateCreated, dateUpdated, strName, strDescription, typeManufacturer);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as IInstrument
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(IInstrument.class, new InstrumentAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      IInstrument serialised = gsonInstance.fromJson(strJson, IInstrument.class);
+
     public IInstrument deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(IInstrumentManufacturer.class, new InstrumentManufacturerAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
@@ -498,11 +505,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     }
     public static IInstrument updateForSurvey(Connection connDb, IInstrument typeUpdate, ISurvey typeParent) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
-        {
-            // A new object has to be added first
-            return addForSurvey(connDb, typeUpdate, typeParent);
-        }
+        // A new object has to be added first, and any new links created
+        addForSurvey(connDb, typeUpdate, typeParent);
         return update(connDb, typeUpdate);
     } 
     public static IInstrument update(Connection connDb, IInstrument typeUpdate) throws SQLException
@@ -512,32 +516,36 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setString(1, typeUpdate.getName());
-            stmtSelect.setString(2, typeUpdate.getDescription());
-            stmtSelect.setInt(3, typeUpdate.getManufacturer().getID());
-            stmtSelect.setInt(4, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setString(1, typeUpdate.getName());
+                stmtSelect.setString(2, typeUpdate.getDescription());
+                stmtSelect.setInt(3, typeUpdate.getManufacturer().getID());
+                stmtSelect.setInt(4, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static IInstrument updateFromDatabase(Connection connDb, IInstrument typeUpdate) throws SQLException
@@ -634,9 +642,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     {
         String strInsert = "INSERT OR IGNORE INTO SurveyInstruments(" +
             "SurveyID" + ",  " +
-            "InstrumentID" + ",  " +
-            "SurveyID"
-            + ") VALUES (?,  ?,  ?)";
+            "InstrumentID"
+            + ") VALUES (?,  ?)";
         return strInsert;
     } 
     private static String getSurveyDeleteLinkQuery()

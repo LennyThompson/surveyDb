@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -39,9 +39,9 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("X")
             private double m_dX;
             @SerializedName("Y")
@@ -64,8 +64,8 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             SurveyPoint()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_dX = 0.0;
                 m_dY = 0.0;
                 m_dZ = 0.0;
@@ -79,7 +79,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyPoint(int nID, Date dateCreated, Date dateUpdated, double dX, double dY, double dZ, String strName, String strDescription, ISurveyPointType typePointType, ISurveyReference typeReference, List<ISurveyImage> listSurveyImage)
+            SurveyPoint(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, double dX, double dY, double dZ, String strName, String strDescription, ISurveyPointType typePointType, ISurveyReference typeReference, List<ISurveyImage> listSurveyImage)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -99,11 +99,11 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -399,8 +399,8 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     public static ISurveyPoint createSurveyPoint
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         double dX,
         double dY,
         double dZ,
@@ -414,9 +414,16 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         return new SurveyPoint(nID, dateCreated, dateUpdated, dX, dY, dZ, strName, strDescription, typePointType, typeReference, listSurveyImage);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as ISurveyPoint
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      ISurveyPoint serialised = gsonInstance.fromJson(strJson, ISurveyPoint.class);
+
     public ISurveyPoint deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(ISurveyPointType.class, new SurveyPointTypeAdapter());
         gsonBuilder.registerTypeAdapter(ISurveyReference.class, new SurveyReferenceAdapter());
         gsonBuilder.registerTypeAdapter(ISurveyImage.class, new SurveyImageAdapter());
@@ -726,11 +733,8 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     }
     public static ISurveyPoint updateForSurvey(Connection connDb, ISurveyPoint typeUpdate, ISurvey typeParent) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
-        {
-            // A new object has to be added first
-            return addForSurvey(connDb, typeUpdate, typeParent);
-        }
+        // A new object has to be added first, and any new links created
+        addForSurvey(connDb, typeUpdate, typeParent);
         return update(connDb, typeUpdate);
     } 
     public static ISurveyPoint update(Connection connDb, ISurveyPoint typeUpdate) throws SQLException
@@ -740,54 +744,58 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setDouble(1, typeUpdate.getX());
-            stmtSelect.setDouble(2, typeUpdate.getY());
-            stmtSelect.setDouble(3, typeUpdate.getZ());
-            stmtSelect.setString(4, typeUpdate.getName());
-            stmtSelect.setString(5, typeUpdate.getDescription());
-            stmtSelect.setInt(6, typeUpdate.getPointType().getID());
-            stmtSelect.setInt(7, typeUpdate.getReference().getID());
-            stmtSelect.setInt(8, typeUpdate.getID());
-
-            ((SurveyPoint) typeUpdate).m_listSurveyImage = typeUpdate.getSurveyImages().stream()
-                .map
-                (
-                    item ->
-                    {
-                        try
-                        {
-                            return SurveyImageAdapter.update(connDb, item);
-                        }
-                        catch(SQLException exc)
-                        {
-                        // TODO: set up error handling
-                            throw new RuntimeException(exc);
-                        }
-                    }
-                )
-                .collect(Collectors.toList());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setDouble(1, typeUpdate.getX());
+                stmtSelect.setDouble(2, typeUpdate.getY());
+                stmtSelect.setDouble(3, typeUpdate.getZ());
+                stmtSelect.setString(4, typeUpdate.getName());
+                stmtSelect.setString(5, typeUpdate.getDescription());
+                stmtSelect.setInt(6, typeUpdate.getPointType().getID());
+                stmtSelect.setInt(7, typeUpdate.getReference().getID());
+                stmtSelect.setInt(8, typeUpdate.getID());
+
+                ((SurveyPoint) typeUpdate).m_listSurveyImage = typeUpdate.getSurveyImages().stream()
+                    .map
+                    (
+                        item ->
+                        {
+                            try
+                            {
+                                return SurveyImageAdapter.update(connDb, item);
+                            }
+                            catch(SQLException exc)
+                            {
+                            // TODO: set up error handling
+                                throw new RuntimeException(exc);
+                            }
+                        }
+                    )
+                    .collect(Collectors.toList());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static ISurveyPoint updateFromDatabase(Connection connDb, ISurveyPoint typeUpdate) throws SQLException
@@ -902,9 +910,8 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     {
         String strInsert = "INSERT OR IGNORE INTO SurveyPointLink(" +
             "SurveyID" + ",  " +
-            "SurveyPointID" + ",  " +
-            "SurveyID"
-            + ") VALUES (?,  ?,  ?)";
+            "SurveyPointID"
+            + ") VALUES (?,  ?)";
         return strInsert;
     } 
     private static String getSurveyDeleteLinkQuery()

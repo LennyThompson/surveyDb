@@ -316,4 +316,97 @@ CREATE TABLE `SurveyPointLink`
     UNIQUE(SurveyPointID, SurveyID)
 );
 
+-- Read only views that summarise the date for specific purposes
+
+CREATE VIEW TraverseSummary as --* read_only
+select
+    trav.ID as ID,
+    trav.SurveyID as SurveyID,
+    trav.Name as Name,
+    trav.updated as Updated,
+    trav.Description as Description,
+    ptStart.ID as ptStartID,
+    ptStart.Name as ptStartName,
+    ptStart.X as ptStartX,
+    ptStart.Y as ptStartY,
+    ptStart.Z as ptStartZ,
+    ptEnd.ID as ptEndID,
+    ptEnd.Name as ptEndName,
+    ptEnd.X as ptEndX,
+    ptEnd.Y as ptEndY,
+    ptEnd.Z as ptEndZ
+from
+    Traverse trav
+	inner join SurveyPoint as ptStart on trav.StartPointID = ptStart.ID
+	inner join SurveyPoint as ptEnd on trav.EndPointID = ptEnd.ID;
+
+CREATE VIEW TraverseMeasurementSummary as --read_only
+select
+    trav.ID as ID,
+    trav.SurveyID as SurveyID,
+    survMeas.ID as measID,
+    survMeas.HorizDistance as Horizontal,
+    survMeas.VertDistance as Vertical,
+    survMeas.Bearing as Bearing,
+    ptFrom.ID as ptFromID,
+    ptFrom.Name as ptFromName,
+    ptFrom.X as ptFromX,
+    ptFrom.Y as ptFromY,
+    ptFrom.Z as ptFromZ,
+    ptTo.ID as ptToID,
+    ptTo.Name as ptToName,
+    ptTo.X as ptToX,
+    ptTo.Y as ptToY,
+    ptTo.Z as ptToZ
+from
+    Traverse trav
+    inner join TraverseMeasurement as link on link.TraverseID = trav.ID
+    inner join SurveyMeasurement as survMeas on survMeas.ID = link.MeasurementID
+    inner join SurveyPoint as ptFrom on survMeas.FromPtID = ptFrom.ID
+    inner join SurveyPoint as ptTo on survMeas.ToPtID = ptTo.ID;
+
+CREATE VIEW SurveyPointSummary as --* read_only
+select
+    surv.ID as ID,
+    pt.ID as ptID,
+    pt.Name as ptName,
+    pt.Description as ptDesc,
+    pt.X as X,
+    pt.Y as Y,
+    pt.Z as Z,
+    ptType.Name as ptTypeName,
+    ptType.Abbreviation as ptTypeAbbreviation,
+    ref.Name as refName,
+    ref.Description as refDescription
+from
+    Survey surv
+	inner join SurveyPointLink as link on link.SurveyID = surv.ID
+    inner join SurveyPoint as pt on pt.ID = link.SurveyPointID
+    inner join SurveyPointType as ptType on ptType.ID = pt.PointTypeID
+    inner join SurveyReference as ref on ref.ID = pt.RefID;
+
+CREATE VIEW SurveySummary as --* read_only
+SELECT
+    surv.ID as ID,
+    surv.Name as Name,
+    surv.created as created,
+    surv.updated as updated,
+    surv.Description as Description,
+	proj.ID as projID,
+	proj.Name as projName,
+	trav.ID as travID,
+	trav.Name as travName,
+	trav.Updated as travUpdated,
+	trav.ptStartName as ptTravStart,
+	trav.ptEndName as ptTravEnd,
+	ptSurv.ptID as ptID,
+	ptSurv.ptName as ptName,
+	ptSurv.X as ptX,
+	ptSurv.Y as ptY,
+	ptSurv.Z as ptZ
+from
+    Survey surv
+	inner join Projection as proj on proj.ID = surv.ProjectionID
+	inner join TraverseSummary as trav on trav.SurveyID = surv.ID
+	inner join SurveyPointSummary as ptSurv on ptSurv.ID = surv.ID;
 

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -33,9 +33,9 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("MiscZ")
             private double m_dMiscZ;
             @SerializedName("MiscY")
@@ -56,8 +56,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             TraverseClosure()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_dMiscZ = 0.0;
                 m_dMiscY = 0.0;
                 m_dMiscX = 0.0;
@@ -69,7 +69,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            TraverseClosure(int nID, Date dateCreated, Date dateUpdated, double dMiscZ, double dMiscY, double dMiscX, double dBearingMisclose, double dTraverseLength, boolean bAdjusted, int nTraverseID)
+            TraverseClosure(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, double dMiscZ, double dMiscY, double dMiscX, double dBearingMisclose, double dTraverseLength, boolean bAdjusted, int nTraverseID)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -88,11 +88,11 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -348,8 +348,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     public static ITraverseClosure createTraverseClosure
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         double dMiscZ,
         double dMiscY,
         double dMiscX,
@@ -362,9 +362,16 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         return new TraverseClosure(nID, dateCreated, dateUpdated, dMiscZ, dMiscY, dMiscX, dBearingMisclose, dTraverseLength, bAdjusted, nTraverseID);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as ITraverseClosure
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(ITraverseClosure.class, new TraverseClosureAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      ITraverseClosure serialised = gsonInstance.fromJson(strJson, ITraverseClosure.class);
+
     public ITraverseClosure deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         return gsonInstance.fromJson(json, TraverseClosureAdapter.TraverseClosure.class);
     }
@@ -609,36 +616,40 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setDouble(1, typeUpdate.getMiscZ());
-            stmtSelect.setDouble(2, typeUpdate.getMiscY());
-            stmtSelect.setDouble(3, typeUpdate.getMiscX());
-            stmtSelect.setDouble(4, typeUpdate.getBearingMisclose());
-            stmtSelect.setDouble(5, typeUpdate.getTraverseLength());
-            stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeUpdate.getAdjusted()));
-            stmtSelect.setInt(7, ((TraverseClosure) typeUpdate).m_nTraverseID);
-            stmtSelect.setInt(8, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setDouble(1, typeUpdate.getMiscZ());
+                stmtSelect.setDouble(2, typeUpdate.getMiscY());
+                stmtSelect.setDouble(3, typeUpdate.getMiscX());
+                stmtSelect.setDouble(4, typeUpdate.getBearingMisclose());
+                stmtSelect.setDouble(5, typeUpdate.getTraverseLength());
+                stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeUpdate.getAdjusted()));
+                stmtSelect.setInt(7, ((TraverseClosure) typeUpdate).m_nTraverseID);
+                stmtSelect.setInt(8, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static ITraverseClosure updateFromDatabase(Connection connDb, ITraverseClosure typeUpdate) throws SQLException

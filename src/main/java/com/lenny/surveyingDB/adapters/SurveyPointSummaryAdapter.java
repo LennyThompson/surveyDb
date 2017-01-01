@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -11,8 +11,10 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
@@ -20,15 +22,18 @@ import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
 import com.lenny.surveyingDB.interfaces.ISurveyPointSummary;
+import com.lenny.surveyingDB.interfaces.ISurveyPointSummary.*;
 
 
 public class SurveyPointSummaryAdapter
 {
     // Class implements ISurveyPointSummary but only accessible through the SurveyPointSummaryAdapter
 
-        static class SurveyPointSummary_Pt implements ISurveyPointSummary_Pt
+        static class SurveyPointSummary_Pt
+                implements ISurveyPointSummary_Pt
         {
-                static class Pt_PtType implements IPt_PtType
+                static class Pt_PtType
+                        implements ISurveyPointSummary_Pt.IPt_PtType
                 {
 
                     @SerializedName("ptTypeName")
@@ -65,7 +70,8 @@ public class SurveyPointSummaryAdapter
                         return strJson;
                     }
                 }
-                static class Pt_Ref implements IPt_Ref
+                static class Pt_Ref
+                        implements ISurveyPointSummary_Pt.IPt_Ref
                 {
 
                     @SerializedName("refName")
@@ -142,17 +148,17 @@ public class SurveyPointSummaryAdapter
                 m_dX = dX;
                 m_dY = dY;
                 m_dZ = dZ;
-                m_typePtType = new IPt_PtType
+                m_typePtType = new Pt_PtType
                                 (
-                                    String strPtTypeName,
-                                    String strPtTypeAbbreviation
+                                    strPtTypeName,
+                                    strPtTypeAbbreviation
                                 );
 
 
-                m_typeRef = new IPt_Ref
+                m_typeRef = new Pt_Ref
                                 (
-                                    String strRefName,
-                                    String strRefDescription
+                                    strRefName,
+                                    strRefDescription
                                 );
 
             }
@@ -234,18 +240,18 @@ public class SurveyPointSummaryAdapter
 
             m_listPts = new ArrayList<>();
             m_listPts.add(
-                        new 
+                        new SurveyPointSummary_Pt
                         (
-                            int nPtID,
-                            String strPtName,
-                            String strPtDesc,
-                            double dX,
-                            double dY,
-                            double dZ,
-                            String strPtTypeName,
-                            String strPtTypeAbbreviation,
-                            String strRefName,
-                            String strRefDescription
+                            nPtID,
+                            strPtName,
+                            strPtDesc,
+                            dX,
+                            dY,
+                            dZ,
+                            strPtTypeName,
+                            strPtTypeAbbreviation,
+                            strRefName,
+                            strRefDescription
                         )
                     );
 
@@ -270,18 +276,17 @@ public class SurveyPointSummaryAdapter
 
         // Used by stream collector to aggregate like instances together
 
-        public SurveyPointSummary add(SurveyPointSummary newType)
+        public SurveyPointSummary add(ISurveyPointSummary newType)
         {
             if
             (
-                newType.m_listPts.size() > 0
+                newType.getPts().size() > 0
                 &&
                 !m_listPts.stream()
-                    .filter(member -> member.m_nPtID == newType.m_listPts.get(0).m_nPtID)
-                    .isPresent()
+                    .anyMatch(member -> member.getPtID() == newType.getPts().get(0).getPtID())
             )
             {
-                m_listPts.add(newType.m_listPts.get(0));
+                m_listPts.add(newType.getPts().get(0));
             }
             return this;
         }
@@ -363,7 +368,7 @@ public class SurveyPointSummaryAdapter
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            List<SurveyPointSummary> listRawData = new ArrayList<>();
+            List<ISurveyPointSummary> listRawData = new ArrayList<>();
             while(results.next())
             {
                 listRawData.add
@@ -384,16 +389,16 @@ public class SurveyPointSummaryAdapter
                         )
                     );
             }
-            Map<Integer, SurveyPointSummary> mapData = listRawData.stream()
+            Map<Integer, ISurveyPointSummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new SurveyPointSummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new SurveyPointSummary((SurveyPointSummary) view),
+                            (viewInto, view) -> ((SurveyPointSummary) viewInto).add(view)
                         )
                     );
 
-            typeReturn = mapData.values().get(0);
+            typeReturn = mapData.get(listRawData.get(0).getID());
         }
         catch(SQLException exc)
         {
@@ -422,6 +427,7 @@ public class SurveyPointSummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
+            List<ISurveyPointSummary> listRawData = new ArrayList<ISurveyPointSummary>();
             while(results.next())
             {
                 listRawData.add
@@ -442,16 +448,15 @@ public class SurveyPointSummaryAdapter
                         )
                     );
             }
-            Map<Integer, SurveyPointSummary> mapData = listRawData.stream()
+            Map<Integer, ISurveyPointSummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new SurveyPointSummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new SurveyPointSummary((SurveyPointSummary) view),
+                            (viewInto, view) -> ((SurveyPointSummary) viewInto).add(view)
                         )
                     );
             listReturn = mapData.values().stream()
-                    .map(value -> (ISurveyPointSummary) value)
                     .collect(Collectors.toList());
         }
         catch(SQLException exc)

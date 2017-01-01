@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -11,8 +11,10 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
@@ -20,13 +22,15 @@ import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
 import com.lenny.surveyingDB.interfaces.ITraverseSummary;
+import com.lenny.surveyingDB.interfaces.ITraverseSummary.*;
 
 
 public class TraverseSummaryAdapter
 {
     // Class implements ITraverseSummary but only accessible through the TraverseSummaryAdapter
 
-        static class TraverseSummary_PtStart implements ITraverseSummary_PtStart
+        static class TraverseSummary_PtStart
+                implements ITraverseSummary_PtStart
         {
 
             @SerializedName("ptStartID")
@@ -90,7 +94,8 @@ public class TraverseSummaryAdapter
                 return strJson;
             }
         }
-        static class TraverseSummary_PtEnd implements ITraverseSummary_PtEnd
+        static class TraverseSummary_PtEnd
+                implements ITraverseSummary_PtEnd
         {
 
             @SerializedName("ptEndID")
@@ -165,7 +170,7 @@ public class TraverseSummaryAdapter
         @SerializedName("Name")
          String m_strName;
         @SerializedName("Updated")
-         Date m_dateUpdated;
+         LocalDateTime m_dateUpdated;
         @SerializedName("Description")
          String m_strDescription;
         @SerializedName("ptStart")
@@ -179,7 +184,7 @@ public class TraverseSummaryAdapter
             int nID,
             int nSurveyID,
             String strName,
-            Date dateUpdated,
+            LocalDateTime dateUpdated,
             String strDescription,
             int nPtStartID,
             String strPtStartName,
@@ -199,23 +204,23 @@ public class TraverseSummaryAdapter
             m_dateUpdated = dateUpdated;
             m_strDescription = strDescription;
 
-            m_typePtStart = new ITraverseSummary_PtStart
+            m_typePtStart = new TraverseSummary_PtStart
                             (
-                                int nPtStartID,
-                                String strPtStartName,
-                                double dPtStartX,
-                                double dPtStartY,
-                                double dPtStartZ
+                                nPtStartID,
+                                strPtStartName,
+                                dPtStartX,
+                                dPtStartY,
+                                dPtStartZ
                             );
 
 
-            m_typePtEnd = new ITraverseSummary_PtEnd
+            m_typePtEnd = new TraverseSummary_PtEnd
                             (
-                                int nPtEndID,
-                                String strPtEndName,
-                                double dPtEndX,
-                                double dPtEndY,
-                                double dPtEndZ
+                                nPtEndID,
+                                strPtEndName,
+                                dPtEndX,
+                                dPtEndY,
+                                dPtEndZ
                             );
 
         }
@@ -244,7 +249,7 @@ public class TraverseSummaryAdapter
         {
             return  m_strName;
         }
-        public Date getUpdated()
+        public LocalDateTime getUpdated()
         {
             return  m_dateUpdated;
         }
@@ -264,7 +269,7 @@ public class TraverseSummaryAdapter
 
         // Used by stream collector to aggregate like instances together
 
-        public TraverseSummary add(TraverseSummary newType)
+        public TraverseSummary add(ITraverseSummary newType)
         {
             return this;
         }
@@ -316,7 +321,7 @@ public class TraverseSummaryAdapter
         int nID,
         int nSurveyID,
         String strName,
-        Date dateUpdated,
+        LocalDateTime dateUpdated,
         String strDescription,
         int nPtStartID,
         String strPtStartName,
@@ -363,7 +368,7 @@ public class TraverseSummaryAdapter
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            List<TraverseSummary> listRawData = new ArrayList<>();
+            List<ITraverseSummary> listRawData = new ArrayList<>();
             while(results.next())
             {
                 listRawData.add
@@ -388,16 +393,16 @@ public class TraverseSummaryAdapter
                         )
                     );
             }
-            Map<Integer, TraverseSummary> mapData = listRawData.stream()
+            Map<Integer, ITraverseSummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new TraverseSummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new TraverseSummary((TraverseSummary) view),
+                            (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
                         )
                     );
 
-            typeReturn = mapData.values().get(0);
+            typeReturn = mapData.get(listRawData.get(0).getID());
         }
         catch(SQLException exc)
         {
@@ -426,6 +431,7 @@ public class TraverseSummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
+            List<ITraverseSummary> listRawData = new ArrayList<ITraverseSummary>();
             while(results.next())
             {
                 listRawData.add
@@ -450,16 +456,15 @@ public class TraverseSummaryAdapter
                         )
                     );
             }
-            Map<Integer, TraverseSummary> mapData = listRawData.stream()
+            Map<Integer, ITraverseSummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new TraverseSummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new TraverseSummary((TraverseSummary) view),
+                            (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
                         )
                     );
             listReturn = mapData.values().stream()
-                    .map(value -> (ITraverseSummary) value)
                     .collect(Collectors.toList());
         }
         catch(SQLException exc)

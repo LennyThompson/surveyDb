@@ -1,9 +1,9 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 10:59:55 AEST 2017
 
 package com.lenny.surveyingDB.interfaces;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import com.lenny.surveyingDB.interfaces.ISurveyAdjustment;
 import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
@@ -12,8 +12,8 @@ import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
 public interface ISurveyAdjustment
 {
     int getID();
-    Date getCreated();
-    Date getUpdated();
+    LocalDateTime getCreated();
+    LocalDateTime getUpdated();
     double getDeltaX();
     double getDeltaY();
     double getDeltaZ();

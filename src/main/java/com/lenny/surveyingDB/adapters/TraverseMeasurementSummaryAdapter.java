@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -11,8 +11,10 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
@@ -20,15 +22,18 @@ import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
 import com.lenny.surveyingDB.interfaces.ITraverseMeasurementSummary;
+import com.lenny.surveyingDB.interfaces.ITraverseMeasurementSummary.*;
 
 
 public class TraverseMeasurementSummaryAdapter
 {
     // Class implements ITraverseMeasurementSummary but only accessible through the TraverseMeasurementSummaryAdapter
 
-        static class TraverseMeasurementSummary_SurvMeas implements ITraverseMeasurementSummary_SurvMeas
+        static class TraverseMeasurementSummary_SurvMeas
+                implements ITraverseMeasurementSummary_SurvMeas
         {
-                static class SurvMeas_PtFrom implements ISurvMeas_PtFrom
+                static class SurvMeas_PtFrom
+                        implements ITraverseMeasurementSummary_SurvMeas.ISurvMeas_PtFrom
                 {
 
                     @SerializedName("ptFromID")
@@ -92,7 +97,8 @@ public class TraverseMeasurementSummaryAdapter
                         return strJson;
                     }
                 }
-                static class SurvMeas_PtTo implements ISurvMeas_PtTo
+                static class SurvMeas_PtTo
+                        implements ITraverseMeasurementSummary_SurvMeas.ISurvMeas_PtTo
                 {
 
                     @SerializedName("ptToID")
@@ -194,23 +200,23 @@ public class TraverseMeasurementSummaryAdapter
                 m_dHorizontal = dHorizontal;
                 m_dVertical = dVertical;
                 m_dBearing = dBearing;
-                m_typePtFrom = new ISurvMeas_PtFrom
+                m_typePtFrom = new SurvMeas_PtFrom
                                 (
-                                    int nPtFromID,
-                                    String strPtFromName,
-                                    double dPtFromX,
-                                    double dPtFromY,
-                                    double dPtFromZ
+                                    nPtFromID,
+                                    strPtFromName,
+                                    dPtFromX,
+                                    dPtFromY,
+                                    dPtFromZ
                                 );
 
 
-                m_typePtTo = new ISurvMeas_PtTo
+                m_typePtTo = new SurvMeas_PtTo
                                 (
-                                    int nPtToID,
-                                    String strPtToName,
-                                    double dPtToX,
-                                    double dPtToY,
-                                    double dPtToZ
+                                    nPtToID,
+                                    strPtToName,
+                                    dPtToX,
+                                    dPtToY,
+                                    dPtToZ
                                 );
 
             }
@@ -290,22 +296,22 @@ public class TraverseMeasurementSummaryAdapter
 
             m_listSurvMeass = new ArrayList<>();
             m_listSurvMeass.add(
-                        new 
+                        new TraverseMeasurementSummary_SurvMeas
                         (
-                            int nMeasID,
-                            double dHorizontal,
-                            double dVertical,
-                            double dBearing,
-                            int nPtFromID,
-                            String strPtFromName,
-                            double dPtFromX,
-                            double dPtFromY,
-                            double dPtFromZ,
-                            int nPtToID,
-                            String strPtToName,
-                            double dPtToX,
-                            double dPtToY,
-                            double dPtToZ
+                            nMeasID,
+                            dHorizontal,
+                            dVertical,
+                            dBearing,
+                            nPtFromID,
+                            strPtFromName,
+                            dPtFromX,
+                            dPtFromY,
+                            dPtFromZ,
+                            nPtToID,
+                            strPtToName,
+                            dPtToX,
+                            dPtToY,
+                            dPtToZ
                         )
                     );
 
@@ -335,18 +341,17 @@ public class TraverseMeasurementSummaryAdapter
 
         // Used by stream collector to aggregate like instances together
 
-        public TraverseMeasurementSummary add(TraverseMeasurementSummary newType)
+        public TraverseMeasurementSummary add(ITraverseMeasurementSummary newType)
         {
             if
             (
-                newType.m_listSurvMeass.size() > 0
+                newType.getSurvMeass().size() > 0
                 &&
                 !m_listSurvMeass.stream()
-                    .filter(member -> member.m_nMeasID == newType.m_listSurvMeass.get(0).m_nMeasID)
-                    .isPresent()
+                    .anyMatch(member -> member.getMeasID() == newType.getSurvMeass().get(0).getMeasID())
             )
             {
-                m_listSurvMeass.add(newType.m_listSurvMeass.get(0));
+                m_listSurvMeass.add(newType.getSurvMeass().get(0));
             }
             return this;
         }
@@ -444,7 +449,7 @@ public class TraverseMeasurementSummaryAdapter
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            List<TraverseMeasurementSummary> listRawData = new ArrayList<>();
+            List<ITraverseMeasurementSummary> listRawData = new ArrayList<>();
             while(results.next())
             {
                 listRawData.add
@@ -470,16 +475,16 @@ public class TraverseMeasurementSummaryAdapter
                         )
                     );
             }
-            Map<Integer, TraverseMeasurementSummary> mapData = listRawData.stream()
+            Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new TraverseMeasurementSummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
+                            (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
                         )
                     );
 
-            typeReturn = mapData.values().get(0);
+            typeReturn = mapData.get(listRawData.get(0).getID());
         }
         catch(SQLException exc)
         {
@@ -508,6 +513,7 @@ public class TraverseMeasurementSummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
+            List<ITraverseMeasurementSummary> listRawData = new ArrayList<ITraverseMeasurementSummary>();
             while(results.next())
             {
                 listRawData.add
@@ -533,16 +539,15 @@ public class TraverseMeasurementSummaryAdapter
                         )
                     );
             }
-            Map<Integer, TraverseMeasurementSummary> mapData = listRawData.stream()
+            Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new TraverseMeasurementSummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
+                            (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
                         )
                     );
             listReturn = mapData.values().stream()
-                    .map(value -> (ITraverseMeasurementSummary) value)
                     .collect(Collectors.toList());
         }
         catch(SQLException exc)

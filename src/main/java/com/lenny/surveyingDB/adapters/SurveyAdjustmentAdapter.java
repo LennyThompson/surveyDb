@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -34,9 +34,9 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("DeltaX")
             private double m_dDeltaX;
             @SerializedName("DeltaY")
@@ -52,8 +52,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             SurveyAdjustment()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_dDeltaX = 0.0;
                 m_dDeltaY = 0.0;
                 m_dDeltaZ = 0.0;
@@ -63,7 +63,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyAdjustment(int nID, Date dateCreated, Date dateUpdated, double dDeltaX, double dDeltaY, double dDeltaZ, double dBearingAdj, ISurveyMeasurement typeMeasurement)
+            SurveyAdjustment(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, double dDeltaX, double dDeltaY, double dDeltaZ, double dBearingAdj, ISurveyMeasurement typeMeasurement)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -80,11 +80,11 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -281,8 +281,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     public static ISurveyAdjustment createSurveyAdjustment
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         double dDeltaX,
         double dDeltaY,
         double dDeltaZ,
@@ -293,9 +293,16 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         return new SurveyAdjustment(nID, dateCreated, dateUpdated, dDeltaX, dDeltaY, dDeltaZ, dBearingAdj, typeMeasurement);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as ISurveyAdjustment
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(ISurveyAdjustment.class, new SurveyAdjustmentAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      ISurveyAdjustment serialised = gsonInstance.fromJson(strJson, ISurveyAdjustment.class);
+
     public ISurveyAdjustment deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
@@ -517,34 +524,38 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setDouble(1, typeUpdate.getDeltaX());
-            stmtSelect.setDouble(2, typeUpdate.getDeltaY());
-            stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
-            stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
-            stmtSelect.setInt(5, typeUpdate.getMeasurement().getID());
-            stmtSelect.setInt(6, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setDouble(1, typeUpdate.getDeltaX());
+                stmtSelect.setDouble(2, typeUpdate.getDeltaY());
+                stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
+                stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
+                stmtSelect.setInt(5, typeUpdate.getMeasurement().getID());
+                stmtSelect.setInt(6, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static ISurveyAdjustment updateFromDatabase(Connection connDb, ISurveyAdjustment typeUpdate) throws SQLException

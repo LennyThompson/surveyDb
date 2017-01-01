@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -32,28 +32,28 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("Name")
             private String m_strName;
             @SerializedName("Date")
-            private Date m_dateDate;
+            private LocalDateTime m_dateDate;
             @SerializedName("Description")
             private String m_strDescription;
 
             Projection()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_strName = "";
-                m_dateDate = new Date();
+                m_dateDate = LocalDateTime.now();
                 m_strDescription = "";
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            Projection(int nID, Date dateCreated, Date dateUpdated, String strName, Date dateDate, String strDescription)
+            Projection(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strName, LocalDateTime dateDate, String strDescription)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -68,11 +68,11 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -80,7 +80,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 return  m_strName;
             }
-            public Date getDate()
+            public LocalDateTime getDate()
             {
                 return  m_dateDate;
             }
@@ -141,13 +141,13 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
                 m_strName = strSet;
                 setUpdated();
             }
-            public void setDate(Date dateSet)
+            public void setDate(LocalDateTime dateSet)
             {
                 addUndoProvider
                 (
                     new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Date = " + Projection.this.m_dateDate)
                     {
-                        Date m_undoDate = Projection.this.m_dateDate;
+                        LocalDateTime m_undoDate = Projection.this.m_dateDate;
                         public boolean doUndo()
                         {
                             if(isPending())
@@ -229,19 +229,26 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     public static IProjection createProjection
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         String strName,
-        Date dateDate,
+        LocalDateTime dateDate,
         String strDescription
     )
     {
         return new Projection(nID, dateCreated, dateUpdated, strName, dateDate, strDescription);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as IProjection
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(IProjection.class, new ProjectionAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      IProjection serialised = gsonInstance.fromJson(strJson, IProjection.class);
+
     public IProjection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         return gsonInstance.fromJson(json, ProjectionAdapter.Projection.class);
     }
@@ -450,32 +457,36 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setString(1, typeUpdate.getName());
-            stmtSelect.setString(2, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
-            stmtSelect.setString(3, typeUpdate.getDescription());
-            stmtSelect.setInt(4, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setString(1, typeUpdate.getName());
+                stmtSelect.setString(2, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
+                stmtSelect.setString(3, typeUpdate.getDescription());
+                stmtSelect.setInt(4, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static IProjection updateFromDatabase(Connection connDb, IProjection typeUpdate) throws SQLException

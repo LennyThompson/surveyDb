@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.surveyingDB.interfaces.*;
+import com.lenny.surveyingDB.webAPI.SurveyDbServer;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,20 +19,6 @@ import static org.junit.Assert.*;
 
 public class TestSurveyDbAdapaters
 {
-    static void buildSurveyDb(Connection connDb) throws SQLException
-    {
-        SurveyPointTypeAdapter.createInDatabase(connDb);
-        SurveyReferenceAdapter.createInDatabase(connDb);
-        InstrumentManufacturerAdapter.createInDatabase(connDb);
-        InstrumentAdapter.createInDatabase(connDb);
-        ProjectionAdapter.createInDatabase(connDb);
-        SurveyAdapter.createInDatabase(connDb);
-        TraverseAdapter.createInDatabase(connDb);
-        SurveyPointAdapter.createInDatabase(connDb);
-        SurveyImageAdapter.createInDatabase(connDb);
-        SurveyMeasurementAdapter.createInDatabase(connDb);
-
-    }
     @Test
     public void testLoadStatics() throws SQLException
     {
@@ -96,9 +83,7 @@ public class TestSurveyDbAdapaters
         assertEquals("Current Survey", listRefs.get(0).getName());
         assertEquals("No Ref", listRefs.get(0).getReference());
         assertEquals("Current Survey", listRefs.get(0).getDescription());
-        Calendar calDate = Calendar.getInstance();
-        calDate.setTime(listRefs.get(0).getDate());
-        assertEquals(2000, calDate.get(Calendar.YEAR));
+        assertEquals(2000, listRefs.get(0).getDate().getYear());
 
         strJson = ((ISerialiseState) listRefs.get(0)).toJson();
         gsonInstance = gsonBuild.create();
@@ -118,9 +103,8 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
+        SurveyDbServer.buildNewDatabase("testCreatePoint.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testCreatePoint.db");
-
-        buildSurveyDb(connDb);
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
@@ -155,11 +139,11 @@ public class TestSurveyDbAdapaters
         assertEquals("Current Survey", ptSurvey.getReference().getName());
         assertTrue(((UndoTarget) ptSurvey).isSaved());
 
-        // Test serialisation using adapter implemenation of JsonSerializer
+        // Test serialisation using adapter implementation of JsonSerializer
 
         String strJson = ((ISerialiseState) ptSurvey).toJson();
-        GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
-        gsonBuild.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+        GsonBuilder gsonBuild = new GsonBuilder()
+                    .registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
         Gson gsonInstance = gsonBuild.create();
         ISurveyPoint ptSerialised = gsonInstance.fromJson(strJson, ISurveyPoint.class);
         assertEquals("First Point", ptSerialised.getName());
@@ -169,6 +153,8 @@ public class TestSurveyDbAdapaters
         assertEquals(500.0, ptSerialised.getZ(), 0.001);
         assertEquals("Trig", ptSerialised.getPointType().getAbbreviation());
         assertEquals("Current Survey", ptSerialised.getReference().getName());
+
+        assertEquals(ptSurvey.getCreated(), ptSerialised.getCreated());
     }
 
     @Test
@@ -180,9 +166,8 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
+        SurveyDbServer.buildNewDatabase("testUpdatePoint.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testUpdatePoint.db");
-
-        buildSurveyDb(connDb);
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
@@ -235,9 +220,8 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
+        SurveyDbServer.buildNewDatabase("testSurveyMeasurement.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testSurveyMeasurement.db");
-
-        buildSurveyDb(connDb);
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
@@ -289,9 +273,8 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
+        SurveyDbServer.buildNewDatabase("testTraverse.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testTraverse.db");
-
-        buildSurveyDb(connDb);
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
@@ -320,6 +303,7 @@ public class TestSurveyDbAdapaters
         ptSurveyFrom.setReference(listRefs.get(0));
 
         travTest.setStartPoint(ptSurveyFrom);
+        survey.addSurveyPoint(ptSurveyFrom);
 
         ISurveyPoint ptSurveyTo = SurveyPointAdapter.createNewSurveyPoint();
         ptSurveyTo.setName("Second Point");
@@ -331,6 +315,7 @@ public class TestSurveyDbAdapaters
         ptSurveyTo.setReference(listRefs.get(0));
 
         travTest.setEndPoint(ptSurveyTo);
+        survey.addSurveyPoint(ptSurveyTo);
 
         // Add some traverese measurements
 
@@ -349,8 +334,10 @@ public class TestSurveyDbAdapaters
         ptSurveyNext.setPointType(listPointTypes.get(7));
         ptSurveyNext.setReference(listRefs.get(0));
         survMeas.setPointTo(ptSurveyNext);
+        survey.addSurveyPoint(ptSurveyNext);
 
         travTest.addSurveyMeasurement(survMeas);
+        survey.addSurveyMeasurement(survMeas);
 
         survMeas = SurveyMeasurementAdapter.createNewSurveyMeasurement();
         survMeas.setBearing(90.0);
@@ -367,8 +354,10 @@ public class TestSurveyDbAdapaters
         ptSurveyNext.setPointType(listPointTypes.get(7));
         ptSurveyNext.setReference(listRefs.get(0));
         survMeas.setPointTo(ptSurveyNext);
+        survey.addSurveyPoint(ptSurveyNext);
 
         travTest.addSurveyMeasurement(survMeas);
+        survey.addSurveyMeasurement(survMeas);
 
         // Close the traverse back to the end point
 
@@ -381,8 +370,10 @@ public class TestSurveyDbAdapaters
         survMeas.setPointTo(ptSurveyTo);
 
         travTest.addSurveyMeasurement(survMeas);
+        survey.addSurveyMeasurement(survMeas);
 
         travTest = TraverseAdapter.add(connDb, travTest);
+        survey = SurveyAdapter.update(connDb, survey);
 
         assertEquals("New Traverse", travTest.getName());
         assertEquals("First Point", travTest.getStartPoint().getName());
@@ -414,5 +405,38 @@ public class TestSurveyDbAdapaters
         assertEquals("Testing...", surveySerial.getDescription());
         assertEquals(1, surveySerial.getTraverses().size());
         assertEquals(3, surveySerial.getTraverses().get(0).getSurveyMeasurements().size());
+
+        // Test that the survey points can be accessed through the SurveyPointSummary view
+
+        List<ISurveyPointSummary> listSurveyPts = SurveyPointSummaryAdapter.getAll(connDb);
+        assertEquals(1, listSurveyPts.size());
+        ISurveyPointSummary ptSummary = listSurveyPts.get(0);
+        assertEquals(4, ptSummary.getPts().size());
+        assertEquals(1000, ptSummary.getPts().get(0).getX(), 0.01);
+        assertEquals(2000, ptSummary.getPts().get(0).getY(), 0.01);
+        assertEquals(500, ptSummary.getPts().get(0).getZ(), 0.01);
+        assertEquals("Trig Point", ptSummary.getPts().get(0).getPtType().getPtTypeName());
+        assertEquals("Current Survey", ptSummary.getPts().get(0).getRef().getRefName());
+
+        // And for a specific survey
+
+        ptSummary = SurveyPointSummaryAdapter.get(connDb, survey.getID());
+        assertEquals(4, ptSummary.getPts().size());
+        assertEquals(1000, ptSummary.getPts().get(0).getX(), 0.01);
+        assertEquals(2000, ptSummary.getPts().get(0).getY(), 0.01);
+        assertEquals(500, ptSummary.getPts().get(0).getZ(), 0.01);
+        assertEquals("Trig Point", ptSummary.getPts().get(0).getPtType().getPtTypeName());
+        assertEquals("Current Survey", ptSummary.getPts().get(0).getRef().getRefName());
+
+        // Now the traverse measurements for a specific traverse
+
+        ITraverseMeasurementSummary travMeasSummary = TraverseMeasurementSummaryAdapter.get(connDb, travTest.getID());
+        assertEquals(3, travMeasSummary.getSurvMeass().size());
+        ITraverseMeasurementSummary.ITraverseMeasurementSummary_SurvMeas measSummary = travMeasSummary.getSurvMeass().get(1);
+        assertEquals(90, measSummary.getBearing(), 0.01);
+        assertEquals(100.0, measSummary.getHorizontal(), 0.01);
+        assertEquals(20, measSummary.getVertical(), 0.01);
+        assertEquals("Trav 1", measSummary.getPtFrom().getPtFromName());
+        assertEquals("Trav 2", measSummary.getPtTo().getPtToName());
     }
 }

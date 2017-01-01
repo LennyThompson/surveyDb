@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
@@ -34,9 +34,9 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private Date m_dateCreated;
+            private LocalDateTime m_dateCreated;
             @SerializedName("updated")
-            private Date m_dateUpdated;
+            private LocalDateTime m_dateUpdated;
             @SerializedName("Path")
             private String m_strPath;
             @SerializedName("Description")
@@ -52,8 +52,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             SurveyImage()
             {
                 m_nID = 0;
-                m_dateCreated = new Date();
-                m_dateUpdated = new Date();
+                m_dateCreated = LocalDateTime.now();
+                m_dateUpdated = LocalDateTime.now();
                 m_strPath = "";
                 m_strDescription = "";
 
@@ -63,7 +63,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyImage(int nID, Date dateCreated, Date dateUpdated, String strPath, String strDescription, ISurvey typeSurvey, int nPointAtID)
+            SurveyImage(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strPath, String strDescription, ISurvey typeSurvey, int nPointAtID)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -79,11 +79,11 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 return  m_nID;
             }
-            public Date getCreated()
+            public LocalDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public Date getUpdated()
+            public LocalDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -245,8 +245,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     public static ISurveyImage createSurveyImage
     (
         int nID,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         String strPath,
         String strDescription,
         ISurvey typeSurvey,
@@ -256,9 +256,16 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         return new SurveyImage(nID, dateCreated, dateUpdated, strPath, strDescription, typeSurvey, nPointAtID);
     }
 
+    // This method enables the adapter type to be registered to deserialise json as ISurveyImage
+    // Code to deserialise is along these lines
+    //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+    //      gsonBuild.registerTypeAdapter(ISurveyImage.class, new SurveyImageAdapter());
+    //      Gson gsonInstance = gsonBuild.create();
+    //      ISurveyImage serialised = gsonInstance.fromJson(strJson, ISurveyImage.class);
+
     public ISurveyImage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(ISurvey.class, new SurveyAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
@@ -511,33 +518,37 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        PreparedStatement stmtSelect = null;
-        try
+        else if(((ISerialiseState) typeUpdate).isUpdated())
         {
-            stmtSelect = connDb.prepareStatement(getUpdateQuery());
-            stmtSelect.setString(1, typeUpdate.getPath());
-            stmtSelect.setString(2, typeUpdate.getDescription());
-            stmtSelect.setInt(3, typeUpdate.getSurvey().getID());
-            stmtSelect.setInt(4, ((SurveyImage) typeUpdate).m_nPointAtID);
-            stmtSelect.setInt(5, typeUpdate.getID());
-
-            stmtSelect.executeUpdate();
-            // This will cancel any pending undo items
-            ((ISerialiseState) typeUpdate).setSaved();
-            return updateFromDatabase(connDb, typeUpdate);
-        }
-        catch(SQLException exc)
-        {
-            // TODO: set up error handling
-        }
-        finally
-        {
-            if(stmtSelect != null)
+            PreparedStatement stmtSelect = null;
+            try
             {
-                stmtSelect.close();
+                stmtSelect = connDb.prepareStatement(getUpdateQuery());
+                stmtSelect.setString(1, typeUpdate.getPath());
+                stmtSelect.setString(2, typeUpdate.getDescription());
+                stmtSelect.setInt(3, typeUpdate.getSurvey().getID());
+                stmtSelect.setInt(4, ((SurveyImage) typeUpdate).m_nPointAtID);
+                stmtSelect.setInt(5, typeUpdate.getID());
+
+                stmtSelect.executeUpdate();
+                // This will cancel any pending undo items
+                ((ISerialiseState) typeUpdate).setSaved();
+                return updateFromDatabase(connDb, typeUpdate);
             }
+            catch(SQLException exc)
+            {
+                // TODO: set up error handling
+            }
+            finally
+            {
+                if(stmtSelect != null)
+                {
+                    stmtSelect.close();
+                }
+            }
+            return null;
         }
-        return null;
+        return typeUpdate;
     }
 
     public static ISurveyImage updateFromDatabase(Connection connDb, ISurveyImage typeUpdate) throws SQLException

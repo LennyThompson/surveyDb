@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Wed Dec 28 15:10:11 AEST 2016
+// Generated on Sun Jan 01 14:21:46 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -11,8 +11,10 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Arrays;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
@@ -20,13 +22,15 @@ import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
 import com.lenny.surveyingDB.interfaces.ISurveySummary;
+import com.lenny.surveyingDB.interfaces.ISurveySummary.*;
 
 
 public class SurveySummaryAdapter
 {
     // Class implements ISurveySummary but only accessible through the SurveySummaryAdapter
 
-        static class SurveySummary_Proj implements ISurveySummary_Proj
+        static class SurveySummary_Proj
+                implements ISurveySummary_Proj
         {
 
             @SerializedName("projID")
@@ -63,7 +67,8 @@ public class SurveySummaryAdapter
                 return strJson;
             }
         }
-        static class SurveySummary_Trav implements ISurveySummary_Trav
+        static class SurveySummary_Trav
+                implements ISurveySummary_Trav
         {
 
             @SerializedName("travID")
@@ -71,7 +76,7 @@ public class SurveySummaryAdapter
             @SerializedName("travName")
              String m_strTravName;
             @SerializedName("travUpdated")
-             Date m_dateTravUpdated;
+             LocalDateTime m_dateTravUpdated;
             @SerializedName("ptTravStart")
              String m_strPtTravStart;
             @SerializedName("ptTravEnd")
@@ -82,7 +87,7 @@ public class SurveySummaryAdapter
             (
                 int nTravID,
                 String strTravName,
-                Date dateTravUpdated,
+                LocalDateTime dateTravUpdated,
                 String strPtTravStart,
                 String strPtTravEnd
             )
@@ -102,7 +107,7 @@ public class SurveySummaryAdapter
             {
                 return  m_strTravName;
             }
-            public Date getTravUpdated()
+            public LocalDateTime getTravUpdated()
             {
                 return  m_dateTravUpdated;
             }
@@ -127,7 +132,8 @@ public class SurveySummaryAdapter
                 return strJson;
             }
         }
-        static class SurveySummary_PtSurv implements ISurveySummary_PtSurv
+        static class SurveySummary_PtSurv
+                implements ISurveySummary_PtSurv
         {
 
             @SerializedName("ptID")
@@ -200,9 +206,9 @@ public class SurveySummaryAdapter
         @SerializedName("Name")
          String m_strName;
         @SerializedName("created")
-         Date m_dateCreated;
+         LocalDateTime m_dateCreated;
         @SerializedName("updated")
-         Date m_dateUpdated;
+         LocalDateTime m_dateUpdated;
         @SerializedName("Description")
          String m_strDescription;
         @SerializedName("proj")
@@ -217,14 +223,14 @@ public class SurveySummaryAdapter
         (
             int nID,
             String strName,
-            Date dateCreated,
-            Date dateUpdated,
+            LocalDateTime dateCreated,
+            LocalDateTime dateUpdated,
             String strDescription,
             int nProjID,
             String strProjName,
             int nTravID,
             String strTravName,
-            Date dateTravUpdated,
+            LocalDateTime dateTravUpdated,
             String strPtTravStart,
             String strPtTravEnd,
             int nPtID,
@@ -240,35 +246,35 @@ public class SurveySummaryAdapter
             m_dateUpdated = dateUpdated;
             m_strDescription = strDescription;
 
-            m_typeProj = new ISurveySummary_Proj
+            m_typeProj = new SurveySummary_Proj
                             (
-                                int nProjID,
-                                String strProjName
+                                nProjID,
+                                strProjName
                             );
 
 
             m_listTravs = new ArrayList<>();
             m_listTravs.add(
-                        new 
+                        new SurveySummary_Trav
                         (
-                            int nTravID,
-                            String strTravName,
-                            Date dateTravUpdated,
-                            String strPtTravStart,
-                            String strPtTravEnd
+                            nTravID,
+                            strTravName,
+                            dateTravUpdated,
+                            strPtTravStart,
+                            strPtTravEnd
                         )
                     );
 
 
             m_listPtSurvs = new ArrayList<>();
             m_listPtSurvs.add(
-                        new 
+                        new SurveySummary_PtSurv
                         (
-                            int nPtID,
-                            String strPtName,
-                            double dPtX,
-                            double dPtY,
-                            double dPtZ
+                            nPtID,
+                            strPtName,
+                            dPtX,
+                            dPtY,
+                            dPtZ
                         )
                     );
 
@@ -295,11 +301,11 @@ public class SurveySummaryAdapter
         {
             return  m_strName;
         }
-        public Date getCreated()
+        public LocalDateTime getCreated()
         {
             return  m_dateCreated;
         }
-        public Date getUpdated()
+        public LocalDateTime getUpdated()
         {
             return  m_dateUpdated;
         }
@@ -323,29 +329,27 @@ public class SurveySummaryAdapter
 
         // Used by stream collector to aggregate like instances together
 
-        public SurveySummary add(SurveySummary newType)
+        public SurveySummary add(ISurveySummary newType)
         {
             if
             (
-                newType.m_listTravs.size() > 0
+                newType.getTravs().size() > 0
                 &&
                 !m_listTravs.stream()
-                    .filter(member -> member.m_nTravID == newType.m_listTravs.get(0).m_nTravID)
-                    .isPresent()
+                    .anyMatch(member -> member.getTravID() == newType.getTravs().get(0).getTravID())
             )
             {
-                m_listTravs.add(newType.m_listTravs.get(0));
+                m_listTravs.add(newType.getTravs().get(0));
             }
             if
             (
-                newType.m_listPtSurvs.size() > 0
+                newType.getPtSurvs().size() > 0
                 &&
                 !m_listPtSurvs.stream()
-                    .filter(member -> member.m_nPtID == newType.m_listPtSurvs.get(0).m_nPtID)
-                    .isPresent()
+                    .anyMatch(member -> member.getPtID() == newType.getPtSurvs().get(0).getPtID())
             )
             {
-                m_listPtSurvs.add(newType.m_listPtSurvs.get(0));
+                m_listPtSurvs.add(newType.getPtSurvs().get(0));
             }
             return this;
         }
@@ -399,14 +403,14 @@ public class SurveySummaryAdapter
     (
         int nID,
         String strName,
-        Date dateCreated,
-        Date dateUpdated,
+        LocalDateTime dateCreated,
+        LocalDateTime dateUpdated,
         String strDescription,
         int nProjID,
         String strProjName,
         int nTravID,
         String strTravName,
-        Date dateTravUpdated,
+        LocalDateTime dateTravUpdated,
         String strPtTravStart,
         String strPtTravEnd,
         int nPtID,
@@ -451,7 +455,7 @@ public class SurveySummaryAdapter
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            List<SurveySummary> listRawData = new ArrayList<>();
+            List<ISurveySummary> listRawData = new ArrayList<>();
             while(results.next())
             {
                 listRawData.add
@@ -478,16 +482,16 @@ public class SurveySummaryAdapter
                         )
                     );
             }
-            Map<Integer, SurveySummary> mapData = listRawData.stream()
+            Map<Integer, ISurveySummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new SurveySummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new SurveySummary((SurveySummary) view),
+                            (viewInto, view) -> ((SurveySummary) viewInto).add(view)
                         )
                     );
 
-            typeReturn = mapData.values().get(0);
+            typeReturn = mapData.get(listRawData.get(0).getID());
         }
         catch(SQLException exc)
         {
@@ -516,6 +520,7 @@ public class SurveySummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
+            List<ISurveySummary> listRawData = new ArrayList<ISurveySummary>();
             while(results.next())
             {
                 listRawData.add
@@ -542,16 +547,15 @@ public class SurveySummaryAdapter
                         )
                     );
             }
-            Map<Integer, SurveySummary> mapData = listRawData.stream()
+            Map<Integer, ISurveySummary> mapData = listRawData.stream()
                     .collect(
                         Collectors.toMap(
-                            view -> view.m_,
-                            view -> new SurveySummary(view),
-                            (viewInto, view) -> viewInto.add(view)
+                            view -> view.getID(),
+                            view -> new SurveySummary((SurveySummary) view),
+                            (viewInto, view) -> ((SurveySummary) viewInto).add(view)
                         )
                     );
             listReturn = mapData.values().stream()
-                    .map(value -> (ISurveySummary) value)
                     .collect(Collectors.toList());
         }
         catch(SQLException exc)
