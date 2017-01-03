@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 01 15:21:33 AEST 2017
+// Generated on Tue Jan 03 14:03:01 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -85,6 +85,7 @@ public class TraverseMeasurementSummaryAdapter
                         return  m_dPtFromZ;
                     }
 
+                    @Override
                     public String toJson()
                     {
                         String strJson = "{";
@@ -150,6 +151,7 @@ public class TraverseMeasurementSummaryAdapter
                         return  m_dPtToZ;
                     }
 
+                    @Override
                     public String toJson()
                     {
                         String strJson = "{";
@@ -246,6 +248,7 @@ public class TraverseMeasurementSummaryAdapter
                 return  m_typePtTo;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -253,8 +256,8 @@ public class TraverseMeasurementSummaryAdapter
                 strJson += "\"Horizontal\":" + m_dHorizontal + ",";
                 strJson += "\"Vertical\":" + m_dVertical + ",";
                 strJson += "\"Bearing\":" + m_dBearing + ",";
-                strJson += "\"ptFrom\":" + ((ISerialiseState) m_typePtFrom).toJson() + ",";
-                strJson += "\"ptTo\":" + ((ISerialiseState) m_typePtTo).toJson();
+                strJson += "\"ptFrom\":" + m_typePtFrom.toJson() + ",";
+                strJson += "\"ptTo\":" + m_typePtTo.toJson();
                 strJson += "}";
                 return strJson;
             }
@@ -368,7 +371,7 @@ public class TraverseMeasurementSummaryAdapter
             String strJson = "{";
             strJson += "\"ID\":" + m_nID + ",";
             strJson += "\"SurveyID\":" + m_nSurveyID + ",";
-            strJson += "\"survMeas\":[" + m_listSurvMeass.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "\"survMeas\":[" + m_listSurvMeass.stream().map(item -> item.toJson()).collect(Collectors.joining(",")) + "]";
             strJson += "}";
             return strJson;
         }

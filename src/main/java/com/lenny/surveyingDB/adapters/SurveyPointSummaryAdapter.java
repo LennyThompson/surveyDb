@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 01 15:21:33 AEST 2017
+// Generated on Tue Jan 03 14:03:01 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -61,6 +61,7 @@ public class SurveyPointSummaryAdapter
                         return  m_strPtTypeAbbreviation;
                     }
 
+                    @Override
                     public String toJson()
                     {
                         String strJson = "{";
@@ -99,6 +100,7 @@ public class SurveyPointSummaryAdapter
                         return  m_strRefDescription;
                     }
 
+                    @Override
                     public String toJson()
                     {
                         String strJson = "{";
@@ -196,6 +198,7 @@ public class SurveyPointSummaryAdapter
                 return  m_typeRef;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -205,8 +208,8 @@ public class SurveyPointSummaryAdapter
                 strJson += "\"X\":" + m_dX + ",";
                 strJson += "\"Y\":" + m_dY + ",";
                 strJson += "\"Z\":" + m_dZ + ",";
-                strJson += "\"ptType\":" + ((ISerialiseState) m_typePtType).toJson() + ",";
-                strJson += "\"ref\":" + ((ISerialiseState) m_typeRef).toJson();
+                strJson += "\"ptType\":" + m_typePtType.toJson() + ",";
+                strJson += "\"ref\":" + m_typeRef.toJson();
                 strJson += "}";
                 return strJson;
             }
@@ -302,7 +305,7 @@ public class SurveyPointSummaryAdapter
         {
             String strJson = "{";
             strJson += "\"ID\":" + m_nID + ",";
-            strJson += "\"pt\":[" + m_listPts.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "\"pt\":[" + m_listPts.stream().map(item -> item.toJson()).collect(Collectors.joining(",")) + "]";
             strJson += "}";
             return strJson;
         }

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 01 10:59:55 AEST 2017
+// Generated on Tue Jan 03 14:03:01 AEST 2017
 
 package com.lenny.surveyingDB.interfaces;
 
@@ -17,6 +17,7 @@ public interface ISurveySummary extends ISerialiseState
         int getProjID();
         String getProjName();
 
+        String toJson();
     }
     public interface ISurveySummary_Trav
     {
@@ -26,6 +27,7 @@ public interface ISurveySummary extends ISerialiseState
         String getPtTravStart();
         String getPtTravEnd();
 
+        String toJson();
     }
     public interface ISurveySummary_PtSurv
     {
@@ -35,6 +37,7 @@ public interface ISurveySummary extends ISerialiseState
         double getPtY();
         double getPtZ();
 
+        String toJson();
     }
 
     int getID();

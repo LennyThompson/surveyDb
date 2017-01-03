@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 01 15:21:33 AEST 2017
+// Generated on Tue Jan 03 14:03:01 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -82,6 +82,7 @@ public class TraverseSummaryAdapter
                 return  m_dPtStartZ;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -147,6 +148,7 @@ public class TraverseSummaryAdapter
                 return  m_dPtEndZ;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -289,8 +291,8 @@ public class TraverseSummaryAdapter
             strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"Updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-            strJson += "\"ptStart\":" + ((ISerialiseState) m_typePtStart).toJson() + ",";
-            strJson += "\"ptEnd\":" + ((ISerialiseState) m_typePtEnd).toJson();
+            strJson += "\"ptStart\":" + m_typePtStart.toJson() + ",";
+            strJson += "\"ptEnd\":" + m_typePtEnd.toJson();
             strJson += "}";
             return strJson;
         }

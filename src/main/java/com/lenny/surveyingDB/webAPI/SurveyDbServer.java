@@ -76,7 +76,7 @@ public class SurveyDbServer
         {
             ConnectionManager.getInstance().initConnection(m_strDbName);
         }
-        m_httpServer.createContext("/api", new SurveysHttpHandler());
+//        m_httpServer.createContext("/api", new SurveysHttpHandler());
         SurveyPointTypesHttpHandler.registerHandler(m_httpServer, "api");
         SurveyReferencesHttpHandler.registerHandler(m_httpServer, "api");
         InstrumentManufacturersHttpHandler.registerHandler(m_httpServer, "api");
@@ -86,10 +86,10 @@ public class SurveyDbServer
         SurveysHttpHandler.registerHandler(m_httpServer, "api");
         SurveyMeasurementsHttpHandler.registerHandler(m_httpServer, "api");
         SurveyImagesHttpHandler.registerHandler(m_httpServer, "api");
+        TraverseSummarysHttpHandler.registerHandler(m_httpServer, "api");
         TraversesHttpHandler.registerHandler(m_httpServer, "api");
         SurveyAdjustmentsHttpHandler.registerHandler(m_httpServer, "api");
         TraverseClosuresHttpHandler.registerHandler(m_httpServer, "api");
-        TraverseSummarysHttpHandler.registerHandler(m_httpServer, "api");
         TraverseMeasurementSummarysHttpHandler.registerHandler(m_httpServer, "api");
         SurveyPointSummarysHttpHandler.registerHandler(m_httpServer, "api");
         SurveySummarysHttpHandler.registerHandler(m_httpServer, "api");

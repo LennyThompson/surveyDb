@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 01 15:21:33 AEST 2017
+// Generated on Tue Jan 03 14:03:01 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -58,6 +58,7 @@ public class SurveySummaryAdapter
                 return  m_strProjName;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -120,6 +121,7 @@ public class SurveySummaryAdapter
                 return  m_strPtTravEnd;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -185,6 +187,7 @@ public class SurveySummaryAdapter
                 return  m_dPtZ;
             }
 
+            @Override
             public String toJson()
             {
                 String strJson = "{";
@@ -369,9 +372,9 @@ public class SurveySummaryAdapter
             strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
             strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-            strJson += "\"proj\":" + ((ISerialiseState) m_typeProj).toJson() + ",";
-            strJson += "\"trav\":[" + m_listTravs.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-            strJson += "\"ptSurv\":[" + m_listPtSurvs.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "\"proj\":" + m_typeProj.toJson() + ",";
+            strJson += "\"trav\":[" + m_listTravs.stream().map(item -> item.toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"ptSurv\":[" + m_listPtSurvs.stream().map(item -> item.toJson()).collect(Collectors.joining(",")) + "]";
             strJson += "}";
             return strJson;
         }
