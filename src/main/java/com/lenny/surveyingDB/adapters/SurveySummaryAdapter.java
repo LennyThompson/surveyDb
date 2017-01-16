@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jan 03 14:03:01 AEST 2017
+// Generated on Sat Jan 14 18:36:32 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -514,6 +514,77 @@ public class SurveySummaryAdapter
         return typeReturn;
     }
 
+    public static List<ISurveySummary> getForPathQuery(Connection connDb, int nTravID) throws SQLException
+    {
+        List<ISurveySummary> listReturn = new ArrayList<ISurveySummary>();
+        PreparedStatement stmtSelect = null;
+        ResultSet results = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nTravID));
+            int nIndex = 1;
+            if(nTravID > 0)
+            {
+                stmtSelect.setInt(nIndex++, nTravID);
+            }
+
+            results = stmtSelect.executeQuery();
+            List<ISurveySummary> listRawData = new ArrayList<ISurveySummary>();
+            while(results.next())
+            {
+                listRawData.add
+                    (
+                        createSurveySummary
+                        (
+                            results.getInt(FIELD_ID),
+                            results.getString(FIELD_NAME),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                            results.getString(FIELD_DESCRIPTION),
+                            results.getInt(FIELD_PROJID),
+                            results.getString(FIELD_PROJNAME),
+                            results.getInt(FIELD_TRAVID),
+                            results.getString(FIELD_TRAVNAME),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
+                            results.getString(FIELD_PTTRAVSTART),
+                            results.getString(FIELD_PTTRAVEND),
+                            results.getInt(FIELD_PTID),
+                            results.getString(FIELD_PTNAME),
+                            results.getDouble(FIELD_PTX),
+                            results.getDouble(FIELD_PTY),
+                            results.getDouble(FIELD_PTZ)
+                        )
+                    );
+            }
+            Map<Integer, ISurveySummary> mapData = listRawData.stream()
+                    .collect(
+                        Collectors.toMap(
+                            view -> view.getID(),
+                            view -> new SurveySummary((SurveySummary) view),
+                            (viewInto, view) -> ((SurveySummary) viewInto).add(view)
+                        )
+                    );
+            listReturn = mapData.values().stream()
+                    .collect(Collectors.toList());
+        }
+        catch(SQLException exc)
+        {
+            // TODO: set up error handling
+        }
+        finally
+        {
+            if(results != null)
+            {
+                results.close();
+            }
+            if(stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return listReturn;
+    }
+
     public static List<ISurveySummary> getAll(Connection connDb) throws SQLException
     {
         List<ISurveySummary> listReturn = new ArrayList<ISurveySummary>();
@@ -604,6 +675,49 @@ public class SurveySummaryAdapter
         if(nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        return strSelect;
+    }
+
+    private static String getSelectByPathKeyQuery(int nTravID)
+    {
+        String strSelect = "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_NAME + ",  " +
+            FIELD_CREATED + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_DESCRIPTION + ",  " +
+            FIELD_PROJID + ",  " +
+            FIELD_PROJNAME + ",  " +
+            FIELD_TRAVID + ",  " +
+            FIELD_TRAVNAME + ",  " +
+            FIELD_TRAVUPDATED + ",  " +
+            FIELD_PTTRAVSTART + ",  " +
+            FIELD_PTTRAVEND + ",  " +
+            FIELD_PTID + ",  " +
+            FIELD_PTNAME + ",  " +
+            FIELD_PTX + ",  " +
+            FIELD_PTY + ",  " +
+            FIELD_PTZ
+            + " FROM " +
+            VIEW_NAME;
+        String strWhere = "";
+        if(nTravID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE";
+            }
+            else
+            {
+                strWhere += " AND";
+            }
+            strWhere += " + " + FIELD_TRAVID + " = ?";
+        }
+
+        if(!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
         }
         return strSelect;
     }

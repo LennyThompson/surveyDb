@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jan 03 14:03:01 AEST 2017
+// Generated on Sat Jan 14 18:36:32 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 

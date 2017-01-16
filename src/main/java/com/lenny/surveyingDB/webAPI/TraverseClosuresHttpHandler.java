@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Dec 30 18:01:50 AEST 2016
+// Generated on Sat Jan 14 18:36:32 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -83,6 +83,8 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
                 httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
                 httpExchange.getResponseBody().write(strJsonResponse.getBytes());
             }
+            httpExchange.getResponseBody().close();
+            httpExchange.close();
         }
         catch(SQLException exc)
         {

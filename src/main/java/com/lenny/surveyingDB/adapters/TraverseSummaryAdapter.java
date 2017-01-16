@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jan 03 14:03:01 AEST 2017
+// Generated on Sat Jan 14 18:36:32 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -424,6 +424,79 @@ public class TraverseSummaryAdapter
         return typeReturn;
     }
 
+    public static List<ITraverseSummary> getForPathQuery(Connection connDb, int nID, int nSurveyID) throws SQLException
+    {
+        List<ITraverseSummary> listReturn = new ArrayList<ITraverseSummary>();
+        PreparedStatement stmtSelect = null;
+        ResultSet results = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nID, nSurveyID));
+            int nIndex = 1;
+            if(nID > 0)
+            {
+                stmtSelect.setInt(nIndex++, nID);
+            }
+            if(nSurveyID > 0)
+            {
+                stmtSelect.setInt(nIndex++, nSurveyID);
+            }
+
+            results = stmtSelect.executeQuery();
+            List<ITraverseSummary> listRawData = new ArrayList<ITraverseSummary>();
+            while(results.next())
+            {
+                listRawData.add
+                    (
+                        createTraverseSummary
+                        (
+                            results.getInt(FIELD_ID),
+                            results.getInt(FIELD_SURVEYID),
+                            results.getString(FIELD_NAME),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                            results.getString(FIELD_DESCRIPTION),
+                            results.getInt(FIELD_PTSTARTID),
+                            results.getString(FIELD_PTSTARTNAME),
+                            results.getDouble(FIELD_PTSTARTX),
+                            results.getDouble(FIELD_PTSTARTY),
+                            results.getDouble(FIELD_PTSTARTZ),
+                            results.getInt(FIELD_PTENDID),
+                            results.getString(FIELD_PTENDNAME),
+                            results.getDouble(FIELD_PTENDX),
+                            results.getDouble(FIELD_PTENDY),
+                            results.getDouble(FIELD_PTENDZ)
+                        )
+                    );
+            }
+            Map<Integer, ITraverseSummary> mapData = listRawData.stream()
+                    .collect(
+                        Collectors.toMap(
+                            view -> view.getID(),
+                            view -> new TraverseSummary((TraverseSummary) view),
+                            (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
+                        )
+                    );
+            listReturn = mapData.values().stream()
+                    .collect(Collectors.toList());
+        }
+        catch(SQLException exc)
+        {
+            // TODO: set up error handling
+        }
+        finally
+        {
+            if(results != null)
+            {
+                results.close();
+            }
+            if(stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return listReturn;
+    }
+
     public static List<ITraverseSummary> getAll(Connection connDb) throws SQLException
     {
         List<ITraverseSummary> listReturn = new ArrayList<ITraverseSummary>();
@@ -510,6 +583,59 @@ public class TraverseSummaryAdapter
         if(nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        return strSelect;
+    }
+
+    private static String getSelectByPathKeyQuery(int nID, int nSurveyID)
+    {
+        String strSelect = "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_SURVEYID + ",  " +
+            FIELD_NAME + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_DESCRIPTION + ",  " +
+            FIELD_PTSTARTID + ",  " +
+            FIELD_PTSTARTNAME + ",  " +
+            FIELD_PTSTARTX + ",  " +
+            FIELD_PTSTARTY + ",  " +
+            FIELD_PTSTARTZ + ",  " +
+            FIELD_PTENDID + ",  " +
+            FIELD_PTENDNAME + ",  " +
+            FIELD_PTENDX + ",  " +
+            FIELD_PTENDY + ",  " +
+            FIELD_PTENDZ
+            + " FROM " +
+            VIEW_NAME;
+        String strWhere = "";
+        if(nID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE";
+            }
+            else
+            {
+                strWhere += " AND";
+            }
+            strWhere += " + " + FIELD_ID + " = ?";
+        }
+        if(nSurveyID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE";
+            }
+            else
+            {
+                strWhere += " AND";
+            }
+            strWhere += " + " + FIELD_SURVEYID + " = ?";
+        }
+
+        if(!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
         }
         return strSelect;
     }
