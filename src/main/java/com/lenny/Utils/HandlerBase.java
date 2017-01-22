@@ -88,8 +88,8 @@ public class HandlerBase
     protected void updateHeaders(HttpExchange httpExchange)
     {
         httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
-//        httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_HEADERS, "x-prototype-version,x-requested-with");
-        httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT");
+        httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_HEADERS, "Origin, Content-Type, X-Auth-Token");
+        httpExchange.getResponseHeaders().add(ACCESS_CONTROL_ALLOW_METHODS, "GET,POST,PUT,OPTIONS");
         httpExchange.getResponseHeaders().add(CONTENT_TYPE, APPLICATION_JSON);
     }
 

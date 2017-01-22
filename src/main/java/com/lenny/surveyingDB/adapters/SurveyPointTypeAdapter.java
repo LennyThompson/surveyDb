@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -224,7 +224,12 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, SurveyPointTypeAdapter.SurveyPointType.class);
+        SurveyPointTypeAdapter.SurveyPointType typeSurveyPointType = gsonInstance.fromJson(json, SurveyPointTypeAdapter.SurveyPointType.class);
+        if(typeSurveyPointType.m_nID > 0)
+        {
+            typeSurveyPointType.setSaved();
+        }
+        return typeSurveyPointType;
     }
 
     public static ISurveyPointType get(Connection connDb, int nIdGet) throws SQLException
@@ -494,6 +499,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
         }
         return null;
     }
+
 
     private static ISurveyPointType createSurveyPointTypeFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

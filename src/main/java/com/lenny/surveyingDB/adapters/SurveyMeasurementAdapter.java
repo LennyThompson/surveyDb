@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -345,7 +345,12 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, SurveyMeasurementAdapter.SurveyMeasurement.class);
+        SurveyMeasurementAdapter.SurveyMeasurement typeSurveyMeasurement = gsonInstance.fromJson(json, SurveyMeasurementAdapter.SurveyMeasurement.class);
+        if(typeSurveyMeasurement.m_nID > 0)
+        {
+            typeSurveyMeasurement.setSaved();
+        }
+        return typeSurveyMeasurement;
     }
 
     public static ISurveyMeasurement get(Connection connDb, int nIdGet) throws SQLException
@@ -572,6 +577,11 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     } 
     public static ISurveyMeasurement addForTraverse(Connection connDb, ISurveyMeasurement typeAdd, ITraverse typeParent) throws SQLException
     {
+        return SurveyMeasurementAdapter.addForTraverse(connDb, typeAdd, typeParent.getID());
+    }
+
+    public static ISurveyMeasurement addForTraverse(Connection connDb, ISurveyMeasurement typeAdd, int nID) throws SQLException
+    {
         ISurveyMeasurement typeReturn = typeAdd;
         if(((ISerialiseState) typeAdd).isNew())
         {
@@ -582,13 +592,14 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         try
         {
             stmtLink = connDb.prepareStatement(getTraverseInsertLinkQuery());
-            stmtLink.setInt(1, typeParent.getID());
+            stmtLink.setInt(1, nID);
             stmtLink.setInt(2, typeReturn.getID());
             stmtLink.executeUpdate();
         }
         catch(SQLException exc)
         {
             // TODO: set up error handling
+            typeReturn = null;
         }
         finally
         {
@@ -737,6 +748,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         }
         return null;
     }
+
 
     private static ISurveyMeasurement createSurveyMeasurementFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

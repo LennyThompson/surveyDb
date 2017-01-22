@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -261,7 +261,12 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, SurveyReferenceAdapter.SurveyReference.class);
+        SurveyReferenceAdapter.SurveyReference typeSurveyReference = gsonInstance.fromJson(json, SurveyReferenceAdapter.SurveyReference.class);
+        if(typeSurveyReference.m_nID > 0)
+        {
+            typeSurveyReference.setSaved();
+        }
+        return typeSurveyReference;
     }
 
     public static ISurveyReference get(Connection connDb, int nIdGet) throws SQLException
@@ -533,6 +538,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         }
         return null;
     }
+
 
     private static ISurveyReference createSurveyReferenceFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

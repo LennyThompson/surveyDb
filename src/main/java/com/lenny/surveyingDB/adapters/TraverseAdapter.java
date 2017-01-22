@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -392,7 +392,12 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, TraverseAdapter.Traverse.class);
+        TraverseAdapter.Traverse typeTraverse = gsonInstance.fromJson(json, TraverseAdapter.Traverse.class);
+        if(typeTraverse.m_nID > 0)
+        {
+            typeTraverse.setSaved();
+        }
+        return typeTraverse;
     }
 
     public static ITraverse get(Connection connDb, int nIdGet) throws SQLException
@@ -787,6 +792,15 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         }
         return null;
     }
+
+
+
+    static boolean addTraverseForSurveyMeasurement(Connection connDb, int nID, ISurveyMeasurement typeUpdate) throws SQLException
+    {
+        return SurveyMeasurementAdapter.addForTraverse(connDb, typeUpdate, nID) != null;
+    }
+
+
 
     private static ITraverse createTraverseFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

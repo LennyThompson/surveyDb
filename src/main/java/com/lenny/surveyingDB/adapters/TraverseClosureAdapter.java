@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -373,7 +373,12 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, TraverseClosureAdapter.TraverseClosure.class);
+        TraverseClosureAdapter.TraverseClosure typeTraverseClosure = gsonInstance.fromJson(json, TraverseClosureAdapter.TraverseClosure.class);
+        if(typeTraverseClosure.m_nID > 0)
+        {
+            typeTraverseClosure.setSaved();
+        }
+        return typeTraverseClosure;
     }
 
     public static ITraverseClosure get(Connection connDb, int nIdGet) throws SQLException
@@ -683,6 +688,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         }
         return null;
     }
+
 
     private static ITraverseClosure createTraverseClosureFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

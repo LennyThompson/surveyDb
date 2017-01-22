@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -250,7 +250,12 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, ProjectionAdapter.Projection.class);
+        ProjectionAdapter.Projection typeProjection = gsonInstance.fromJson(json, ProjectionAdapter.Projection.class);
+        if(typeProjection.m_nID > 0)
+        {
+            typeProjection.setSaved();
+        }
+        return typeProjection;
     }
 
     public static IProjection get(Connection connDb, int nIdGet) throws SQLException
@@ -520,6 +525,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         }
         return null;
     }
+
 
     private static IProjection createProjectionFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

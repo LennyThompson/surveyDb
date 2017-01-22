@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -233,7 +233,12 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         gsonBuilder.registerTypeAdapter(IInstrumentManufacturer.class, new InstrumentManufacturerAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, InstrumentAdapter.Instrument.class);
+        InstrumentAdapter.Instrument typeInstrument = gsonInstance.fromJson(json, InstrumentAdapter.Instrument.class);
+        if(typeInstrument.m_nID > 0)
+        {
+            typeInstrument.setSaved();
+        }
+        return typeInstrument;
     }
 
     public static IInstrument get(Connection connDb, int nIdGet) throws SQLException
@@ -428,6 +433,11 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     } 
     public static IInstrument addForSurvey(Connection connDb, IInstrument typeAdd, ISurvey typeParent) throws SQLException
     {
+        return InstrumentAdapter.addForSurvey(connDb, typeAdd, typeParent.getID());
+    }
+
+    public static IInstrument addForSurvey(Connection connDb, IInstrument typeAdd, int nID) throws SQLException
+    {
         IInstrument typeReturn = typeAdd;
         if(((ISerialiseState) typeAdd).isNew())
         {
@@ -438,13 +448,14 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         try
         {
             stmtLink = connDb.prepareStatement(getSurveyInsertLinkQuery());
-            stmtLink.setInt(1, typeParent.getID());
+            stmtLink.setInt(1, nID);
             stmtLink.setInt(2, typeReturn.getID());
             stmtLink.executeUpdate();
         }
         catch(SQLException exc)
         {
             // TODO: set up error handling
+            typeReturn = null;
         }
         finally
         {
@@ -579,6 +590,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         }
         return null;
     }
+
 
     private static IInstrument createInstrumentFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

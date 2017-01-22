@@ -1,22 +1,23 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
+import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
+import com.lenny.Utils.LocalDateTimeSerialiser;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.InputStreamReader;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.sql.Connection;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
@@ -44,6 +45,9 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
                 break;
             case "PUT":
                 updateSurveyImagesRequest(httpExchange);
+                break;
+            case "OPTIONS":
+                replySurveyImagesOptions(httpExchange);
                 break;
             case "DELETE":
             case "":
@@ -89,6 +93,24 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
         }
         catch(SQLException exc)
         {
+            System.out.println(getTimestamp() + "SurveyImage request: GET SQL exception: " + exc.getMessage());
+        }
+        catch (IOException exc)
+        {
+            System.out.println(getTimestamp() + "SurveyImage request: GET IO exception: " + exc.getMessage());
+        }
+        finally
+        {
+        }
+    }
+
+    private void replySurveyImagesOptions(HttpExchange httpExchange)
+    {
+        try
+        {
+            updateHeaders(httpExchange);
+            httpExchange.sendResponseHeaders(HTTP_200, 0);
+            httpExchange.close();
         }
         catch (IOException exc)
         {
@@ -111,16 +133,22 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
             Gson gsonInstance = gsonBuild.create();
             ISurveyImage typeSerialised = gsonInstance.fromJson(strJson, ISurveyImage.class);
             typeSerialised = SurveyImageAdapter.add(ConnectionManager.getInstance().getConnection(), typeSerialised);
-            String strJsonResponse = "{\"ID\":" + typeSerialised.getID() + "}";
+            // Respond with the newly added SurveyImage
+            String strJsonResponse = ((ISerialiseState) typeSerialised).toJson();
+            System.out.println(getTimestamp() + "SurveyImage request: POST responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             super.updateHeaders(httpExchange);
             httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
             httpExchange.getResponseBody().write(strJsonResponse.getBytes());
+            httpExchange.getResponseBody().close();
+            httpExchange.close();
         }
         catch(SQLException exc)
         {
+            System.out.println(getTimestamp() + "SurveyImage request: POST SQL exception: " + exc.getMessage());
         }
         catch (IOException exc)
         {
+            System.out.println(getTimestamp() + "SurveyImage request: POST IO exception: " + exc.getMessage());
         }
         finally
         {
@@ -151,5 +179,7 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
     {
         String strPath = (!strApiRoot.isEmpty() ? "/" + strApiRoot : "") + "/SurveyImages";
         httpServer.createContext(strPath, new SurveyImagesHttpHandler());
+
     }
+
 }

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -187,7 +187,12 @@ public class InstrumentManufacturerAdapter implements JsonDeserializer<IInstrume
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, InstrumentManufacturerAdapter.InstrumentManufacturer.class);
+        InstrumentManufacturerAdapter.InstrumentManufacturer typeInstrumentManufacturer = gsonInstance.fromJson(json, InstrumentManufacturerAdapter.InstrumentManufacturer.class);
+        if(typeInstrumentManufacturer.m_nID > 0)
+        {
+            typeInstrumentManufacturer.setSaved();
+        }
+        return typeInstrumentManufacturer;
     }
 
     public static IInstrumentManufacturer get(Connection connDb, int nIdGet) throws SQLException
@@ -455,6 +460,7 @@ public class InstrumentManufacturerAdapter implements JsonDeserializer<IInstrume
         }
         return null;
     }
+
 
     private static IInstrumentManufacturer createInstrumentManufacturerFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

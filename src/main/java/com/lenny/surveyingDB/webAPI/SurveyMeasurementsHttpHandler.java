@@ -1,22 +1,23 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
+import com.google.gson.*;
+import com.google.gson.annotations.SerializedName;
+import com.lenny.Utils.LocalDateTimeSerialiser;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.InputStreamReader;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import java.sql.Connection;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
@@ -45,6 +46,9 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
                 break;
             case "PUT":
                 updateSurveyMeasurementsRequest(httpExchange);
+                break;
+            case "OPTIONS":
+                replySurveyMeasurementsOptions(httpExchange);
                 break;
             case "DELETE":
             case "":
@@ -90,6 +94,24 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
         }
         catch(SQLException exc)
         {
+            System.out.println(getTimestamp() + "SurveyMeasurement request: GET SQL exception: " + exc.getMessage());
+        }
+        catch (IOException exc)
+        {
+            System.out.println(getTimestamp() + "SurveyMeasurement request: GET IO exception: " + exc.getMessage());
+        }
+        finally
+        {
+        }
+    }
+
+    private void replySurveyMeasurementsOptions(HttpExchange httpExchange)
+    {
+        try
+        {
+            updateHeaders(httpExchange);
+            httpExchange.sendResponseHeaders(HTTP_200, 0);
+            httpExchange.close();
         }
         catch (IOException exc)
         {
@@ -112,16 +134,22 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
             Gson gsonInstance = gsonBuild.create();
             ISurveyMeasurement typeSerialised = gsonInstance.fromJson(strJson, ISurveyMeasurement.class);
             typeSerialised = SurveyMeasurementAdapter.add(ConnectionManager.getInstance().getConnection(), typeSerialised);
-            String strJsonResponse = "{\"ID\":" + typeSerialised.getID() + "}";
+            // Respond with the newly added SurveyMeasurement
+            String strJsonResponse = ((ISerialiseState) typeSerialised).toJson();
+            System.out.println(getTimestamp() + "SurveyMeasurement request: POST responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             super.updateHeaders(httpExchange);
             httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
             httpExchange.getResponseBody().write(strJsonResponse.getBytes());
+            httpExchange.getResponseBody().close();
+            httpExchange.close();
         }
         catch(SQLException exc)
         {
+            System.out.println(getTimestamp() + "SurveyMeasurement request: POST SQL exception: " + exc.getMessage());
         }
         catch (IOException exc)
         {
+            System.out.println(getTimestamp() + "SurveyMeasurement request: POST IO exception: " + exc.getMessage());
         }
         finally
         {
@@ -152,5 +180,150 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
     {
         String strPath = (!strApiRoot.isEmpty() ? "/" + strApiRoot : "") + "/SurveyMeasurements";
         httpServer.createContext(strPath, new SurveyMeasurementsHttpHandler());
+
+        SurveyMeasurementForTraverseHttp.registerHandler(httpServer, strApiRoot);
+
     }
+
+    // Class SurveyMeasurementForTraverseHttp provides http handler for
+    // saving a SurveyMeasurement for a parent Traverse
+
+    static class SurveyMeasurementForTraverseHttp
+         extends HandlerBase implements HttpHandler
+    {
+        @Override
+        public void handle(HttpExchange httpExchange) throws IOException
+        {
+            switch(httpExchange.getRequestMethod().toUpperCase())
+            {
+                case "POST":
+                    addSurveyMeasurementForTraverseRequest(httpExchange);
+                    break;
+                case "OPTIONS":
+                    // With a POST request weneed to handle OPTIONS for some browsers
+
+                    replySurveyMeasurementForTraverseOptions(httpExchange);
+                    break;
+                case "PUT":
+                case "DELETE":
+                    // TODO - add delete api for indirect children
+                case "GET":
+                case "":
+                default:
+                    handleIncorrectRequest(httpExchange, HTTP_405, HTTP_ILLEGAL_METHOD, httpExchange.getRequestMethod());
+                    break;
+            }
+
+        }
+
+        private void replySurveyMeasurementForTraverseOptions(HttpExchange httpExchange)
+        {
+            try
+            {
+                updateHeaders(httpExchange);
+                httpExchange.sendResponseHeaders(HTTP_200, 0);
+                httpExchange.close();
+            }
+            catch (IOException exc)
+            {
+            }
+            finally
+            {
+            }
+        }
+
+        interface ISurveyMeasurementForTraverse
+        {
+            int getID();
+            void setID(int nKey);
+
+            ISurveyMeasurement getSurveyMeasurement();
+            void setSurveyMeasurement(ISurveyMeasurement typeSerial);
+        }
+
+        class AddSurveyMeasurementForTraverseAdapter
+            implements ISurveyMeasurementForTraverse
+        {
+            @SerializedName("ID")
+            int m_nID;
+            @SerializedName("SurveyMeasurement")
+            ISurveyMeasurement m_typeSurveyMeasurement;
+
+            public int getID()
+            {
+                return m_nID;
+            }
+            public void setID(int nKey)
+            {
+                m_nID = nKey;
+            }
+
+            public ISurveyMeasurement getSurveyMeasurement()
+            {
+                return m_typeSurveyMeasurement;
+            }
+            public void setSurveyMeasurement(ISurveyMeasurement typeSerial)
+            {
+                m_typeSurveyMeasurement = typeSerial;
+            }
+        }
+
+        class AddSurveyMeasurementForTraverseSerialiser
+            implements JsonDeserializer<ISurveyMeasurementForTraverse>
+        {
+            public ISurveyMeasurementForTraverse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+             {
+                 GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
+                 gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
+                 Gson gsonInstance = gsonBuilder.create();
+                 return gsonInstance.fromJson(json, AddSurveyMeasurementForTraverseAdapter.class);
+             }
+        }
+
+        private void addSurveyMeasurementForTraverseRequest(HttpExchange httpExchange)
+        {
+            try
+            {
+                InputStreamReader requestReader = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
+                BufferedReader readBuf = new BufferedReader(requestReader);
+                String strJson = readBuf.readLine();
+                GsonBuilder gsonBuild = new GsonBuilder()
+                                            .registerTypeAdapter(ISurveyMeasurementForTraverse.class, new AddSurveyMeasurementForTraverseSerialiser())
+                                            .setDateFormat("yyyy-MM-dd hh:mm:ss");
+                Gson gsonInstance = gsonBuild.create();
+                ISurveyMeasurementForTraverse addTypeSerialised = gsonInstance.fromJson(strJson, ISurveyMeasurementForTraverse.class);
+                ISurveyMeasurement typeSerialised = SurveyMeasurementAdapter.addForTraverse
+                                (
+                                    ConnectionManager.getInstance().getConnection(),
+                                    addTypeSerialised.getSurveyMeasurement(),
+                                    addTypeSerialised.getID()
+                                );
+                // Respond with the newly added SurveyMeasurement
+                String strJsonResponse = ((ISerialiseState) typeSerialised).toJson();
+                System.out.println(getTimestamp() + "SurveyMeasurement request: POST responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
+                super.updateHeaders(httpExchange);
+                httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
+                httpExchange.getResponseBody().write(strJsonResponse.getBytes());
+                httpExchange.getResponseBody().close();
+                httpExchange.close();
+            }
+            catch(SQLException exc)
+            {
+                System.out.println(getTimestamp() + "SurveyMeasurement request: POST SQL exception: " + exc.getMessage());
+            }
+            catch (IOException exc)
+            {
+                System.out.println(getTimestamp() + "SurveyMeasurement request: POST IO exception: " + exc.getMessage());
+            }
+            finally
+            {
+            }
+        }
+
+        public static void registerHandler(HttpServer httpServer, String strApiRoot)
+        {
+            String strPath = (!strApiRoot.isEmpty() ? "/" + strApiRoot : "") + "/SurveyMeasurements/addSurveyMeasurementToTraverse";
+            httpServer.createContext(strPath, new SurveyMeasurementForTraverseHttp());
+        }
+    } 
 }

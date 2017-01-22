@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -306,7 +306,12 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, SurveyAdjustmentAdapter.SurveyAdjustment.class);
+        SurveyAdjustmentAdapter.SurveyAdjustment typeSurveyAdjustment = gsonInstance.fromJson(json, SurveyAdjustmentAdapter.SurveyAdjustment.class);
+        if(typeSurveyAdjustment.m_nID > 0)
+        {
+            typeSurveyAdjustment.setSaved();
+        }
+        return typeSurveyAdjustment;
     }
 
     public static ISurveyAdjustment get(Connection connDb, int nIdGet) throws SQLException
@@ -589,6 +594,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         }
         return null;
     }
+
 
     private static ISurveyAdjustment createSurveyAdjustmentFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

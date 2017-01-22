@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -269,7 +269,12 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         gsonBuilder.registerTypeAdapter(ISurvey.class, new SurveyAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, SurveyImageAdapter.SurveyImage.class);
+        SurveyImageAdapter.SurveyImage typeSurveyImage = gsonInstance.fromJson(json, SurveyImageAdapter.SurveyImage.class);
+        if(typeSurveyImage.m_nID > 0)
+        {
+            typeSurveyImage.setSaved();
+        }
+        return typeSurveyImage;
     }
 
     public static ISurveyImage get(Connection connDb, int nIdGet) throws SQLException
@@ -582,6 +587,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         }
         return null;
     }
+
 
     private static ISurveyImage createSurveyImageFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat Jan 14 18:36:32 AEST 2017
+// Generated on Sun Jan 22 21:26:42 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -58,7 +58,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             @SerializedName("RefID")
             private ISurveyReference m_typeReference;
 
-            @SerializedName("PointAt")
+            @SerializedName("Images")
             private List<ISurveyImage> m_listSurveyImage;
 
             SurveyPoint()
@@ -371,7 +371,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"PointTypeID\":" + ((ISerialiseState) m_typePointType).toJson() + ",";
                 strJson += "\"RefID\":" + ((ISerialiseState) m_typeReference).toJson() + ",";
-                strJson += "\"PointAt\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
                 strJson += "}";
                 return strJson;
             }
@@ -429,7 +429,12 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         gsonBuilder.registerTypeAdapter(ISurveyImage.class, new SurveyImageAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
-        return gsonInstance.fromJson(json, SurveyPointAdapter.SurveyPoint.class);
+        SurveyPointAdapter.SurveyPoint typeSurveyPoint = gsonInstance.fromJson(json, SurveyPointAdapter.SurveyPoint.class);
+        if(typeSurveyPoint.m_nID > 0)
+        {
+            typeSurveyPoint.setSaved();
+        }
+        return typeSurveyPoint;
     }
 
     public static ISurveyPoint get(Connection connDb, int nIdGet) throws SQLException
@@ -624,6 +629,11 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     } 
     public static ISurveyPoint addForSurvey(Connection connDb, ISurveyPoint typeAdd, ISurvey typeParent) throws SQLException
     {
+        return SurveyPointAdapter.addForSurvey(connDb, typeAdd, typeParent.getID());
+    }
+
+    public static ISurveyPoint addForSurvey(Connection connDb, ISurveyPoint typeAdd, int nID) throws SQLException
+    {
         ISurveyPoint typeReturn = typeAdd;
         if(((ISerialiseState) typeAdd).isNew())
         {
@@ -634,13 +644,14 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         try
         {
             stmtLink = connDb.prepareStatement(getSurveyInsertLinkQuery());
-            stmtLink.setInt(1, typeParent.getID());
+            stmtLink.setInt(1, nID);
             stmtLink.setInt(2, typeReturn.getID());
             stmtLink.executeUpdate();
         }
         catch(SQLException exc)
         {
             // TODO: set up error handling
+            typeReturn = null;
         }
         finally
         {
@@ -829,6 +840,9 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         }
         return null;
     }
+
+
+
 
     private static ISurveyPoint createSurveyPointFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {
