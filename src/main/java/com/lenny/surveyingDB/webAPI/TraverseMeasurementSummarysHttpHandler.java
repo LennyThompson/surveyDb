@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 22 21:26:42 AEST 2017
+// Generated on Fri Feb 17 19:30:37 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -18,9 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.lenny.Utils.HandlerBase;
-import com.lenny.Utils.ConnectionManager;
-import com.lenny.Utils.ISerialiseState;
+import com.lenny.Utils.*;
 
 import com.lenny.surveyingDB.adapters.TraverseMeasurementSummaryAdapter;
 import com.lenny.surveyingDB.interfaces.ITraverseMeasurementSummary;
@@ -50,14 +48,15 @@ public class TraverseMeasurementSummarysHttpHandler extends HandlerBase implemen
     {
         try
         {
+            RequestMap requestMap = new RequestMap();
             if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
-                buildRequestMap(httpExchange.getRequestURI().getQuery());
+                requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
             String strJsonResponse = "";
 
-            if(getRequestMap().size() == 0)
+            if(requestMap.getRequestMap().size() == 0)
             {
                 List<ITraverseMeasurementSummary> listTraverseMeasurementSummarys = TraverseMeasurementSummaryAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 strJsonResponse = "[" + listTraverseMeasurementSummarys.stream()
@@ -65,10 +64,10 @@ public class TraverseMeasurementSummarysHttpHandler extends HandlerBase implemen
                     .collect(Collectors.joining(",")) + "]";
                 System.out.println(getTimestamp() + "TraverseMeasurementSummary (all) request: GET responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             }
-            else if(getRequestMap().containsKey("ID") || getRequestMap().containsKey("SurveyID"))
+            else if(requestMap.getRequestMap().containsKey("ID") || requestMap.getRequestMap().containsKey("SurveyID"))
             {
-                int nID = getRequestMap().containsKey("ID") ? Integer.parseInt(getRequestMap().get("ID").getValue()) : -1;
-                int nSurveyID = getRequestMap().containsKey("SurveyID") ? Integer.parseInt(getRequestMap().get("SurveyID").getValue()) : -1;
+                int nID = requestMap.getRequestMap().containsKey("ID") ? Integer.parseInt(requestMap.getRequestMap().get("ID").getValue()) : -1;
+                int nSurveyID = requestMap.getRequestMap().containsKey("SurveyID") ? Integer.parseInt(requestMap.getRequestMap().get("SurveyID").getValue()) : -1;
 
                 List<ITraverseMeasurementSummary> listTraverseMeasurementSummarys = TraverseMeasurementSummaryAdapter.getForPathQuery(ConnectionManager.getInstance().getConnection(), nID, nSurveyID);
                 strJsonResponse = "[" + listTraverseMeasurementSummarys.stream()
@@ -76,9 +75,9 @@ public class TraverseMeasurementSummarysHttpHandler extends HandlerBase implemen
                     .collect(Collectors.joining(",")) + "]";
                 System.out.println(getTimestamp() + "TraverseMeasurementSummary (all) request: GET responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             }
-            else if(getRequestMap().containsKey("ID"))
+            else if(requestMap.getRequestMap().containsKey("ID"))
             {
-                int nID = Integer.parseInt(getRequestMap().get("ID").getValue());
+                int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 ITraverseMeasurementSummary TraverseMeasurementSummary = TraverseMeasurementSummaryAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
                 strJsonResponse = ((ISerialiseState) TraverseMeasurementSummary).toJson();
                 System.out.println(getTimestamp() + "TraverseMeasurementSummary request: GET (" + nID + ")  responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());

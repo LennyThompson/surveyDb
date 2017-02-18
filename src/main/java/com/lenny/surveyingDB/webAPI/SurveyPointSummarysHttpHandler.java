@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 22 21:26:42 AEST 2017
+// Generated on Fri Feb 17 19:30:37 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -18,9 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.lenny.Utils.HandlerBase;
-import com.lenny.Utils.ConnectionManager;
-import com.lenny.Utils.ISerialiseState;
+import com.lenny.Utils.*;
 
 import com.lenny.surveyingDB.adapters.SurveyPointSummaryAdapter;
 import com.lenny.surveyingDB.interfaces.ISurveyPointSummary;
@@ -50,14 +48,15 @@ public class SurveyPointSummarysHttpHandler extends HandlerBase implements HttpH
     {
         try
         {
+            RequestMap requestMap = new RequestMap();
             if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
-                buildRequestMap(httpExchange.getRequestURI().getQuery());
+                requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
             String strJsonResponse = "";
 
-            if(getRequestMap().size() == 0)
+            if(requestMap.getRequestMap().size() == 0)
             {
                 List<ISurveyPointSummary> listSurveyPointSummarys = SurveyPointSummaryAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 strJsonResponse = "[" + listSurveyPointSummarys.stream()
@@ -65,9 +64,9 @@ public class SurveyPointSummarysHttpHandler extends HandlerBase implements HttpH
                     .collect(Collectors.joining(",")) + "]";
                 System.out.println(getTimestamp() + "SurveyPointSummary (all) request: GET responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             }
-            else if(getRequestMap().containsKey("ID"))
+            else if(requestMap.getRequestMap().containsKey("ID"))
             {
-                int nID = Integer.parseInt(getRequestMap().get("ID").getValue());
+                int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 ISurveyPointSummary SurveyPointSummary = SurveyPointSummaryAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
                 strJsonResponse = ((ISerialiseState) SurveyPointSummary).toJson();
                 System.out.println(getTimestamp() + "SurveyPointSummary request: GET (" + nID + ")  responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());

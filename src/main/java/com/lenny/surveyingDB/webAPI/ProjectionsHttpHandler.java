@@ -1,11 +1,11 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 22 21:26:42 AEST 2017
+// Generated on Fri Feb 17 19:30:37 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
-import com.lenny.Utils.LocalDateTimeSerialiser;
+import com.lenny.Utils.*;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -60,12 +60,13 @@ public class ProjectionsHttpHandler extends HandlerBase implements HttpHandler
     {
         try
         {
+            RequestMap requestMap = new RequestMap();
             if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
-                buildRequestMap(httpExchange.getRequestURI().getQuery());
+                requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
-            if(getRequestMap().size() == 0)
+            if(requestMap.getRequestMap().size() == 0)
             {
                 List<IProjection> listProjections = ProjectionAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 String strJsonResponse = "[" + listProjections.stream()
@@ -76,9 +77,9 @@ public class ProjectionsHttpHandler extends HandlerBase implements HttpHandler
                 httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
                 httpExchange.getResponseBody().write(strJsonResponse.getBytes());
             }
-            else if(getRequestMap().containsKey("ID"))
+            else if(requestMap.getRequestMap().containsKey("ID"))
             {
-                int nID = Integer.parseInt(getRequestMap().get("ID").getValue());
+                int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 IProjection Projection = ProjectionAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
                 String strJsonResponse = ((ISerialiseState) Projection).toJson();
                 System.out.println(getTimestamp() + "Projection request: GET (" + nID + ")  responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
@@ -122,6 +123,7 @@ public class ProjectionsHttpHandler extends HandlerBase implements HttpHandler
     {
         try
         {
+            // TODO: add request map...
             InputStreamReader requestReader = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
             BufferedReader readBuf = new BufferedReader(requestReader);
             String strJson = readBuf.readLine();
@@ -157,13 +159,29 @@ public class ProjectionsHttpHandler extends HandlerBase implements HttpHandler
     {
         try
         {
+            // TODO: add request map...
             InputStreamReader requestReader = new InputStreamReader(httpExchange.getRequestBody(), "utf-8");
             BufferedReader readBuf = new BufferedReader(requestReader);
             String strJson = readBuf.readLine();
-            String strJsonResponse = "";//"{\"" + ID + "\":" + typeSerialised.getID() + "}";
+            GsonBuilder gsonBuild = new GsonBuilder()
+                                        .registerTypeAdapter(IProjection.class, new ProjectionAdapter())
+                                        .setDateFormat("yyyy-MM-dd hh:mm:ss");
+            Gson gsonInstance = gsonBuild.create();
+            IProjection typeSerialised = gsonInstance.fromJson(strJson, IProjection.class);
+            ((ISerialiseState) typeSerialised).setUpdated();
+            typeSerialised = ProjectionAdapter.update(ConnectionManager.getInstance().getConnection(), typeSerialised);
+            // Respond with the newly added Projection
+            String strJsonResponse = ((ISerialiseState) typeSerialised).toJson();
+            System.out.println(getTimestamp() + "Projection request: PUT responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             super.updateHeaders(httpExchange);
             httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
             httpExchange.getResponseBody().write(strJsonResponse.getBytes());
+            httpExchange.getResponseBody().close();
+            httpExchange.close();
+        }
+        catch(SQLException exc)
+        {
+            System.out.println(getTimestamp() + "Projection request: PUT SQL exception: " + exc.getMessage());
         }
         catch (IOException exc)
         {

@@ -23,58 +23,12 @@ public class HandlerBase
     public static String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
     public static String CONTENT_TYPE = "Content-Type";
     public static String APPLICATION_JSON = "application/json";
-    protected Map<String, QueryParam> m_mapRequestParams;
 
     protected HandlerBase()
     {
-        m_mapRequestParams = new HashMap<>();
+
     }
 
-    public static final class QueryParam
-    {
-        String m_strValue;
-        String m_strParam;
-
-        QueryParam(String strParam, String strValue)
-        {
-            m_strValue = strValue;
-            m_strParam = strParam;
-        }
-
-        public String getValue()
-        {
-            return m_strValue;
-        }
-        public String getParam()
-        {
-            return m_strParam;
-        }
-    }
-
-    static QueryParam createFromQuery(String strQuery)
-    {
-        String[] listParts = strQuery.split("=");
-
-        if(listParts.length == 2)
-        {
-            return new QueryParam(listParts[0], listParts[1]);
-        }
-        return null;
-    }
-
-    protected Map<String, QueryParam> getRequestMap()
-    {
-        return m_mapRequestParams;
-    }
-
-    protected boolean buildRequestMap(String strRequestQuery)
-    {
-        m_mapRequestParams = Arrays.stream(strRequestQuery.split("&"))
-            .map(query -> createFromQuery(query))
-            .filter(queryParam -> queryParam != null)
-            .collect(Collectors.toMap(queryParam -> queryParam.getParam(), queryParam -> queryParam));
-        return m_mapRequestParams.size() > 0;
-    }
 
     protected void handleIncorrectRequest(HttpExchange httpExchange, int nErrorNo, String strErrorResponse, String strErrorExtra) throws IOException
     {
