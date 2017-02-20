@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Feb 17 19:30:37 AEST 2017
+// Generated on Sun Feb 19 13:52:25 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -699,25 +699,25 @@ public class TraverseMeasurementSummaryAdapter
         {
             if(strWhere.isEmpty())
             {
-                strWhere = " WHERE";
+                strWhere = " WHERE ";
             }
             else
             {
-                strWhere += " AND";
+                strWhere += " AND ";
             }
-            strWhere += " + " + FIELD_ID + " = ?";
+            strWhere += FIELD_ID + " = ?";
         }
         if(nSurveyID > 0)
         {
             if(strWhere.isEmpty())
             {
-                strWhere = " WHERE";
+                strWhere = " WHERE ";
             }
             else
             {
-                strWhere += " AND";
+                strWhere += " AND ";
             }
-            strWhere += " + " + FIELD_SURVEYID + " = ?";
+            strWhere += FIELD_SURVEYID + " = ?";
         }
 
         if(!strWhere.isEmpty())

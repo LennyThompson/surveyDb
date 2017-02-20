@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Feb 17 19:30:37 AEST 2017
+// Generated on Sun Feb 19 13:52:25 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -706,13 +706,13 @@ public class SurveySummaryAdapter
         {
             if(strWhere.isEmpty())
             {
-                strWhere = " WHERE";
+                strWhere = " WHERE ";
             }
             else
             {
-                strWhere += " AND";
+                strWhere += " AND ";
             }
-            strWhere += " + " + FIELD_TRAVID + " = ?";
+            strWhere += FIELD_TRAVID + " = ?";
         }
 
         if(!strWhere.isEmpty())

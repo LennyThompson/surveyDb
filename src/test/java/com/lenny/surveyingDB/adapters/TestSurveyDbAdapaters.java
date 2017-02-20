@@ -439,4 +439,16 @@ public class TestSurveyDbAdapaters
         assertEquals("Trav 1", measSummary.getPtFrom().getPtFromName());
         assertEquals("Trav 2", measSummary.getPtTo().getPtToName());
     }
+
+
+    @Test
+    public void testViewList() throws SQLException
+    {
+        Connection connDb = DriverManager.getConnection("jdbc:sqlite:surveyDb.db");
+
+        List<ITraverseMeasurementSummary> listTrav = TraverseMeasurementSummaryAdapter.getForPathQuery(connDb, -1, 1);
+
+        assertEquals(2, listTrav.size());
+    }
 }
+
