@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Feb 19 13:52:25 AEST 2017
+// Generated on Thu Feb 23 08:13:21 AEST 2017
 
 package com.lenny.surveyingDB.interfaces;
 
@@ -47,6 +47,7 @@ public interface ITraverseMeasurementSummary extends ISerialiseState
 
     int getID();
     int getSurveyID();
+    String getName();
     List<ITraverseMeasurementSummary_SurvMeas> getSurvMeass();
 
 }

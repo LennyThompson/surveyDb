@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Feb 19 13:52:25 AEST 2017
+// Generated on Thu Feb 23 08:13:21 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -270,6 +270,8 @@ public class TraverseMeasurementSummaryAdapter
          int m_nID;
         @SerializedName("SurveyID")
          int m_nSurveyID;
+        @SerializedName("Name")
+         String m_strName;
         @SerializedName("survMeas")
          List<ITraverseMeasurementSummary_SurvMeas> m_listSurvMeass;
 
@@ -278,6 +280,7 @@ public class TraverseMeasurementSummaryAdapter
         (
             int nID,
             int nSurveyID,
+            String strName,
             int nMeasID,
             double dHorizontal,
             double dVertical,
@@ -296,6 +299,7 @@ public class TraverseMeasurementSummaryAdapter
         {
             m_nID = nID;
             m_nSurveyID = nSurveyID;
+            m_strName = strName;
 
             m_listSurvMeass = new ArrayList<>();
             m_listSurvMeass.add(
@@ -324,6 +328,7 @@ public class TraverseMeasurementSummaryAdapter
         {
             m_nID = viewFrom.m_nID;
             m_nSurveyID = viewFrom.m_nSurveyID;
+            m_strName = viewFrom.m_strName;
             m_listSurvMeass = viewFrom.m_listSurvMeass;
 
         }
@@ -335,6 +340,10 @@ public class TraverseMeasurementSummaryAdapter
         public int getSurveyID()
         {
             return  m_nSurveyID;
+        }
+        public String getName()
+        {
+            return  m_strName;
         }
         public List<ITraverseMeasurementSummary_SurvMeas> getSurvMeass()
         {
@@ -371,6 +380,7 @@ public class TraverseMeasurementSummaryAdapter
             String strJson = "{";
             strJson += "\"ID\":" + m_nID + ",";
             strJson += "\"SurveyID\":" + m_nSurveyID + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"survMeas\":[" + m_listSurvMeass.stream().map(item -> item.toJson()).collect(Collectors.joining(",")) + "]";
             strJson += "}";
             return strJson;
@@ -381,6 +391,7 @@ public class TraverseMeasurementSummaryAdapter
     public static final String VIEW_NAME = "TraverseMeasurementSummary";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_SURVEYID = "SurveyID";
+    public static final String FIELD_NAME = "Name";
     public static final String FIELD_MEASID = "measID";
     public static final String FIELD_HORIZONTAL = "Horizontal";
     public static final String FIELD_VERTICAL = "Vertical";
@@ -402,6 +413,7 @@ public class TraverseMeasurementSummaryAdapter
     (
         int nID,
         int nSurveyID,
+        String strName,
         int nMeasID,
         double dHorizontal,
         double dVertical,
@@ -422,6 +434,7 @@ public class TraverseMeasurementSummaryAdapter
             (
                 nID,
                 nSurveyID,
+                strName,
                 nMeasID,
                 dHorizontal,
                 dVertical,
@@ -461,6 +474,7 @@ public class TraverseMeasurementSummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getInt(FIELD_SURVEYID),
+                            results.getString(FIELD_NAME),
                             results.getInt(FIELD_MEASID),
                             results.getDouble(FIELD_HORIZONTAL),
                             results.getDouble(FIELD_VERTICAL),
@@ -535,6 +549,7 @@ public class TraverseMeasurementSummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getInt(FIELD_SURVEYID),
+                            results.getString(FIELD_NAME),
                             results.getInt(FIELD_MEASID),
                             results.getDouble(FIELD_HORIZONTAL),
                             results.getDouble(FIELD_VERTICAL),
@@ -599,6 +614,7 @@ public class TraverseMeasurementSummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getInt(FIELD_SURVEYID),
+                            results.getString(FIELD_NAME),
                             results.getInt(FIELD_MEASID),
                             results.getDouble(FIELD_HORIZONTAL),
                             results.getDouble(FIELD_VERTICAL),
@@ -650,6 +666,7 @@ public class TraverseMeasurementSummaryAdapter
         String strSelect = "SELECT " +
             FIELD_ID + ",  " +
             FIELD_SURVEYID + ",  " +
+            FIELD_NAME + ",  " +
             FIELD_MEASID + ",  " +
             FIELD_HORIZONTAL + ",  " +
             FIELD_VERTICAL + ",  " +
@@ -678,6 +695,7 @@ public class TraverseMeasurementSummaryAdapter
         String strSelect = "SELECT " +
             FIELD_ID + ",  " +
             FIELD_SURVEYID + ",  " +
+            FIELD_NAME + ",  " +
             FIELD_MEASID + ",  " +
             FIELD_HORIZONTAL + ",  " +
             FIELD_VERTICAL + ",  " +
@@ -731,6 +749,7 @@ public class TraverseMeasurementSummaryAdapter
         "select " + 
         "trav.ID as ID, " + 
         "trav.SurveyID as SurveyID, " + 
+        "trav.Name as Name, " + 
         "survMeas.ID as measID, " + 
         "survMeas.HorizDistance as Horizontal, " + 
         "survMeas.VertDistance as Vertical, " + 
