@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Feb 23 08:13:21 AEST 2017
+// Generated on Sun Mar 26 14:12:03 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ISurveyImage;
-import com.lenny.surveyingDB.interfaces.ISurvey;
-import com.lenny.surveyingDB.adapters.SurveyAdapter;
 
 
 public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
@@ -43,8 +41,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             private String m_strDescription;
 
             @SerializedName("SurveyID")
-            private ISurvey m_typeSurvey;
-
+            private int m_nSurveyID;
             @SerializedName("PointAtID")
             private int m_nPointAtID;
 
@@ -57,21 +54,19 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                 m_strPath = "";
                 m_strDescription = "";
 
-                m_typeSurvey = SurveyAdapter.createNewSurvey();
-
+                m_nSurveyID = 0;
                 m_nPointAtID = 0;
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyImage(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strPath, String strDescription, ISurvey typeSurvey, int nPointAtID)
+            SurveyImage(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strPath, String strDescription, int nSurveyID, int nPointAtID)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
                 m_dateUpdated = dateUpdated;
                 m_strPath = strPath;
                 m_strDescription = strDescription;
-                m_typeSurvey = typeSurvey;
-                m_nPointAtID = nPointAtID;
+                m_nSurveyID = nSurveyID;m_nPointAtID = nPointAtID;
                 m_saveState = DataSaveState.SAVE_STATE_SAVED;
             }
 
@@ -94,11 +89,6 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             public String getDescription()
             {
                 return  m_strDescription;
-            }
-
-            public ISurvey getSurvey()
-            {
-                return  m_typeSurvey;
             }
 
             public void setPath(String strSet)
@@ -154,18 +144,18 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                 setUpdated();
             }
 
-            public void setSurvey(ISurvey typeSet)
+            void setSurveyID(int nSurveyID)
             {
                 addUndoProvider
                 (
-                    new UndoProviderImpl(SurveyImage.this.m_saveState, "Undo set SurveyImage member Survey = " + SurveyImage.this.m_typeSurvey)
+                    new UndoProviderImpl(SurveyImage.this.m_saveState, "Undo set SurveyImage member SurveyID = " + SurveyImage.this.m_nSurveyID)
                     {
-                        ISurvey m_undoSurvey = SurveyImage.this.m_typeSurvey;
+                        int m_undoSurveyID = SurveyImage.this.m_nSurveyID;
                         public boolean doUndo()
                         {
                             if(isPending())
                             {
-                                SurveyImage.this.m_typeSurvey = m_undoSurvey;
+                                SurveyImage.this.m_nSurveyID = m_undoSurveyID;
                                 if(SurveyImage.this.m_saveState != m_dataSaveState)
                                 {
                                     SurveyImage.this.m_saveState = m_dataSaveState;
@@ -177,10 +167,9 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                         }
                     }
                 );
-                m_typeSurvey = typeSet;
+                m_nSurveyID = nSurveyID;
                 setUpdated();
             }
-
             void setPointAtID(int nPointAtID)
             {
                 addUndoProvider
@@ -219,7 +208,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                 strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
                 strJson += "\"Path\":" + "\"" + m_strPath + "\"" + ",";
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-                strJson += "\"SurveyID\":" + ((ISerialiseState) m_typeSurvey).toJson() + ",";
+                strJson += "\"SurveyID\":" + m_nSurveyID + ",";
                 strJson += "\"PointAtID\":" + m_nPointAtID;
                 strJson += "}";
                 return strJson;
@@ -231,8 +220,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     public static final String FIELD_CREATED = "created";
     public static final String FIELD_UPDATED = "updated";
     public static final String FIELD_PATH = "Path";
-    public static final String FIELD_SURVEYID = "SurveyID";
     public static final String FIELD_DESCRIPTION = "Description";
+    public static final String FIELD_SURVEYID = "SurveyID";
     public static final String FIELD_POINTATID = "PointAtID";
 
     public static final String PRIMARY_KEY = FIELD_ID;
@@ -249,11 +238,11 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         LocalDateTime dateUpdated,
         String strPath,
         String strDescription,
-        ISurvey typeSurvey,
+        int nSurveyID,
         int nPointAtID
     )
     {
-        return new SurveyImage(nID, dateCreated, dateUpdated, strPath, strDescription, typeSurvey, nPointAtID);
+        return new SurveyImage(nID, dateCreated, dateUpdated, strPath, strDescription, nSurveyID, nPointAtID);
     }
 
     // This method enables the adapter type to be registered to deserialise json as ISurveyImage
@@ -266,8 +255,6 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     public ISurveyImage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
-        gsonBuilder.registerTypeAdapter(ISurvey.class, new SurveyAdapter());
-
         Gson gsonInstance = gsonBuilder.create();
         SurveyImageAdapter.SurveyImage typeSurveyImage = gsonInstance.fromJson(json, SurveyImageAdapter.SurveyImage.class);
         if(typeSurveyImage.m_nID > 0)
@@ -435,7 +422,38 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         return listReturn;
     }
 
-    public static List<ISurveyImage> getAllForSurveyPointParent(Connection connDb, int nParentId) throws SQLException
+    public static List<ISurveyImage> getAllForSurveyParent(Connection connDb, int nParentId) throws SQLException
+    {
+        List<ISurveyImage> listReturn = new ArrayList<ISurveyImage>();
+        PreparedStatement stmtSelect = null;
+        ResultSet results = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(getSelectForSurveyQuery());
+            stmtSelect.setInt(1, nParentId);
+            results = stmtSelect.executeQuery();
+            while(results.next())
+            {
+                listReturn.add(createSurveyImageFromQueryResults(connDb, results));
+            }
+        }
+        catch(SQLException exc)
+        {
+            // TODO: set up error handling
+        }
+        finally
+        {
+            if(results != null)
+            {
+                results.close();
+            }
+            if(stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return listReturn;
+    }public static List<ISurveyImage> getAllForSurveyPointParent(Connection connDb, int nParentId) throws SQLException
     {
         List<ISurveyImage> listReturn = new ArrayList<ISurveyImage>();
         PreparedStatement stmtSelect = null;
@@ -480,22 +498,12 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             return null;
         }
         PreparedStatement stmtSelect = null;
-        if(((UndoTarget) typeAdd.getSurvey()).isNew())
-        {
-            typeAdd.setSurvey(SurveyAdapter.add(connDb, typeAdd.getSurvey()));
-        }
-        else if(((UndoTarget) typeAdd.getSurvey()).isUpdated())
-        {
-            typeAdd.setSurvey(SurveyAdapter.update(connDb, typeAdd.getSurvey()));
-        }
-
         try
         {
             stmtSelect = connDb.prepareStatement(getInsertQuery());
             stmtSelect.setString(1, typeAdd.getPath());
             stmtSelect.setString(2, typeAdd.getDescription());
-            stmtSelect.setInt(3, typeAdd.getSurvey().getID());
-            stmtSelect.setInt(4, ((SurveyImage) typeAdd).m_nPointAtID);
+            stmtSelect.setInt(3, ((SurveyImage) typeAdd).m_nPointAtID);
 
             stmtSelect.executeUpdate();
 
@@ -531,9 +539,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                 stmtSelect = connDb.prepareStatement(getUpdateQuery());
                 stmtSelect.setString(1, typeUpdate.getPath());
                 stmtSelect.setString(2, typeUpdate.getDescription());
-                stmtSelect.setInt(3, typeUpdate.getSurvey().getID());
-                stmtSelect.setInt(4, ((SurveyImage) typeUpdate).m_nPointAtID);
-                stmtSelect.setInt(5, typeUpdate.getID());
+                stmtSelect.setInt(3, ((SurveyImage) typeUpdate).m_nPointAtID);
+                stmtSelect.setInt(4, typeUpdate.getID());
 
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
@@ -598,7 +605,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                        SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                        results.getString(FIELD_PATH),
                        results.getString(FIELD_DESCRIPTION),
-                       SurveyAdapter.get(connDb, results.getInt(FIELD_SURVEYID)),
+                       results.getInt(FIELD_SURVEYID),
                        results.getInt(FIELD_POINTATID)
                    );
 
@@ -610,7 +617,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
        ((SurveyImage)typeUpdate).m_dateUpdated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED));
        ((SurveyImage)typeUpdate).m_strPath = results.getString(FIELD_PATH);
        ((SurveyImage)typeUpdate).m_strDescription = results.getString(FIELD_DESCRIPTION);
-       ((SurveyImage)typeUpdate).m_typeSurvey = SurveyAdapter.get(connDb, results.getInt(FIELD_SURVEYID));
+       ((SurveyImage)typeUpdate).m_nSurveyID = results.getInt(FIELD_SURVEYID);
        ((SurveyImage)typeUpdate).m_nPointAtID = results.getInt(FIELD_POINTATID);
 
        return typeUpdate;
@@ -634,7 +641,22 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         }
         return strSelect;
     }
-    private static String getSelectForSurveyPointQuery()
+    private static String getSelectForSurveyQuery()
+    {
+        String strSelect = "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_CREATED + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_PATH + ",  " +
+            FIELD_DESCRIPTION + ",  " +
+            FIELD_SURVEYID + ",  " +
+            FIELD_POINTATID
+            + " FROM " +
+            TABLE_NAME  +
+            " WHERE " +
+            FIELD_SURVEYID + " = ?";
+        return strSelect;
+    }private static String getSelectForSurveyPointQuery()
     {
         String strSelect = "SELECT " +
             FIELD_ID + ",  " +
@@ -655,9 +677,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         String strInsert = "INSERT INTO " + TABLE_NAME + "(" +
             FIELD_PATH + ",  " +
             FIELD_DESCRIPTION + ",  " +
-            FIELD_SURVEYID + ",  " +
             FIELD_POINTATID
-            + ") VALUES (?,  ?,  ?,  ?)";
+            + ") VALUES (?,  ?,  ?)";
         return strInsert;
     }
     private static String getSelectLastIdQuery()
@@ -683,7 +704,6 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         String strUpdate = "UPDATE " + TABLE_NAME + " SET " +
             FIELD_PATH + " = ?,  " +
             FIELD_DESCRIPTION + " = ?,  " +
-            FIELD_SURVEYID + " = ?,  " +
             FIELD_POINTATID + " = ?"
         + " WHERE " + PRIMARY_KEY + " = ?";
         return strUpdate;

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Feb 23 08:13:21 AEST 2017
+// Generated on Sun Mar 26 14:12:03 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -168,7 +168,7 @@ public class TraverseSummaryAdapter
         @SerializedName("ID")
          int m_nID;
         @SerializedName("SurveyID")
-         int m_nSurveyID;
+         int m_nTraverses;
         @SerializedName("Name")
          String m_strName;
         @SerializedName("Updated")
@@ -184,7 +184,7 @@ public class TraverseSummaryAdapter
         public TraverseSummary
         (
             int nID,
-            int nSurveyID,
+            int nTraverses,
             String strName,
             LocalDateTime dateUpdated,
             String strDescription,
@@ -201,7 +201,7 @@ public class TraverseSummaryAdapter
         )
         {
             m_nID = nID;
-            m_nSurveyID = nSurveyID;
+            m_nTraverses = nTraverses;
             m_strName = strName;
             m_dateUpdated = dateUpdated;
             m_strDescription = strDescription;
@@ -230,7 +230,7 @@ public class TraverseSummaryAdapter
         TraverseSummary(TraverseSummary viewFrom)
         {
             m_nID = viewFrom.m_nID;
-            m_nSurveyID = viewFrom.m_nSurveyID;
+            m_nTraverses = viewFrom.m_nTraverses;
             m_strName = viewFrom.m_strName;
             m_dateUpdated = viewFrom.m_dateUpdated;
             m_strDescription = viewFrom.m_strDescription;
@@ -243,9 +243,9 @@ public class TraverseSummaryAdapter
         {
             return  m_nID;
         }
-        public int getSurveyID()
+        public int getTraverses()
         {
-            return  m_nSurveyID;
+            return  m_nTraverses;
         }
         public String getName()
         {
@@ -287,7 +287,7 @@ public class TraverseSummaryAdapter
         {
             String strJson = "{";
             strJson += "\"ID\":" + m_nID + ",";
-            strJson += "\"SurveyID\":" + m_nSurveyID + ",";
+            strJson += "\"SurveyID\":" + m_nTraverses + ",";
             strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"Updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
@@ -321,7 +321,7 @@ public class TraverseSummaryAdapter
     public static ITraverseSummary createTraverseSummary
     (
         int nID,
-        int nSurveyID,
+        int nTraverses,
         String strName,
         LocalDateTime dateUpdated,
         String strDescription,
@@ -340,7 +340,7 @@ public class TraverseSummaryAdapter
         return new TraverseSummary
             (
                 nID,
-                nSurveyID,
+                nTraverses,
                 strName,
                 dateUpdated,
                 strDescription,
@@ -424,22 +424,22 @@ public class TraverseSummaryAdapter
         return typeReturn;
     }
 
-    public static List<ITraverseSummary> getForPathQuery(Connection connDb, int nID, int nSurveyID) throws SQLException
+    public static List<ITraverseSummary> getForPathQuery(Connection connDb, int nTraverses, int nID) throws SQLException
     {
         List<ITraverseSummary> listReturn = new ArrayList<ITraverseSummary>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nID, nSurveyID));
+            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nTraverses, nID));
             int nIndex = 1;
+            if(nTraverses > 0)
+            {
+                stmtSelect.setInt(nIndex++, nTraverses);
+            }
             if(nID > 0)
             {
                 stmtSelect.setInt(nIndex++, nID);
-            }
-            if(nSurveyID > 0)
-            {
-                stmtSelect.setInt(nIndex++, nSurveyID);
             }
 
             results = stmtSelect.executeQuery();
@@ -587,7 +587,7 @@ public class TraverseSummaryAdapter
         return strSelect;
     }
 
-    private static String getSelectByPathKeyQuery(int nID, int nSurveyID)
+    private static String getSelectByPathKeyQuery(int nTraverses, int nID)
     {
         String strSelect = "SELECT " +
             FIELD_ID + ",  " +
@@ -608,6 +608,18 @@ public class TraverseSummaryAdapter
             + " FROM " +
             VIEW_NAME;
         String strWhere = "";
+        if(nTraverses > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_SURVEYID + " = ?";
+        }
         if(nID > 0)
         {
             if(strWhere.isEmpty())
@@ -619,18 +631,6 @@ public class TraverseSummaryAdapter
                 strWhere += " AND ";
             }
             strWhere += FIELD_ID + " = ?";
-        }
-        if(nSurveyID > 0)
-        {
-            if(strWhere.isEmpty())
-            {
-                strWhere = " WHERE ";
-            }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_SURVEYID + " = ?";
         }
 
         if(!strWhere.isEmpty())

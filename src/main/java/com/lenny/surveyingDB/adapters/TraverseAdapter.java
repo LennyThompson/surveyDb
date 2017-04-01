@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Feb 23 08:13:21 AEST 2017
+// Generated on Sun Mar 26 14:12:03 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -51,7 +51,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             @SerializedName("EndPointID")
             private ISurveyPoint m_typeEndPoint;
 
-            @SerializedName("Traverse")
+            @SerializedName("TraverseClosure")
             private List<ITraverseClosure> m_listTraverseClosure;
             @SerializedName("Traverse_SurveyMeasurement")
             private List<ISurveyMeasurement> m_listSurveyMeasurement;
@@ -335,7 +335,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                 strJson += "\"StartPointID\":" + ((ISerialiseState) m_typeStartPoint).toJson() + ",";
                 strJson += "\"EndPointID\":" + ((ISerialiseState) m_typeEndPoint).toJson() + ",";
                 strJson += "\"SurveyID\":" + m_nSurveyID + ",";
-                strJson += "\"Traverse\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"TraverseClosure\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
                 strJson += "\"Traverse_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
                 strJson += "}";
                 return strJson;

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Feb 23 08:13:21 AEST 2017
+// Generated on Sun Mar 26 14:12:03 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -27,10 +27,12 @@ import com.lenny.surveyingDB.adapters.SurveyAdapter;
 import com.lenny.surveyingDB.interfaces.ISurvey;
 import com.lenny.surveyingDB.interfaces.IProjection;
 import com.lenny.surveyingDB.adapters.ProjectionAdapter;
+import com.lenny.surveyingDB.adapters.SurveyImageAdapter;
 import com.lenny.surveyingDB.adapters.SurveyPointAdapter;
 import com.lenny.surveyingDB.adapters.InstrumentAdapter;
 import com.lenny.surveyingDB.adapters.TraverseAdapter;
 import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
+import com.lenny.surveyingDB.interfaces.ISurveyImage;
 import com.lenny.surveyingDB.interfaces.ISurveyPoint;
 import com.lenny.surveyingDB.interfaces.IInstrument;
 import com.lenny.surveyingDB.interfaces.ITraverse;

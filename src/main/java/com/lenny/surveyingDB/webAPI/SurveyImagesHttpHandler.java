@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Feb 23 08:13:21 AEST 2017
+// Generated on Sun Mar 26 14:12:03 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -25,8 +25,6 @@ import com.lenny.Utils.ISerialiseState;
 
 import com.lenny.surveyingDB.adapters.SurveyImageAdapter;
 import com.lenny.surveyingDB.interfaces.ISurveyImage;
-import com.lenny.surveyingDB.interfaces.ISurvey;
-import com.lenny.surveyingDB.adapters.SurveyAdapter;
 
 
 public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
