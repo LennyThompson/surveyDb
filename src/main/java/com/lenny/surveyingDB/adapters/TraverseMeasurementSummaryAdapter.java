@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -48,6 +48,14 @@ public class TraverseMeasurementSummaryAdapter
                      double m_dPtFromZ;
 
 
+                    SurvMeas_PtFrom()
+                    {
+                        m_nPtFromID = 0;
+                        m_strPtFromName = "";
+                        m_dPtFromX = 0.0;
+                        m_dPtFromY = 0.0;
+                        m_dPtFromZ = 0.0;
+                    }
                     public SurvMeas_PtFrom
                     (
                         int nPtFromID,
@@ -114,6 +122,14 @@ public class TraverseMeasurementSummaryAdapter
                      double m_dPtToZ;
 
 
+                    SurvMeas_PtTo()
+                    {
+                        m_nPtToID = 0;
+                        m_strPtToName = "";
+                        m_dPtToX = 0.0;
+                        m_dPtToY = 0.0;
+                        m_dPtToZ = 0.0;
+                    }
                     public SurvMeas_PtTo
                     (
                         int nPtToID,
@@ -180,6 +196,18 @@ public class TraverseMeasurementSummaryAdapter
              ISurvMeas_PtTo m_typePtTo;
 
 
+            TraverseMeasurementSummary_SurvMeas()
+            {
+                m_nMeasID = 0;
+                m_dHorizontal = 0.0;
+                m_dVertical = 0.0;
+                m_dBearing = 0.0;
+                m_typePtFrom = new SurvMeas_PtFrom();
+
+
+                m_typePtTo = new SurvMeas_PtTo();
+
+            }
             public TraverseMeasurementSummary_SurvMeas
             (
                 int nMeasID,
@@ -269,17 +297,27 @@ public class TraverseMeasurementSummaryAdapter
         @SerializedName("ID")
          int m_nID;
         @SerializedName("SurveyID")
-         int m_nTraverses;
+         int m_nSurveyID;
         @SerializedName("Name")
          String m_strName;
         @SerializedName("survMeas")
          List<ITraverseMeasurementSummary_SurvMeas> m_listSurvMeass;
 
 
+        TraverseMeasurementSummary()
+        {
+            m_nID = 0;
+            m_nSurveyID = 0;
+            m_strName = "";
+
+            m_listSurvMeass = new ArrayList<>();
+
+        }
+
         public TraverseMeasurementSummary
         (
             int nID,
-            int nTraverses,
+            int nSurveyID,
             String strName,
             int nMeasID,
             double dHorizontal,
@@ -298,10 +336,12 @@ public class TraverseMeasurementSummaryAdapter
         )
         {
             m_nID = nID;
-            m_nTraverses = nTraverses;
+            m_nSurveyID = nSurveyID;
             m_strName = strName;
 
             m_listSurvMeass = new ArrayList<>();
+            if(nMeasID != 0)
+            {
             m_listSurvMeass.add(
                         new TraverseMeasurementSummary_SurvMeas
                         (
@@ -321,13 +361,14 @@ public class TraverseMeasurementSummaryAdapter
                             dPtToZ
                         )
                     );
+            }
 
         }
 
         TraverseMeasurementSummary(TraverseMeasurementSummary viewFrom)
         {
             m_nID = viewFrom.m_nID;
-            m_nTraverses = viewFrom.m_nTraverses;
+            m_nSurveyID = viewFrom.m_nSurveyID;
             m_strName = viewFrom.m_strName;
             m_listSurvMeass = viewFrom.m_listSurvMeass;
 
@@ -337,9 +378,9 @@ public class TraverseMeasurementSummaryAdapter
         {
             return  m_nID;
         }
-        public int getTraverses()
+        public int getSurveyID()
         {
-            return  m_nTraverses;
+            return  m_nSurveyID;
         }
         public String getName()
         {
@@ -379,7 +420,7 @@ public class TraverseMeasurementSummaryAdapter
         {
             String strJson = "{";
             strJson += "\"ID\":" + m_nID + ",";
-            strJson += "\"SurveyID\":" + m_nTraverses + ",";
+            strJson += "\"SurveyID\":" + m_nSurveyID + ",";
             strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"survMeas\":[" + m_listSurvMeass.stream().map(item -> item.toJson()).collect(Collectors.joining(",")) + "]";
             strJson += "}";
@@ -412,7 +453,7 @@ public class TraverseMeasurementSummaryAdapter
     public static ITraverseMeasurementSummary createTraverseMeasurementSummary
     (
         int nID,
-        int nTraverses,
+        int nSurveyID,
         String strName,
         int nMeasID,
         double dHorizontal,
@@ -433,7 +474,7 @@ public class TraverseMeasurementSummaryAdapter
         return new TraverseMeasurementSummary
             (
                 nID,
-                nTraverses,
+                nSurveyID,
                 strName,
                 nMeasID,
                 dHorizontal,
@@ -492,16 +533,24 @@ public class TraverseMeasurementSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
-                            (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
-                        )
-                    );
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
+                                (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
+                            )
+                        );
 
-            typeReturn = mapData.get(listRawData.get(0).getID());
+                typeReturn = mapData.get(listRawData.get(0).getID());
+            }
+            else
+            {
+                typeReturn = new TraverseMeasurementSummary();
+            }
+
         }
         catch(SQLException exc)
         {
@@ -521,18 +570,18 @@ public class TraverseMeasurementSummaryAdapter
         return typeReturn;
     }
 
-    public static List<ITraverseMeasurementSummary> getForPathQuery(Connection connDb, int nTraverses, int nID) throws SQLException
+    public static List<ITraverseMeasurementSummary> getForPathQuery(Connection connDb, int nSurveyID, int nID) throws SQLException
     {
         List<ITraverseMeasurementSummary> listReturn = new ArrayList<ITraverseMeasurementSummary>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nTraverses, nID));
+            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nSurveyID, nID));
             int nIndex = 1;
-            if(nTraverses > 0)
+            if(nSurveyID > 0)
             {
-                stmtSelect.setInt(nIndex++, nTraverses);
+                stmtSelect.setInt(nIndex++, nSurveyID);
             }
             if(nID > 0)
             {
@@ -567,16 +616,22 @@ public class TraverseMeasurementSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
-                            (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
+                                (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {
@@ -595,6 +650,62 @@ public class TraverseMeasurementSummaryAdapter
         }
         return listReturn;
     }
+
+    private static String getSelectByPathKeyQuery(int nSurveyID, int nID)
+    {
+        String strSelect = "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_SURVEYID + ",  " +
+            FIELD_NAME + ",  " +
+            FIELD_MEASID + ",  " +
+            FIELD_HORIZONTAL + ",  " +
+            FIELD_VERTICAL + ",  " +
+            FIELD_BEARING + ",  " +
+            FIELD_PTFROMID + ",  " +
+            FIELD_PTFROMNAME + ",  " +
+            FIELD_PTFROMX + ",  " +
+            FIELD_PTFROMY + ",  " +
+            FIELD_PTFROMZ + ",  " +
+            FIELD_PTTOID + ",  " +
+            FIELD_PTTONAME + ",  " +
+            FIELD_PTTOX + ",  " +
+            FIELD_PTTOY + ",  " +
+            FIELD_PTTOZ
+            + " FROM " +
+            VIEW_NAME;
+        String strWhere = "";
+        if(nSurveyID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_SURVEYID + " = ?";
+        }
+        if(nID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_ID + " = ?";
+        }
+
+        if(!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+    }
+
 
     public static List<ITraverseMeasurementSummary> getAll(Connection connDb) throws SQLException
     {
@@ -632,16 +743,21 @@ public class TraverseMeasurementSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
-                            (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ITraverseMeasurementSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new TraverseMeasurementSummary((TraverseMeasurementSummary) view),
+                                (viewInto, view) -> ((TraverseMeasurementSummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {
@@ -686,61 +802,6 @@ public class TraverseMeasurementSummaryAdapter
         if(nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
-        }
-        return strSelect;
-    }
-
-    private static String getSelectByPathKeyQuery(int nTraverses, int nID)
-    {
-        String strSelect = "SELECT " +
-            FIELD_ID + ",  " +
-            FIELD_SURVEYID + ",  " +
-            FIELD_NAME + ",  " +
-            FIELD_MEASID + ",  " +
-            FIELD_HORIZONTAL + ",  " +
-            FIELD_VERTICAL + ",  " +
-            FIELD_BEARING + ",  " +
-            FIELD_PTFROMID + ",  " +
-            FIELD_PTFROMNAME + ",  " +
-            FIELD_PTFROMX + ",  " +
-            FIELD_PTFROMY + ",  " +
-            FIELD_PTFROMZ + ",  " +
-            FIELD_PTTOID + ",  " +
-            FIELD_PTTONAME + ",  " +
-            FIELD_PTTOX + ",  " +
-            FIELD_PTTOY + ",  " +
-            FIELD_PTTOZ
-            + " FROM " +
-            VIEW_NAME;
-        String strWhere = "";
-        if(nTraverses > 0)
-        {
-            if(strWhere.isEmpty())
-            {
-                strWhere = " WHERE ";
-            }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_SURVEYID + " = ?";
-        }
-        if(nID > 0)
-        {
-            if(strWhere.isEmpty())
-            {
-                strWhere = " WHERE ";
-            }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_ID + " = ?";
-        }
-
-        if(!strWhere.isEmpty())
-        {
-            strSelect += strWhere;
         }
         return strSelect;
     }

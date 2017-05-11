@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -39,6 +39,11 @@ public class SurveySummaryAdapter
              String m_strProjName;
 
 
+            SurveySummary_Proj()
+            {
+                m_nProjID = 0;
+                m_strProjName = "";
+            }
             public SurveySummary_Proj
             (
                 int nProjID,
@@ -84,6 +89,14 @@ public class SurveySummaryAdapter
              String m_strPtTravEnd;
 
 
+            SurveySummary_Trav()
+            {
+                m_nTravID = 0;
+                m_strTravName = "";
+                m_dateTravUpdated = LocalDateTime.now();
+                m_strPtTravStart = "";
+                m_strPtTravEnd = "";
+            }
             public SurveySummary_Trav
             (
                 int nTravID,
@@ -150,6 +163,14 @@ public class SurveySummaryAdapter
              double m_dPtZ;
 
 
+            SurveySummary_PtSurv()
+            {
+                m_nPtID = 0;
+                m_strPtName = "";
+                m_dPtX = 0.0;
+                m_dPtY = 0.0;
+                m_dPtZ = 0.0;
+            }
             public SurveySummary_PtSurv
             (
                 int nPtID,
@@ -222,6 +243,24 @@ public class SurveySummaryAdapter
          List<ISurveySummary_PtSurv> m_listPtSurvs;
 
 
+        SurveySummary()
+        {
+            m_nID = 0;
+            m_strName = "";
+            m_dateCreated = LocalDateTime.now();
+            m_dateUpdated = LocalDateTime.now();
+            m_strDescription = "";
+
+            m_typeProj = new SurveySummary_Proj();
+
+
+            m_listTravs = new ArrayList<>();
+
+
+            m_listPtSurvs = new ArrayList<>();
+
+        }
+
         public SurveySummary
         (
             int nID,
@@ -257,6 +296,8 @@ public class SurveySummaryAdapter
 
 
             m_listTravs = new ArrayList<>();
+            if(nTravID != 0)
+            {
             m_listTravs.add(
                         new SurveySummary_Trav
                         (
@@ -267,9 +308,12 @@ public class SurveySummaryAdapter
                             strPtTravEnd
                         )
                     );
+            }
 
 
             m_listPtSurvs = new ArrayList<>();
+            if(nPtID != 0)
+            {
             m_listPtSurvs.add(
                         new SurveySummary_PtSurv
                         (
@@ -280,6 +324,7 @@ public class SurveySummaryAdapter
                             dPtZ
                         )
                     );
+            }
 
         }
 
@@ -485,16 +530,24 @@ public class SurveySummaryAdapter
                         )
                     );
             }
-            Map<Integer, ISurveySummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new SurveySummary((SurveySummary) view),
-                            (viewInto, view) -> ((SurveySummary) viewInto).add(view)
-                        )
-                    );
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ISurveySummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new SurveySummary((SurveySummary) view),
+                                (viewInto, view) -> ((SurveySummary) viewInto).add(view)
+                            )
+                        );
 
-            typeReturn = mapData.get(listRawData.get(0).getID());
+                typeReturn = mapData.get(listRawData.get(0).getID());
+            }
+            else
+            {
+                typeReturn = new SurveySummary();
+            }
+
         }
         catch(SQLException exc)
         {
@@ -556,16 +609,22 @@ public class SurveySummaryAdapter
                         )
                     );
             }
-            Map<Integer, ISurveySummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new SurveySummary((SurveySummary) view),
-                            (viewInto, view) -> ((SurveySummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ISurveySummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new SurveySummary((SurveySummary) view),
+                                (viewInto, view) -> ((SurveySummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {
@@ -584,6 +643,50 @@ public class SurveySummaryAdapter
         }
         return listReturn;
     }
+
+    private static String getSelectByPathKeyQuery(int nTravID)
+    {
+        String strSelect = "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_NAME + ",  " +
+            FIELD_CREATED + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_DESCRIPTION + ",  " +
+            FIELD_PROJID + ",  " +
+            FIELD_PROJNAME + ",  " +
+            FIELD_TRAVID + ",  " +
+            FIELD_TRAVNAME + ",  " +
+            FIELD_TRAVUPDATED + ",  " +
+            FIELD_PTTRAVSTART + ",  " +
+            FIELD_PTTRAVEND + ",  " +
+            FIELD_PTID + ",  " +
+            FIELD_PTNAME + ",  " +
+            FIELD_PTX + ",  " +
+            FIELD_PTY + ",  " +
+            FIELD_PTZ
+            + " FROM " +
+            VIEW_NAME;
+        String strWhere = "";
+        if(nTravID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_TRAVID + " = ?";
+        }
+
+        if(!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+    }
+
 
     public static List<ISurveySummary> getAll(Connection connDb) throws SQLException
     {
@@ -621,16 +724,21 @@ public class SurveySummaryAdapter
                         )
                     );
             }
-            Map<Integer, ISurveySummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new SurveySummary((SurveySummary) view),
-                            (viewInto, view) -> ((SurveySummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ISurveySummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new SurveySummary((SurveySummary) view),
+                                (viewInto, view) -> ((SurveySummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {
@@ -679,49 +787,6 @@ public class SurveySummaryAdapter
         return strSelect;
     }
 
-    private static String getSelectByPathKeyQuery(int nTravID)
-    {
-        String strSelect = "SELECT " +
-            FIELD_ID + ",  " +
-            FIELD_NAME + ",  " +
-            FIELD_CREATED + ",  " +
-            FIELD_UPDATED + ",  " +
-            FIELD_DESCRIPTION + ",  " +
-            FIELD_PROJID + ",  " +
-            FIELD_PROJNAME + ",  " +
-            FIELD_TRAVID + ",  " +
-            FIELD_TRAVNAME + ",  " +
-            FIELD_TRAVUPDATED + ",  " +
-            FIELD_PTTRAVSTART + ",  " +
-            FIELD_PTTRAVEND + ",  " +
-            FIELD_PTID + ",  " +
-            FIELD_PTNAME + ",  " +
-            FIELD_PTX + ",  " +
-            FIELD_PTY + ",  " +
-            FIELD_PTZ
-            + " FROM " +
-            VIEW_NAME;
-        String strWhere = "";
-        if(nTravID > 0)
-        {
-            if(strWhere.isEmpty())
-            {
-                strWhere = " WHERE ";
-            }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_TRAVID + " = ?";
-        }
-
-        if(!strWhere.isEmpty())
-        {
-            strSelect += strWhere;
-        }
-        return strSelect;
-    }
-
     private static String CREATE_VIEW_SCRIPT =         "CREATE VIEW SurveySummary as " + 
         "SELECT " + 
         "surv.ID as ID, " + 
@@ -744,8 +809,8 @@ public class SurveySummaryAdapter
         "from " + 
         "Survey surv " + 
         "inner join Projection as proj on proj.ID = surv.ProjectionID " + 
-        "inner join TraverseSummary as trav on trav.SurveyID = surv.ID " + 
-        "inner join SurveyPointSummary as ptSurv on ptSurv.ID = surv.ID;";
+        "left join TraverseSummary as trav on trav.SurveyID = surv.ID " + 
+        "left join SurveyPointSummary as ptSurv on ptSurv.ID = surv.ID;";
     public static String getCreateViewScript()
     {
         return CREATE_VIEW_SCRIPT;

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -59,16 +59,6 @@ public class SurveySummarysHttpHandler extends HandlerBase implements HttpHandle
             if(requestMap.getRequestMap().size() == 0)
             {
                 List<ISurveySummary> listSurveySummarys = SurveySummaryAdapter.getAll(ConnectionManager.getInstance().getConnection());
-                strJsonResponse = "[" + listSurveySummarys.stream()
-                        .map(item -> ((ISerialiseState) item).toJson())
-                    .collect(Collectors.joining(",")) + "]";
-                System.out.println(getTimestamp() + "SurveySummary (all) request: GET responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
-            }
-            else if(requestMap.getRequestMap().containsKey("TravID"))
-            {
-                int nTravID = requestMap.getRequestMap().containsKey("TravID") ? Integer.parseInt(requestMap.getRequestMap().get("TravID").getValue()) : -1;
-
-                List<ISurveySummary> listSurveySummarys = SurveySummaryAdapter.getForPathQuery(ConnectionManager.getInstance().getConnection(), nTravID);
                 strJsonResponse = "[" + listSurveySummarys.stream()
                         .map(item -> ((ISerialiseState) item).toJson())
                     .collect(Collectors.joining(",")) + "]";

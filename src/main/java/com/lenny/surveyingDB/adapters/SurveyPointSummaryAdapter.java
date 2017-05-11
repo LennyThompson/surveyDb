@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -42,6 +42,11 @@ public class SurveyPointSummaryAdapter
                      String m_strPtTypeAbbreviation;
 
 
+                    Pt_PtType()
+                    {
+                        m_strPtTypeName = "";
+                        m_strPtTypeAbbreviation = "";
+                    }
                     public Pt_PtType
                     (
                         String strPtTypeName,
@@ -81,6 +86,11 @@ public class SurveyPointSummaryAdapter
                      String m_strRefDescription;
 
 
+                    Pt_Ref()
+                    {
+                        m_strRefName = "";
+                        m_strRefDescription = "";
+                    }
                     public Pt_Ref
                     (
                         String strRefName,
@@ -130,6 +140,20 @@ public class SurveyPointSummaryAdapter
              IPt_Ref m_typeRef;
 
 
+            SurveyPointSummary_Pt()
+            {
+                m_nPtID = 0;
+                m_strPtName = "";
+                m_strPtDesc = "";
+                m_dX = 0.0;
+                m_dY = 0.0;
+                m_dZ = 0.0;
+                m_typePtType = new Pt_PtType();
+
+
+                m_typeRef = new Pt_Ref();
+
+            }
             public SurveyPointSummary_Pt
             (
                 int nPtID,
@@ -224,6 +248,14 @@ public class SurveyPointSummaryAdapter
          List<ISurveyPointSummary_Pt> m_listPts;
 
 
+        SurveyPointSummary()
+        {
+            m_nID = 0;
+
+            m_listPts = new ArrayList<>();
+
+        }
+
         public SurveyPointSummary
         (
             int nID,
@@ -242,6 +274,8 @@ public class SurveyPointSummaryAdapter
             m_nID = nID;
 
             m_listPts = new ArrayList<>();
+            if(nPtID != 0)
+            {
             m_listPts.add(
                         new SurveyPointSummary_Pt
                         (
@@ -257,6 +291,7 @@ public class SurveyPointSummaryAdapter
                             strRefDescription
                         )
                     );
+            }
 
         }
 
@@ -392,16 +427,24 @@ public class SurveyPointSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ISurveyPointSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new SurveyPointSummary((SurveyPointSummary) view),
-                            (viewInto, view) -> ((SurveyPointSummary) viewInto).add(view)
-                        )
-                    );
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ISurveyPointSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new SurveyPointSummary((SurveyPointSummary) view),
+                                (viewInto, view) -> ((SurveyPointSummary) viewInto).add(view)
+                            )
+                        );
 
-            typeReturn = mapData.get(listRawData.get(0).getID());
+                typeReturn = mapData.get(listRawData.get(0).getID());
+            }
+            else
+            {
+                typeReturn = new SurveyPointSummary();
+            }
+
         }
         catch(SQLException exc)
         {
@@ -420,6 +463,7 @@ public class SurveyPointSummaryAdapter
         }
         return typeReturn;
     }
+
 
     public static List<ISurveyPointSummary> getAll(Connection connDb) throws SQLException
     {
@@ -451,16 +495,21 @@ public class SurveyPointSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ISurveyPointSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new SurveyPointSummary((SurveyPointSummary) view),
-                            (viewInto, view) -> ((SurveyPointSummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ISurveyPointSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new SurveyPointSummary((SurveyPointSummary) view),
+                                (viewInto, view) -> ((SurveyPointSummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {

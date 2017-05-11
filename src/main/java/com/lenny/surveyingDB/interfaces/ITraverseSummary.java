@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.interfaces;
 
@@ -34,7 +34,7 @@ public interface ITraverseSummary extends ISerialiseState
     }
 
     int getID();
-    int getTraverses();
+    int getSurveyID();
     String getName();
     LocalDateTime getUpdated();
     String getDescription();

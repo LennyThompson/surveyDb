@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -45,6 +45,14 @@ public class TraverseSummaryAdapter
              double m_dPtStartZ;
 
 
+            TraverseSummary_PtStart()
+            {
+                m_nPtStartID = 0;
+                m_strPtStartName = "";
+                m_dPtStartX = 0.0;
+                m_dPtStartY = 0.0;
+                m_dPtStartZ = 0.0;
+            }
             public TraverseSummary_PtStart
             (
                 int nPtStartID,
@@ -111,6 +119,14 @@ public class TraverseSummaryAdapter
              double m_dPtEndZ;
 
 
+            TraverseSummary_PtEnd()
+            {
+                m_nPtEndID = 0;
+                m_strPtEndName = "";
+                m_dPtEndX = 0.0;
+                m_dPtEndY = 0.0;
+                m_dPtEndZ = 0.0;
+            }
             public TraverseSummary_PtEnd
             (
                 int nPtEndID,
@@ -168,7 +184,7 @@ public class TraverseSummaryAdapter
         @SerializedName("ID")
          int m_nID;
         @SerializedName("SurveyID")
-         int m_nTraverses;
+         int m_nSurveyID;
         @SerializedName("Name")
          String m_strName;
         @SerializedName("Updated")
@@ -181,10 +197,25 @@ public class TraverseSummaryAdapter
          ITraverseSummary_PtEnd m_typePtEnd;
 
 
+        TraverseSummary()
+        {
+            m_nID = 0;
+            m_nSurveyID = 0;
+            m_strName = "";
+            m_dateUpdated = LocalDateTime.now();
+            m_strDescription = "";
+
+            m_typePtStart = new TraverseSummary_PtStart();
+
+
+            m_typePtEnd = new TraverseSummary_PtEnd();
+
+        }
+
         public TraverseSummary
         (
             int nID,
-            int nTraverses,
+            int nSurveyID,
             String strName,
             LocalDateTime dateUpdated,
             String strDescription,
@@ -201,7 +232,7 @@ public class TraverseSummaryAdapter
         )
         {
             m_nID = nID;
-            m_nTraverses = nTraverses;
+            m_nSurveyID = nSurveyID;
             m_strName = strName;
             m_dateUpdated = dateUpdated;
             m_strDescription = strDescription;
@@ -230,7 +261,7 @@ public class TraverseSummaryAdapter
         TraverseSummary(TraverseSummary viewFrom)
         {
             m_nID = viewFrom.m_nID;
-            m_nTraverses = viewFrom.m_nTraverses;
+            m_nSurveyID = viewFrom.m_nSurveyID;
             m_strName = viewFrom.m_strName;
             m_dateUpdated = viewFrom.m_dateUpdated;
             m_strDescription = viewFrom.m_strDescription;
@@ -243,9 +274,9 @@ public class TraverseSummaryAdapter
         {
             return  m_nID;
         }
-        public int getTraverses()
+        public int getSurveyID()
         {
-            return  m_nTraverses;
+            return  m_nSurveyID;
         }
         public String getName()
         {
@@ -287,7 +318,7 @@ public class TraverseSummaryAdapter
         {
             String strJson = "{";
             strJson += "\"ID\":" + m_nID + ",";
-            strJson += "\"SurveyID\":" + m_nTraverses + ",";
+            strJson += "\"SurveyID\":" + m_nSurveyID + ",";
             strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"Updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
@@ -321,7 +352,7 @@ public class TraverseSummaryAdapter
     public static ITraverseSummary createTraverseSummary
     (
         int nID,
-        int nTraverses,
+        int nSurveyID,
         String strName,
         LocalDateTime dateUpdated,
         String strDescription,
@@ -340,7 +371,7 @@ public class TraverseSummaryAdapter
         return new TraverseSummary
             (
                 nID,
-                nTraverses,
+                nSurveyID,
                 strName,
                 dateUpdated,
                 strDescription,
@@ -395,16 +426,24 @@ public class TraverseSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ITraverseSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new TraverseSummary((TraverseSummary) view),
-                            (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
-                        )
-                    );
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ITraverseSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new TraverseSummary((TraverseSummary) view),
+                                (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
+                            )
+                        );
 
-            typeReturn = mapData.get(listRawData.get(0).getID());
+                typeReturn = mapData.get(listRawData.get(0).getID());
+            }
+            else
+            {
+                typeReturn = new TraverseSummary();
+            }
+
         }
         catch(SQLException exc)
         {
@@ -424,18 +463,18 @@ public class TraverseSummaryAdapter
         return typeReturn;
     }
 
-    public static List<ITraverseSummary> getForPathQuery(Connection connDb, int nTraverses, int nID) throws SQLException
+    public static List<ITraverseSummary> getForPathQuery(Connection connDb, int nSurveyID, int nID) throws SQLException
     {
         List<ITraverseSummary> listReturn = new ArrayList<ITraverseSummary>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nTraverses, nID));
+            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nSurveyID, nID));
             int nIndex = 1;
-            if(nTraverses > 0)
+            if(nSurveyID > 0)
             {
-                stmtSelect.setInt(nIndex++, nTraverses);
+                stmtSelect.setInt(nIndex++, nSurveyID);
             }
             if(nID > 0)
             {
@@ -468,16 +507,22 @@ public class TraverseSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ITraverseSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new TraverseSummary((TraverseSummary) view),
-                            (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ITraverseSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new TraverseSummary((TraverseSummary) view),
+                                (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {
@@ -496,6 +541,60 @@ public class TraverseSummaryAdapter
         }
         return listReturn;
     }
+
+    private static String getSelectByPathKeyQuery(int nSurveyID, int nID)
+    {
+        String strSelect = "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_SURVEYID + ",  " +
+            FIELD_NAME + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_DESCRIPTION + ",  " +
+            FIELD_PTSTARTID + ",  " +
+            FIELD_PTSTARTNAME + ",  " +
+            FIELD_PTSTARTX + ",  " +
+            FIELD_PTSTARTY + ",  " +
+            FIELD_PTSTARTZ + ",  " +
+            FIELD_PTENDID + ",  " +
+            FIELD_PTENDNAME + ",  " +
+            FIELD_PTENDX + ",  " +
+            FIELD_PTENDY + ",  " +
+            FIELD_PTENDZ
+            + " FROM " +
+            VIEW_NAME;
+        String strWhere = "";
+        if(nSurveyID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_SURVEYID + " = ?";
+        }
+        if(nID > 0)
+        {
+            if(strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_ID + " = ?";
+        }
+
+        if(!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+    }
+
 
     public static List<ITraverseSummary> getAll(Connection connDb) throws SQLException
     {
@@ -531,16 +630,21 @@ public class TraverseSummaryAdapter
                         )
                     );
             }
-            Map<Integer, ITraverseSummary> mapData = listRawData.stream()
-                    .collect(
-                        Collectors.toMap(
-                            view -> view.getID(),
-                            view -> new TraverseSummary((TraverseSummary) view),
-                            (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
-                        )
-                    );
-            listReturn = mapData.values().stream()
-                    .collect(Collectors.toList());
+            if(!listRawData.isEmpty())
+            {
+                Map<Integer, ITraverseSummary> mapData = listRawData.stream()
+                        .collect(
+                            Collectors.toMap(
+                                view -> view.getID(),
+                                view -> new TraverseSummary((TraverseSummary) view),
+                                (viewInto, view) -> ((TraverseSummary) viewInto).add(view)
+                            )
+                        );
+
+                listReturn = mapData.values().stream()
+                        .collect(Collectors.toList());
+            }
+
         }
         catch(SQLException exc)
         {
@@ -583,59 +687,6 @@ public class TraverseSummaryAdapter
         if(nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
-        }
-        return strSelect;
-    }
-
-    private static String getSelectByPathKeyQuery(int nTraverses, int nID)
-    {
-        String strSelect = "SELECT " +
-            FIELD_ID + ",  " +
-            FIELD_SURVEYID + ",  " +
-            FIELD_NAME + ",  " +
-            FIELD_UPDATED + ",  " +
-            FIELD_DESCRIPTION + ",  " +
-            FIELD_PTSTARTID + ",  " +
-            FIELD_PTSTARTNAME + ",  " +
-            FIELD_PTSTARTX + ",  " +
-            FIELD_PTSTARTY + ",  " +
-            FIELD_PTSTARTZ + ",  " +
-            FIELD_PTENDID + ",  " +
-            FIELD_PTENDNAME + ",  " +
-            FIELD_PTENDX + ",  " +
-            FIELD_PTENDY + ",  " +
-            FIELD_PTENDZ
-            + " FROM " +
-            VIEW_NAME;
-        String strWhere = "";
-        if(nTraverses > 0)
-        {
-            if(strWhere.isEmpty())
-            {
-                strWhere = " WHERE ";
-            }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_SURVEYID + " = ?";
-        }
-        if(nID > 0)
-        {
-            if(strWhere.isEmpty())
-            {
-                strWhere = " WHERE ";
-            }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_ID + " = ?";
-        }
-
-        if(!strWhere.isEmpty())
-        {
-            strSelect += strWhere;
         }
         return strSelect;
     }

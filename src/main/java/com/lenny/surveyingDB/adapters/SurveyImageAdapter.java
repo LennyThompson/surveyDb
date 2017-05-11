@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -503,7 +503,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             stmtSelect = connDb.prepareStatement(getInsertQuery());
             stmtSelect.setString(1, typeAdd.getPath());
             stmtSelect.setString(2, typeAdd.getDescription());
-            stmtSelect.setInt(3, ((SurveyImage) typeAdd).m_nPointAtID);
+            stmtSelect.setInt(3, ((SurveyImage) typeAdd).m_nSurveyID);
+            stmtSelect.setInt(4, ((SurveyImage) typeAdd).m_nPointAtID);
 
             stmtSelect.executeUpdate();
 
@@ -539,8 +540,9 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
                 stmtSelect = connDb.prepareStatement(getUpdateQuery());
                 stmtSelect.setString(1, typeUpdate.getPath());
                 stmtSelect.setString(2, typeUpdate.getDescription());
-                stmtSelect.setInt(3, ((SurveyImage) typeUpdate).m_nPointAtID);
-                stmtSelect.setInt(4, typeUpdate.getID());
+                stmtSelect.setInt(3, ((SurveyImage) typeUpdate).m_nSurveyID);
+                stmtSelect.setInt(4, ((SurveyImage) typeUpdate).m_nPointAtID);
+                stmtSelect.setInt(5, typeUpdate.getID());
 
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
@@ -677,8 +679,9 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         String strInsert = "INSERT INTO " + TABLE_NAME + "(" +
             FIELD_PATH + ",  " +
             FIELD_DESCRIPTION + ",  " +
+            FIELD_SURVEYID + ",  " +
             FIELD_POINTATID
-            + ") VALUES (?,  ?,  ?)";
+            + ") VALUES (?,  ?,  ?,  ?)";
         return strInsert;
     }
     private static String getSelectLastIdQuery()
@@ -704,6 +707,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         String strUpdate = "UPDATE " + TABLE_NAME + " SET " +
             FIELD_PATH + " = ?,  " +
             FIELD_DESCRIPTION + " = ?,  " +
+            FIELD_SURVEYID + " = ?,  " +
             FIELD_POINTATID + " = ?"
         + " WHERE " + PRIMARY_KEY + " = ?";
         return strUpdate;

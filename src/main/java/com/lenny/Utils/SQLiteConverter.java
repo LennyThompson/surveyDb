@@ -38,6 +38,10 @@ public class SQLiteConverter
 
     public static LocalDateTime convertStringToDateTime(String strDate)
     {
+        if(strDate == null)
+        {
+            return LocalDateTime.now();
+        }
         try
         {
             String[] dateTimeParts = strDate.split(" ");

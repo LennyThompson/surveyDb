@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Mar 26 14:12:03 AEST 2017
+// Generated on Mon May 08 10:06:02 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -59,17 +59,6 @@ public class TraverseSummarysHttpHandler extends HandlerBase implements HttpHand
             if(requestMap.getRequestMap().size() == 0)
             {
                 List<ITraverseSummary> listTraverseSummarys = TraverseSummaryAdapter.getAll(ConnectionManager.getInstance().getConnection());
-                strJsonResponse = "[" + listTraverseSummarys.stream()
-                        .map(item -> ((ISerialiseState) item).toJson())
-                    .collect(Collectors.joining(",")) + "]";
-                System.out.println(getTimestamp() + "TraverseSummary (all) request: GET responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
-            }
-            else if(requestMap.getRequestMap().containsKey("Traverses") || requestMap.getRequestMap().containsKey("ID"))
-            {
-                int nTraverses = requestMap.getRequestMap().containsKey("Traverses") ? Integer.parseInt(requestMap.getRequestMap().get("Traverses").getValue()) : -1;
-                int nID = requestMap.getRequestMap().containsKey("ID") ? Integer.parseInt(requestMap.getRequestMap().get("ID").getValue()) : -1;
-
-                List<ITraverseSummary> listTraverseSummarys = TraverseSummaryAdapter.getForPathQuery(ConnectionManager.getInstance().getConnection(), nTraverses, nID);
                 strJsonResponse = "[" + listTraverseSummarys.stream()
                         .map(item -> ((ISerialiseState) item).toJson())
                     .collect(Collectors.joining(",")) + "]";
