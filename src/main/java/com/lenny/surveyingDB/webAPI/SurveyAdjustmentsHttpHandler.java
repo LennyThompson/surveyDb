@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -35,7 +35,7 @@ public class SurveyAdjustmentsHttpHandler extends HandlerBase implements HttpHan
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
     {
-        switch(httpExchange.getRequestMethod().toUpperCase())
+        switch (httpExchange.getRequestMethod().toUpperCase())
         {
             case "GET":
                 getSurveyAdjustmentsRequest(httpExchange);
@@ -63,12 +63,12 @@ public class SurveyAdjustmentsHttpHandler extends HandlerBase implements HttpHan
         try
         {
             RequestMap requestMap = new RequestMap();
-            if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
+            if (httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
                 requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
-            if(requestMap.getRequestMap().size() == 0)
+            if (requestMap.getRequestMap().size() == 0)
             {
                 List<ISurveyAdjustment> listSurveyAdjustments = SurveyAdjustmentAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 String strJsonResponse = "[" + listSurveyAdjustments.stream()
@@ -79,7 +79,7 @@ public class SurveyAdjustmentsHttpHandler extends HandlerBase implements HttpHan
                 httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
                 httpExchange.getResponseBody().write(strJsonResponse.getBytes());
             }
-            else if(requestMap.getRequestMap().containsKey("ID"))
+            else if (requestMap.getRequestMap().containsKey("ID"))
             {
                 int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 ISurveyAdjustment SurveyAdjustment = SurveyAdjustmentAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
@@ -92,7 +92,7 @@ public class SurveyAdjustmentsHttpHandler extends HandlerBase implements HttpHan
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyAdjustment request: GET SQL exception: " + exc.getMessage());
         }
@@ -144,7 +144,7 @@ public class SurveyAdjustmentsHttpHandler extends HandlerBase implements HttpHan
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyAdjustment request: POST SQL exception: " + exc.getMessage());
         }
@@ -181,7 +181,7 @@ public class SurveyAdjustmentsHttpHandler extends HandlerBase implements HttpHan
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyAdjustment request: PUT SQL exception: " + exc.getMessage());
         }

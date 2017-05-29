@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -396,13 +396,13 @@ public class TraverseSummaryAdapter
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
             List<ITraverseSummary> listRawData = new ArrayList<>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -445,17 +445,17 @@ public class TraverseSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -472,18 +472,18 @@ public class TraverseSummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nSurveyID, nID));
             int nIndex = 1;
-            if(nSurveyID > 0)
+            if (nSurveyID > 0)
             {
                 stmtSelect.setInt(nIndex++, nSurveyID);
             }
-            if(nID > 0)
+            if (nID > 0)
             {
                 stmtSelect.setInt(nIndex++, nID);
             }
 
             results = stmtSelect.executeQuery();
             List<ITraverseSummary> listRawData = new ArrayList<ITraverseSummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -524,17 +524,17 @@ public class TraverseSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -563,9 +563,9 @@ public class TraverseSummaryAdapter
             + " FROM " +
             VIEW_NAME;
         String strWhere = "";
-        if(nSurveyID > 0)
+        if (nSurveyID > 0)
         {
-            if(strWhere.isEmpty())
+            if (strWhere.isEmpty())
             {
                 strWhere = " WHERE ";
             }
@@ -575,9 +575,9 @@ public class TraverseSummaryAdapter
             }
             strWhere += FIELD_SURVEYID + " = ?";
         }
-        if(nID > 0)
+        if (nID > 0)
         {
-            if(strWhere.isEmpty())
+            if (strWhere.isEmpty())
             {
                 strWhere = " WHERE ";
             }
@@ -588,7 +588,7 @@ public class TraverseSummaryAdapter
             strWhere += FIELD_ID + " = ?";
         }
 
-        if(!strWhere.isEmpty())
+        if (!strWhere.isEmpty())
         {
             strSelect += strWhere;
         }
@@ -606,7 +606,7 @@ public class TraverseSummaryAdapter
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
             List<ITraverseSummary> listRawData = new ArrayList<ITraverseSummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -646,17 +646,17 @@ public class TraverseSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -684,7 +684,7 @@ public class TraverseSummaryAdapter
             FIELD_PTENDZ
             + " FROM " +
             VIEW_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }
@@ -729,7 +729,7 @@ public class TraverseSummaryAdapter
     {
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_VIEW_SCRIPT);
-        for(String strScript : VIEW_EXTRA_SCRIPTS)
+        for (String strScript : VIEW_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
         }

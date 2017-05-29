@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -393,7 +393,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
 
         Gson gsonInstance = gsonBuilder.create();
         TraverseAdapter.Traverse typeTraverse = gsonInstance.fromJson(json, TraverseAdapter.Traverse.class);
-        if(typeTraverse.m_nID > 0)
+        if (typeTraverse.m_nID > 0)
         {
             typeTraverse.setSaved();
         }
@@ -408,27 +408,27 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 typeReturn = createTraverseFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -443,22 +443,22 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return createTraverseFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -473,22 +473,22 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateTraverseFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -503,22 +503,22 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return results.getInt(1);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -535,22 +535,22 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createTraverseFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -568,22 +568,22 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             stmtSelect = connDb.prepareStatement(getSelectForSurveyQuery());
             stmtSelect.setInt(1, nParentId);
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createTraverseFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -592,9 +592,9 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     }
     public static ITraverse add(Connection connDb, ITraverse typeAdd) throws SQLException
     {
-        if(!((ISerialiseState) typeAdd).isNew())
+        if (!((ISerialiseState) typeAdd).isNew())
         {
-            if(((ISerialiseState) typeAdd).isUpdated())
+            if (((ISerialiseState) typeAdd).isUpdated())
             {
                 // Update semantics are slightly different at add
                 return update(connDb, typeAdd);
@@ -603,19 +603,19 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             return null;
         }
         PreparedStatement stmtSelect = null;
-        if(((UndoTarget) typeAdd.getStartPoint()).isNew())
+        if (((UndoTarget) typeAdd.getStartPoint()).isNew())
         {
             typeAdd.setStartPoint(SurveyPointAdapter.add(connDb, typeAdd.getStartPoint()));
         }
-        else if(((UndoTarget) typeAdd.getStartPoint()).isUpdated())
+        else if (((UndoTarget) typeAdd.getStartPoint()).isUpdated())
         {
             typeAdd.setStartPoint(SurveyPointAdapter.update(connDb, typeAdd.getStartPoint()));
         }
-        if(((UndoTarget) typeAdd.getEndPoint()).isNew())
+        if (((UndoTarget) typeAdd.getEndPoint()).isNew())
         {
             typeAdd.setEndPoint(SurveyPointAdapter.add(connDb, typeAdd.getEndPoint()));
         }
-        else if(((UndoTarget) typeAdd.getEndPoint()).isUpdated())
+        else if (((UndoTarget) typeAdd.getEndPoint()).isUpdated())
         {
             typeAdd.setEndPoint(SurveyPointAdapter.update(connDb, typeAdd.getEndPoint()));
         }
@@ -642,7 +642,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                         {
                             return TraverseClosureAdapter.add(connDb, item);
                         }
-                        catch(SQLException exc)
+                        catch (SQLException exc)
                         {
                         // TODO: set up error handling
                             throw new RuntimeException(exc);
@@ -659,7 +659,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                         {
                             return SurveyMeasurementAdapter.addForTraverse(connDb, item, typeAdd);
                         }
-                        catch(SQLException exc)
+                        catch (SQLException exc)
                         {
                         // TODO: set up error handling
                             throw new RuntimeException(exc);
@@ -672,13 +672,13 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             ((ISerialiseState) typeAdd).setSaved();
             return updateFromLast(connDb, typeAdd);
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -687,12 +687,12 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     }
     public static ITraverse update(Connection connDb, ITraverse typeUpdate) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
+        if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        else if(((ISerialiseState) typeUpdate).isUpdated())
+        else if (((ISerialiseState) typeUpdate).isUpdated())
         {
             PreparedStatement stmtSelect = null;
             try
@@ -714,7 +714,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                             {
                                 return TraverseClosureAdapter.update(connDb, item);
                             }
-                            catch(SQLException exc)
+                            catch (SQLException exc)
                             {
                             // TODO: set up error handling
                                 throw new RuntimeException(exc);
@@ -731,7 +731,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                             {
                                 return SurveyMeasurementAdapter.updateForTraverse(connDb, item, typeUpdate);
                             }
-                            catch(SQLException exc)
+                            catch (SQLException exc)
                             {
                             // TODO: set up error handling
                                 throw new RuntimeException(exc);
@@ -745,13 +745,13 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                 ((ISerialiseState) typeUpdate).setSaved();
                 return updateFromDatabase(connDb, typeUpdate);
             }
-            catch(SQLException exc)
+            catch (SQLException exc)
             {
                 // TODO: set up error handling
             }
             finally
             {
-                if(stmtSelect != null)
+                if (stmtSelect != null)
                 {
                     stmtSelect.close();
                 }
@@ -770,22 +770,22 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateTraverseFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -848,7 +848,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             FIELD_SURVEYID
             + " FROM " +
             TABLE_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }

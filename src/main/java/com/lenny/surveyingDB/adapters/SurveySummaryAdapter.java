@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -498,13 +498,13 @@ public class SurveySummaryAdapter
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
             List<ISurveySummary> listRawData = new ArrayList<>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -549,17 +549,17 @@ public class SurveySummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -576,14 +576,14 @@ public class SurveySummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nTravID));
             int nIndex = 1;
-            if(nTravID > 0)
+            if (nTravID > 0)
             {
                 stmtSelect.setInt(nIndex++, nTravID);
             }
 
             results = stmtSelect.executeQuery();
             List<ISurveySummary> listRawData = new ArrayList<ISurveySummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -626,17 +626,17 @@ public class SurveySummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -667,9 +667,9 @@ public class SurveySummaryAdapter
             + " FROM " +
             VIEW_NAME;
         String strWhere = "";
-        if(nTravID > 0)
+        if (nTravID > 0)
         {
-            if(strWhere.isEmpty())
+            if (strWhere.isEmpty())
             {
                 strWhere = " WHERE ";
             }
@@ -680,7 +680,7 @@ public class SurveySummaryAdapter
             strWhere += FIELD_TRAVID + " = ?";
         }
 
-        if(!strWhere.isEmpty())
+        if (!strWhere.isEmpty())
         {
             strSelect += strWhere;
         }
@@ -698,7 +698,7 @@ public class SurveySummaryAdapter
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
             List<ISurveySummary> listRawData = new ArrayList<ISurveySummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -740,17 +740,17 @@ public class SurveySummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -780,7 +780,7 @@ public class SurveySummaryAdapter
             FIELD_PTZ
             + " FROM " +
             VIEW_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }
@@ -828,7 +828,7 @@ public class SurveySummaryAdapter
     {
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_VIEW_SCRIPT);
-        for(String strScript : VIEW_EXTRA_SCRIPTS)
+        for (String strScript : VIEW_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
         }

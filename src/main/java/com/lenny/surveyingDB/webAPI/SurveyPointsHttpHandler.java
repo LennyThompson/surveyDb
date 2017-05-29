@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -40,7 +40,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
     {
-        switch(httpExchange.getRequestMethod().toUpperCase())
+        switch (httpExchange.getRequestMethod().toUpperCase())
         {
             case "GET":
                 getSurveyPointsRequest(httpExchange);
@@ -68,12 +68,12 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
         try
         {
             RequestMap requestMap = new RequestMap();
-            if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
+            if (httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
                 requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
-            if(requestMap.getRequestMap().size() == 0)
+            if (requestMap.getRequestMap().size() == 0)
             {
                 List<ISurveyPoint> listSurveyPoints = SurveyPointAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 String strJsonResponse = "[" + listSurveyPoints.stream()
@@ -84,7 +84,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
                 httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
                 httpExchange.getResponseBody().write(strJsonResponse.getBytes());
             }
-            else if(requestMap.getRequestMap().containsKey("ID"))
+            else if (requestMap.getRequestMap().containsKey("ID"))
             {
                 int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 ISurveyPoint SurveyPoint = SurveyPointAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
@@ -97,7 +97,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyPoint request: GET SQL exception: " + exc.getMessage());
         }
@@ -149,7 +149,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyPoint request: POST SQL exception: " + exc.getMessage());
         }
@@ -186,7 +186,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyPoint request: PUT SQL exception: " + exc.getMessage());
         }
@@ -216,7 +216,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
         @Override
         public void handle(HttpExchange httpExchange) throws IOException
         {
-            switch(httpExchange.getRequestMethod().toUpperCase())
+            switch (httpExchange.getRequestMethod().toUpperCase())
             {
                 case "POST":
                     addSurveyPointForSurveyRequest(httpExchange);
@@ -329,7 +329,7 @@ public class SurveyPointsHttpHandler extends HandlerBase implements HttpHandler
                 httpExchange.getResponseBody().close();
                 httpExchange.close();
             }
-            catch(SQLException exc)
+            catch (SQLException exc)
             {
                 System.out.println(getTimestamp() + "SurveyPoint request: POST SQL exception: " + exc.getMessage());
             }

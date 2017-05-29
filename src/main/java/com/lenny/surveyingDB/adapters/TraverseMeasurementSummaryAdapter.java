@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -501,13 +501,13 @@ public class TraverseMeasurementSummaryAdapter
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
             List<ITraverseMeasurementSummary> listRawData = new ArrayList<>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -552,17 +552,17 @@ public class TraverseMeasurementSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -579,18 +579,18 @@ public class TraverseMeasurementSummaryAdapter
         {
             stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nSurveyID, nID));
             int nIndex = 1;
-            if(nSurveyID > 0)
+            if (nSurveyID > 0)
             {
                 stmtSelect.setInt(nIndex++, nSurveyID);
             }
-            if(nID > 0)
+            if (nID > 0)
             {
                 stmtSelect.setInt(nIndex++, nID);
             }
 
             results = stmtSelect.executeQuery();
             List<ITraverseMeasurementSummary> listRawData = new ArrayList<ITraverseMeasurementSummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -633,17 +633,17 @@ public class TraverseMeasurementSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -674,9 +674,9 @@ public class TraverseMeasurementSummaryAdapter
             + " FROM " +
             VIEW_NAME;
         String strWhere = "";
-        if(nSurveyID > 0)
+        if (nSurveyID > 0)
         {
-            if(strWhere.isEmpty())
+            if (strWhere.isEmpty())
             {
                 strWhere = " WHERE ";
             }
@@ -686,9 +686,9 @@ public class TraverseMeasurementSummaryAdapter
             }
             strWhere += FIELD_SURVEYID + " = ?";
         }
-        if(nID > 0)
+        if (nID > 0)
         {
-            if(strWhere.isEmpty())
+            if (strWhere.isEmpty())
             {
                 strWhere = " WHERE ";
             }
@@ -699,7 +699,7 @@ public class TraverseMeasurementSummaryAdapter
             strWhere += FIELD_ID + " = ?";
         }
 
-        if(!strWhere.isEmpty())
+        if (!strWhere.isEmpty())
         {
             strSelect += strWhere;
         }
@@ -717,7 +717,7 @@ public class TraverseMeasurementSummaryAdapter
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
             List<ITraverseMeasurementSummary> listRawData = new ArrayList<ITraverseMeasurementSummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -759,17 +759,17 @@ public class TraverseMeasurementSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -799,7 +799,7 @@ public class TraverseMeasurementSummaryAdapter
             FIELD_PTTOZ
             + " FROM " +
             VIEW_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }
@@ -827,10 +827,10 @@ public class TraverseMeasurementSummaryAdapter
         "ptTo.Z as ptToZ " + 
         "from " + 
         "Traverse trav " + 
-        "inner join TraverseMeasurement as link on link.TraverseID = trav.ID " + 
-        "inner join SurveyMeasurement as survMeas on survMeas.ID = link.MeasurementID " + 
-        "inner join SurveyPoint as ptFrom on survMeas.FromPtID = ptFrom.ID " + 
-        "inner join SurveyPoint as ptTo on survMeas.ToPtID = ptTo.ID;";
+        "left join TraverseMeasurement as link on link.TraverseID = trav.ID " + 
+        "left join SurveyMeasurement as survMeas on survMeas.ID = link.MeasurementID " + 
+        "left join SurveyPoint as ptFrom on survMeas.FromPtID = ptFrom.ID " + 
+        "left join SurveyPoint as ptTo on survMeas.ToPtID = ptTo.ID;";
     public static String getCreateViewScript()
     {
         return CREATE_VIEW_SCRIPT;
@@ -848,7 +848,7 @@ public class TraverseMeasurementSummaryAdapter
     {
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_VIEW_SCRIPT);
-        for(String strScript : VIEW_EXTRA_SCRIPTS)
+        for (String strScript : VIEW_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
         }

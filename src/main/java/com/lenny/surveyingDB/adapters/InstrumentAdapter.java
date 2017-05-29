@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -234,7 +234,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 
         Gson gsonInstance = gsonBuilder.create();
         InstrumentAdapter.Instrument typeInstrument = gsonInstance.fromJson(json, InstrumentAdapter.Instrument.class);
-        if(typeInstrument.m_nID > 0)
+        if (typeInstrument.m_nID > 0)
         {
             typeInstrument.setSaved();
         }
@@ -249,27 +249,27 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 typeReturn = createInstrumentFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -284,22 +284,22 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return createInstrumentFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -314,22 +314,22 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateInstrumentFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -344,22 +344,22 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return results.getInt(1);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -376,22 +376,22 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createInstrumentFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -409,22 +409,22 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             stmtSelect = connDb.prepareStatement(getSelectForSurveyQuery());
             stmtSelect.setInt(1, nParentId);
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createInstrumentFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -439,7 +439,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     public static IInstrument addForSurvey(Connection connDb, IInstrument typeAdd, int nID) throws SQLException
     {
         IInstrument typeReturn = typeAdd;
-        if(((ISerialiseState) typeAdd).isNew())
+        if (((ISerialiseState) typeAdd).isNew())
         {
             typeReturn = add(connDb, typeAdd);
         }
@@ -452,14 +452,14 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             stmtLink.setInt(2, typeReturn.getID());
             stmtLink.executeUpdate();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
             typeReturn = null;
         }
         finally
         {
-            if(stmtLink != null)
+            if (stmtLink != null)
             {
                 stmtLink.close();
             }
@@ -468,9 +468,9 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     } 
     public static IInstrument add(Connection connDb, IInstrument typeAdd) throws SQLException
     {
-        if(!((ISerialiseState) typeAdd).isNew())
+        if (!((ISerialiseState) typeAdd).isNew())
         {
-            if(((ISerialiseState) typeAdd).isUpdated())
+            if (((ISerialiseState) typeAdd).isUpdated())
             {
                 // Update semantics are slightly different at add
                 return update(connDb, typeAdd);
@@ -479,11 +479,11 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             return null;
         }
         PreparedStatement stmtSelect = null;
-        if(((UndoTarget) typeAdd.getManufacturer()).isNew())
+        if (((UndoTarget) typeAdd.getManufacturer()).isNew())
         {
             typeAdd.setManufacturer(InstrumentManufacturerAdapter.add(connDb, typeAdd.getManufacturer()));
         }
-        else if(((UndoTarget) typeAdd.getManufacturer()).isUpdated())
+        else if (((UndoTarget) typeAdd.getManufacturer()).isUpdated())
         {
             typeAdd.setManufacturer(InstrumentManufacturerAdapter.update(connDb, typeAdd.getManufacturer()));
         }
@@ -501,13 +501,13 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             ((ISerialiseState) typeAdd).setSaved();
             return updateFromLast(connDb, typeAdd);
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -522,12 +522,12 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     } 
     public static IInstrument update(Connection connDb, IInstrument typeUpdate) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
+        if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        else if(((ISerialiseState) typeUpdate).isUpdated())
+        else if (((ISerialiseState) typeUpdate).isUpdated())
         {
             PreparedStatement stmtSelect = null;
             try
@@ -543,13 +543,13 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
                 ((ISerialiseState) typeUpdate).setSaved();
                 return updateFromDatabase(connDb, typeUpdate);
             }
-            catch(SQLException exc)
+            catch (SQLException exc)
             {
                 // TODO: set up error handling
             }
             finally
             {
-                if(stmtSelect != null)
+                if (stmtSelect != null)
                 {
                     stmtSelect.close();
                 }
@@ -568,22 +568,22 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateInstrumentFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -628,7 +628,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             FIELD_MANUFACTURERID
             + " FROM " +
             TABLE_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }

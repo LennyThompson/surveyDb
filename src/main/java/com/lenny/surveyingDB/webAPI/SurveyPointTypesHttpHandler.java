@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -33,7 +33,7 @@ public class SurveyPointTypesHttpHandler extends HandlerBase implements HttpHand
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
     {
-        switch(httpExchange.getRequestMethod().toUpperCase())
+        switch (httpExchange.getRequestMethod().toUpperCase())
         {
             case "GET":
                 getSurveyPointTypesRequest(httpExchange);
@@ -61,12 +61,12 @@ public class SurveyPointTypesHttpHandler extends HandlerBase implements HttpHand
         try
         {
             RequestMap requestMap = new RequestMap();
-            if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
+            if (httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
                 requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
-            if(requestMap.getRequestMap().size() == 0)
+            if (requestMap.getRequestMap().size() == 0)
             {
                 List<ISurveyPointType> listSurveyPointTypes = SurveyPointTypeAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 String strJsonResponse = "[" + listSurveyPointTypes.stream()
@@ -77,7 +77,7 @@ public class SurveyPointTypesHttpHandler extends HandlerBase implements HttpHand
                 httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
                 httpExchange.getResponseBody().write(strJsonResponse.getBytes());
             }
-            else if(requestMap.getRequestMap().containsKey("ID"))
+            else if (requestMap.getRequestMap().containsKey("ID"))
             {
                 int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 ISurveyPointType SurveyPointType = SurveyPointTypeAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
@@ -90,7 +90,7 @@ public class SurveyPointTypesHttpHandler extends HandlerBase implements HttpHand
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyPointType request: GET SQL exception: " + exc.getMessage());
         }
@@ -142,7 +142,7 @@ public class SurveyPointTypesHttpHandler extends HandlerBase implements HttpHand
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyPointType request: POST SQL exception: " + exc.getMessage());
         }
@@ -179,7 +179,7 @@ public class SurveyPointTypesHttpHandler extends HandlerBase implements HttpHand
             httpExchange.getResponseBody().close();
             httpExchange.close();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             System.out.println(getTimestamp() + "SurveyPointType request: PUT SQL exception: " + exc.getMessage());
         }

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -401,13 +401,13 @@ public class SurveyPointSummaryAdapter
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
             List<ISurveyPointSummary> listRawData = new ArrayList<>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -446,17 +446,17 @@ public class SurveyPointSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -475,7 +475,7 @@ public class SurveyPointSummaryAdapter
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
             List<ISurveyPointSummary> listRawData = new ArrayList<ISurveyPointSummary>();
-            while(results.next())
+            while (results.next())
             {
                 listRawData.add
                     (
@@ -511,17 +511,17 @@ public class SurveyPointSummaryAdapter
             }
 
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -545,7 +545,7 @@ public class SurveyPointSummaryAdapter
             FIELD_REFDESCRIPTION
             + " FROM " +
             VIEW_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }
@@ -588,7 +588,7 @@ public class SurveyPointSummaryAdapter
     {
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_VIEW_SCRIPT);
-        for(String strScript : VIEW_EXTRA_SCRIPTS)
+        for (String strScript : VIEW_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
         }

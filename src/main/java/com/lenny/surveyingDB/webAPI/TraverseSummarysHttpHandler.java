@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -31,7 +31,7 @@ public class TraverseSummarysHttpHandler extends HandlerBase implements HttpHand
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
     {
-        switch(httpExchange.getRequestMethod().toUpperCase())
+        switch (httpExchange.getRequestMethod().toUpperCase())
         {
             case "GET":
                 getTraverseSummarysRequest(httpExchange);
@@ -49,14 +49,14 @@ public class TraverseSummarysHttpHandler extends HandlerBase implements HttpHand
         try
         {
             RequestMap requestMap = new RequestMap();
-            if(httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
+            if (httpExchange.getRequestURI().getQuery() != null && !httpExchange.getRequestURI().getQuery().isEmpty())
             {
                 requestMap.buildRequestMap(httpExchange.getRequestURI().getQuery());
             }
 
             String strJsonResponse = "";
 
-            if(requestMap.getRequestMap().size() == 0)
+            if (requestMap.getRequestMap().size() == 0)
             {
                 List<ITraverseSummary> listTraverseSummarys = TraverseSummaryAdapter.getAll(ConnectionManager.getInstance().getConnection());
                 strJsonResponse = "[" + listTraverseSummarys.stream()
@@ -64,14 +64,14 @@ public class TraverseSummarysHttpHandler extends HandlerBase implements HttpHand
                     .collect(Collectors.joining(",")) + "]";
                 System.out.println(getTimestamp() + "TraverseSummary (all) request: GET responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             }
-            else if(requestMap.getRequestMap().containsKey("ID"))
+            else if (requestMap.getRequestMap().containsKey("ID"))
             {
                 int nID = Integer.parseInt(requestMap.getRequestMap().get("ID").getValue());
                 ITraverseSummary TraverseSummary = TraverseSummaryAdapter.get(ConnectionManager.getInstance().getConnection(), nID);
                 strJsonResponse = ((ISerialiseState) TraverseSummary).toJson();
                 System.out.println(getTimestamp() + "TraverseSummary request: GET (" + nID + ")  responding with " + HTTP_200 + ", data length: " + strJsonResponse.length());
             }
-            if(!strJsonResponse.isEmpty())
+            if (!strJsonResponse.isEmpty())
             {
                 super.updateHeaders(httpExchange);
                 httpExchange.sendResponseHeaders(HTTP_200, strJsonResponse.length());
@@ -80,7 +80,7 @@ public class TraverseSummarysHttpHandler extends HandlerBase implements HttpHand
                 httpExchange.close();
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
         }
         catch (IOException exc)

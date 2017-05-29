@@ -41,7 +41,7 @@ public class SurveyDbServer
     public static SurveyDbServer createServer(int nPortNo, String strDbName) throws SQLException
     {
         SurveyDbServer server = null;
-        if(nPortNo > 1023)
+        if (nPortNo > 1023)
         {
             try
             {
@@ -56,7 +56,7 @@ public class SurveyDbServer
                     server.m_strDbName = strDbName;
                 }
             }
-            catch(IOException exc)
+            catch (IOException exc)
             {
 
             }
@@ -68,7 +68,7 @@ public class SurveyDbServer
     public void initServer() throws SQLException
     {
         m_fileSurveyDb = new File(m_strDbName);
-        if(!m_fileSurveyDb.exists())
+        if (!m_fileSurveyDb.exists())
         {
             buildNewDatabase(m_strDbName);
         }

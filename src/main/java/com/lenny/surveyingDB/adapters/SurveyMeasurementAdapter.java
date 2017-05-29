@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -346,7 +346,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyMeasurementAdapter.SurveyMeasurement typeSurveyMeasurement = gsonInstance.fromJson(json, SurveyMeasurementAdapter.SurveyMeasurement.class);
-        if(typeSurveyMeasurement.m_nID > 0)
+        if (typeSurveyMeasurement.m_nID > 0)
         {
             typeSurveyMeasurement.setSaved();
         }
@@ -361,27 +361,27 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 typeReturn = createSurveyMeasurementFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -396,22 +396,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return createSurveyMeasurementFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -426,22 +426,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateSurveyMeasurementFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -456,22 +456,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return results.getInt(1);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -488,22 +488,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createSurveyMeasurementFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -521,22 +521,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             stmtSelect = connDb.prepareStatement(getSelectForSurveyQuery());
             stmtSelect.setInt(1, nParentId);
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createSurveyMeasurementFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -553,22 +553,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             stmtSelect = connDb.prepareStatement(getSelectForTraverseQuery());
             stmtSelect.setInt(1, nParentId);
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createSurveyMeasurementFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -583,7 +583,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     public static ISurveyMeasurement addForTraverse(Connection connDb, ISurveyMeasurement typeAdd, int nID) throws SQLException
     {
         ISurveyMeasurement typeReturn = typeAdd;
-        if(((ISerialiseState) typeAdd).isNew())
+        if (((ISerialiseState) typeAdd).isNew())
         {
             typeReturn = add(connDb, typeAdd);
         }
@@ -596,14 +596,14 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             stmtLink.setInt(2, typeReturn.getID());
             stmtLink.executeUpdate();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
             typeReturn = null;
         }
         finally
         {
-            if(stmtLink != null)
+            if (stmtLink != null)
             {
                 stmtLink.close();
             }
@@ -612,9 +612,9 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     } 
     public static ISurveyMeasurement add(Connection connDb, ISurveyMeasurement typeAdd) throws SQLException
     {
-        if(!((ISerialiseState) typeAdd).isNew())
+        if (!((ISerialiseState) typeAdd).isNew())
         {
-            if(((ISerialiseState) typeAdd).isUpdated())
+            if (((ISerialiseState) typeAdd).isUpdated())
             {
                 // Update semantics are slightly different at add
                 return update(connDb, typeAdd);
@@ -623,19 +623,19 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             return null;
         }
         PreparedStatement stmtSelect = null;
-        if(((UndoTarget) typeAdd.getPointFrom()).isNew())
+        if (((UndoTarget) typeAdd.getPointFrom()).isNew())
         {
             typeAdd.setPointFrom(SurveyPointAdapter.add(connDb, typeAdd.getPointFrom()));
         }
-        else if(((UndoTarget) typeAdd.getPointFrom()).isUpdated())
+        else if (((UndoTarget) typeAdd.getPointFrom()).isUpdated())
         {
             typeAdd.setPointFrom(SurveyPointAdapter.update(connDb, typeAdd.getPointFrom()));
         }
-        if(((UndoTarget) typeAdd.getPointTo()).isNew())
+        if (((UndoTarget) typeAdd.getPointTo()).isNew())
         {
             typeAdd.setPointTo(SurveyPointAdapter.add(connDb, typeAdd.getPointTo()));
         }
-        else if(((UndoTarget) typeAdd.getPointTo()).isUpdated())
+        else if (((UndoTarget) typeAdd.getPointTo()).isUpdated())
         {
             typeAdd.setPointTo(SurveyPointAdapter.update(connDb, typeAdd.getPointTo()));
         }
@@ -656,13 +656,13 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             ((ISerialiseState) typeAdd).setSaved();
             return updateFromLast(connDb, typeAdd);
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -677,12 +677,12 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     } 
     public static ISurveyMeasurement update(Connection connDb, ISurveyMeasurement typeUpdate) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
+        if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        else if(((ISerialiseState) typeUpdate).isUpdated())
+        else if (((ISerialiseState) typeUpdate).isUpdated())
         {
             PreparedStatement stmtSelect = null;
             try
@@ -701,13 +701,13 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                 ((ISerialiseState) typeUpdate).setSaved();
                 return updateFromDatabase(connDb, typeUpdate);
             }
-            catch(SQLException exc)
+            catch (SQLException exc)
             {
                 // TODO: set up error handling
             }
             finally
             {
-                if(stmtSelect != null)
+                if (stmtSelect != null)
                 {
                     stmtSelect.close();
                 }
@@ -726,22 +726,22 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateSurveyMeasurementFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -795,7 +795,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_SURVEYID
             + " FROM " +
             TABLE_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }

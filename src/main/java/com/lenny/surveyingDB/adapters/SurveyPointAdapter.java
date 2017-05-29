@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 08 10:06:02 AEST 2017
+// Generated on Sat May 13 12:52:41 AEST 2017
 
 package com.lenny.surveyingDB.adapters;
 
@@ -430,7 +430,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyPointAdapter.SurveyPoint typeSurveyPoint = gsonInstance.fromJson(json, SurveyPointAdapter.SurveyPoint.class);
-        if(typeSurveyPoint.m_nID > 0)
+        if (typeSurveyPoint.m_nID > 0)
         {
             typeSurveyPoint.setSaved();
         }
@@ -445,27 +445,27 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
-            if(nIdGet > 0)
+            if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
             }
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 typeReturn = createSurveyPointFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -480,22 +480,22 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return createSurveyPointFromQueryResults(connDb, results);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -510,22 +510,22 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateSurveyPointFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -540,22 +540,22 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return results.getInt(1);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -572,22 +572,22 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createSurveyPointFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -605,22 +605,22 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             stmtSelect = connDb.prepareStatement(getSelectForSurveyQuery());
             stmtSelect.setInt(1, nParentId);
             results = stmtSelect.executeQuery();
-            while(results.next())
+            while (results.next())
             {
                 listReturn.add(createSurveyPointFromQueryResults(connDb, results));
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -635,7 +635,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     public static ISurveyPoint addForSurvey(Connection connDb, ISurveyPoint typeAdd, int nID) throws SQLException
     {
         ISurveyPoint typeReturn = typeAdd;
-        if(((ISerialiseState) typeAdd).isNew())
+        if (((ISerialiseState) typeAdd).isNew())
         {
             typeReturn = add(connDb, typeAdd);
         }
@@ -648,14 +648,14 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             stmtLink.setInt(2, typeReturn.getID());
             stmtLink.executeUpdate();
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
             typeReturn = null;
         }
         finally
         {
-            if(stmtLink != null)
+            if (stmtLink != null)
             {
                 stmtLink.close();
             }
@@ -664,9 +664,9 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     } 
     public static ISurveyPoint add(Connection connDb, ISurveyPoint typeAdd) throws SQLException
     {
-        if(!((ISerialiseState) typeAdd).isNew())
+        if (!((ISerialiseState) typeAdd).isNew())
         {
-            if(((ISerialiseState) typeAdd).isUpdated())
+            if (((ISerialiseState) typeAdd).isUpdated())
             {
                 // Update semantics are slightly different at add
                 return update(connDb, typeAdd);
@@ -675,19 +675,19 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             return null;
         }
         PreparedStatement stmtSelect = null;
-        if(((UndoTarget) typeAdd.getPointType()).isNew())
+        if (((UndoTarget) typeAdd.getPointType()).isNew())
         {
             typeAdd.setPointType(SurveyPointTypeAdapter.add(connDb, typeAdd.getPointType()));
         }
-        else if(((UndoTarget) typeAdd.getPointType()).isUpdated())
+        else if (((UndoTarget) typeAdd.getPointType()).isUpdated())
         {
             typeAdd.setPointType(SurveyPointTypeAdapter.update(connDb, typeAdd.getPointType()));
         }
-        if(((UndoTarget) typeAdd.getReference()).isNew())
+        if (((UndoTarget) typeAdd.getReference()).isNew())
         {
             typeAdd.setReference(SurveyReferenceAdapter.add(connDb, typeAdd.getReference()));
         }
-        else if(((UndoTarget) typeAdd.getReference()).isUpdated())
+        else if (((UndoTarget) typeAdd.getReference()).isUpdated())
         {
             typeAdd.setReference(SurveyReferenceAdapter.update(connDb, typeAdd.getReference()));
         }
@@ -716,7 +716,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                         {
                             return SurveyImageAdapter.add(connDb, item);
                         }
-                        catch(SQLException exc)
+                        catch (SQLException exc)
                         {
                         // TODO: set up error handling
                             throw new RuntimeException(exc);
@@ -729,13 +729,13 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             ((ISerialiseState) typeAdd).setSaved();
             return updateFromLast(connDb, typeAdd);
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -750,12 +750,12 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
     } 
     public static ISurveyPoint update(Connection connDb, ISurveyPoint typeUpdate) throws SQLException
     {
-        if(((ISerialiseState) typeUpdate).isNew())
+        if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
             return add(connDb, typeUpdate);
         }
-        else if(((ISerialiseState) typeUpdate).isUpdated())
+        else if (((ISerialiseState) typeUpdate).isUpdated())
         {
             PreparedStatement stmtSelect = null;
             try
@@ -779,7 +779,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                             {
                                 return SurveyImageAdapter.update(connDb, item);
                             }
-                            catch(SQLException exc)
+                            catch (SQLException exc)
                             {
                             // TODO: set up error handling
                                 throw new RuntimeException(exc);
@@ -793,13 +793,13 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                 ((ISerialiseState) typeUpdate).setSaved();
                 return updateFromDatabase(connDb, typeUpdate);
             }
-            catch(SQLException exc)
+            catch (SQLException exc)
             {
                 // TODO: set up error handling
             }
             finally
             {
-                if(stmtSelect != null)
+                if (stmtSelect != null)
                 {
                     stmtSelect.close();
                 }
@@ -818,22 +818,22 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
-            if(results.next())
+            if (results.next())
             {
                 return updateSurveyPointFromQueryResults(connDb, results, typeUpdate);
             }
         }
-        catch(SQLException exc)
+        catch (SQLException exc)
         {
             // TODO: set up error handling
         }
         finally
         {
-            if(results != null)
+            if (results != null)
             {
                 results.close();
             }
-            if(stmtSelect != null)
+            if (stmtSelect != null)
             {
                 stmtSelect.close();
             }
@@ -894,7 +894,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             FIELD_REFID
             + " FROM " +
             TABLE_NAME;
-        if(nIdFor > 0)
+        if (nIdFor > 0)
         {
             strSelect += " WHERE " + PRIMARY_KEY + " = ?";
         }
