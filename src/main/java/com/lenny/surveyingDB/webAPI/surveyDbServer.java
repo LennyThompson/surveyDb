@@ -15,7 +15,7 @@ import com.lenny.Utils.ConnectionManager;
 import com.lenny.surveyingDB.webAPI.*;
 import com.lenny.surveyingDB.adapters.*;
 
-public class SurveyDbServer
+public class surveyDbServer
 {
     // Todo: Turn this into a configuration item...
 
@@ -25,27 +25,27 @@ public class SurveyDbServer
     private static String HTTP_ILLEGAL_METHOD = "Error 405: Method %s not supported";
     private static int HTTP_200 = 200;
 
-    private static String DEFAULT_FILE_NAME = "SurveyDb.db";
+    private static String DEFAULT_FILE_NAME = "surveyDb.db";
     private HttpServer m_httpServer;
     private int m_nPort;
-    private File m_fileSurveyDb;
+    private File m_filesurveyDb;
     private String m_strDbName;
 
-    private SurveyDbServer(int nPortNo) throws IOException
+    private surveyDbServer(int nPortNo) throws IOException
     {
         m_httpServer = HttpServer.create(new InetSocketAddress(nPortNo), 0);
         m_nPort = nPortNo;
         m_strDbName = DEFAULT_FILE_NAME;
     }
 
-    public static SurveyDbServer createServer(int nPortNo, String strDbName) throws SQLException
+    public static surveyDbServer createServer(int nPortNo, String strDbName) throws SQLException
     {
-        SurveyDbServer server = null;
+        surveyDbServer server = null;
         if (nPortNo > 1023)
         {
             try
             {
-                server = new SurveyDbServer(nPortNo);
+                server = new surveyDbServer(nPortNo);
                 if
                 (
                     strDbName != null
@@ -67,8 +67,8 @@ public class SurveyDbServer
 
     public void initServer() throws SQLException
     {
-        m_fileSurveyDb = new File(m_strDbName);
-        if (!m_fileSurveyDb.exists())
+        m_filesurveyDb = new File(m_strDbName);
+        if (!m_filesurveyDb.exists())
         {
             buildNewDatabase(m_strDbName);
         }

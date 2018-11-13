@@ -1,7 +1,7 @@
 package com.lenny.surveyingDB;
 
 import com.lenny.Utils.CmdLineParser;
-import com.lenny.surveyingDB.webAPI.SurveyDbServer;
+import com.lenny.surveyingDB.webAPI.surveyDbServer;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -28,7 +28,7 @@ public class Main
                 {
                     try
                     {
-                        SurveyDbServer server = SurveyDbServer.createServer(cmdLineParser.getArg(PORT_ARG).asIntValue(), "");
+                        surveyDbServer server = surveyDbServer.createServer(cmdLineParser.getArg(PORT_ARG).asIntValue(), "");
                     }
                     catch (SQLException e)
                     {

@@ -4,15 +4,13 @@ import com.google.gson.*;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.surveyingDB.interfaces.*;
-import com.lenny.surveyingDB.webAPI.SurveyDbServer;
+import com.lenny.surveyingDB.webAPI.surveyDbServer;
 import org.junit.Test;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -103,7 +101,7 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
-        SurveyDbServer.buildNewDatabase("testCreatePoint.db");
+        surveyDbServer.buildNewDatabase("testCreatePoint.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testCreatePoint.db");
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
@@ -166,7 +164,7 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
-        SurveyDbServer.buildNewDatabase("testUpdatePoint.db");
+        surveyDbServer.buildNewDatabase("testUpdatePoint.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testUpdatePoint.db");
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
@@ -220,7 +218,7 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
-        SurveyDbServer.buildNewDatabase("testSurveyMeasurement.db");
+        surveyDbServer.buildNewDatabase("testSurveyMeasurement.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testSurveyMeasurement.db");
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
@@ -273,7 +271,7 @@ public class TestSurveyDbAdapaters
             fileDb.delete();
         }
 
-        SurveyDbServer.buildNewDatabase("testTraverse.db");
+        surveyDbServer.buildNewDatabase("testTraverse.db");
         Connection connDb = DriverManager.getConnection("jdbc:sqlite:testTraverse.db");
 
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);

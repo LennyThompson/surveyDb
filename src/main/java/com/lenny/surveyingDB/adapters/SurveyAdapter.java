@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sat May 13 12:52:41 AEST 2017
+// Generated on Mon Nov 12 20:29:54 AEST 2018
 
 package com.lenny.surveyingDB.adapters;
 
@@ -22,16 +22,16 @@ import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ISurvey;
 import com.lenny.surveyingDB.interfaces.IProjection;
 import com.lenny.surveyingDB.adapters.ProjectionAdapter;
-import com.lenny.surveyingDB.adapters.SurveyImageAdapter;
-import com.lenny.surveyingDB.adapters.SurveyPointAdapter;
-import com.lenny.surveyingDB.adapters.InstrumentAdapter;
-import com.lenny.surveyingDB.adapters.TraverseAdapter;
 import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
-import com.lenny.surveyingDB.interfaces.ISurveyImage;
-import com.lenny.surveyingDB.interfaces.ISurveyPoint;
-import com.lenny.surveyingDB.interfaces.IInstrument;
-import com.lenny.surveyingDB.interfaces.ITraverse;
+import com.lenny.surveyingDB.adapters.SurveyImageAdapter;
+import com.lenny.surveyingDB.adapters.TraverseAdapter;
+import com.lenny.surveyingDB.adapters.InstrumentAdapter;
+import com.lenny.surveyingDB.adapters.SurveyPointAdapter;
 import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
+import com.lenny.surveyingDB.interfaces.ISurveyImage;
+import com.lenny.surveyingDB.interfaces.ITraverse;
+import com.lenny.surveyingDB.interfaces.IInstrument;
+import com.lenny.surveyingDB.interfaces.ISurveyPoint;
 
 
 public class SurveyAdapter implements JsonDeserializer<ISurvey>
@@ -55,16 +55,16 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             @SerializedName("ProjectionID")
             private IProjection m_typeProjection;
 
-            @SerializedName("Images")
-            private List<ISurveyImage> m_listSurveyImage;
-            @SerializedName("Survey_SurveyPoint")
-            private List<ISurveyPoint> m_listSurveyPoint;
-            @SerializedName("Survey_Instrument")
-            private List<IInstrument> m_listInstrument;
-            @SerializedName("Traverses")
-            private List<ITraverse> m_listTraverse;
             @SerializedName("Measurements")
             private List<ISurveyMeasurement> m_listSurveyMeasurement;
+            @SerializedName("Images")
+            private List<ISurveyImage> m_listSurveyImage;
+            @SerializedName("Traverses")
+            private List<ITraverse> m_listTraverse;
+            @SerializedName("Survey_Instrument")
+            private List<IInstrument> m_listInstrument;
+            @SerializedName("Survey_SurveyPoint")
+            private List<ISurveyPoint> m_listSurveyPoint;
 
             Survey()
             {
@@ -76,15 +76,15 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
 
                 m_typeProjection = ProjectionAdapter.createNewProjection();
 
-                m_listSurveyImage = new ArrayList<>();
-                m_listSurveyPoint = new ArrayList<>();
-                m_listInstrument = new ArrayList<>();
-                m_listTraverse = new ArrayList<>();
                 m_listSurveyMeasurement = new ArrayList<>();
+                m_listSurveyImage = new ArrayList<>();
+                m_listTraverse = new ArrayList<>();
+                m_listInstrument = new ArrayList<>();
+                m_listSurveyPoint = new ArrayList<>();
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            Survey(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strName, String strDescription, IProjection typeProjection, List<ISurveyImage> listSurveyImage, List<ISurveyPoint> listSurveyPoint, List<IInstrument> listInstrument, List<ITraverse> listTraverse, List<ISurveyMeasurement> listSurveyMeasurement)
+            Survey(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strName, String strDescription, IProjection typeProjection, List<ISurveyMeasurement> listSurveyMeasurement, List<ISurveyImage> listSurveyImage, List<ITraverse> listTraverse, List<IInstrument> listInstrument, List<ISurveyPoint> listSurveyPoint)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -92,11 +92,11 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                 m_strName = strName;
                 m_strDescription = strDescription;
                 m_typeProjection = typeProjection;
-                m_listSurveyImage = listSurveyImage;
-                m_listSurveyPoint = listSurveyPoint;
-                m_listInstrument = listInstrument;
-                m_listTraverse = listTraverse;
                 m_listSurveyMeasurement = listSurveyMeasurement;
+                m_listSurveyImage = listSurveyImage;
+                m_listTraverse = listTraverse;
+                m_listInstrument = listInstrument;
+                m_listSurveyPoint = listSurveyPoint;
                 m_saveState = DataSaveState.SAVE_STATE_SAVED;
             }
 
@@ -126,25 +126,25 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                 return  m_typeProjection;
             }
 
+            public List<ISurveyMeasurement> getSurveyMeasurements()
+            {
+                return  m_listSurveyMeasurement;
+            }
             public List<ISurveyImage> getSurveyImages()
             {
                 return  m_listSurveyImage;
-            }
-            public List<ISurveyPoint> getSurveyPoints()
-            {
-                return  m_listSurveyPoint;
-            }
-            public List<IInstrument> getInstruments()
-            {
-                return  m_listInstrument;
             }
             public List<ITraverse> getTraverses()
             {
                 return  m_listTraverse;
             }
-            public List<ISurveyMeasurement> getSurveyMeasurements()
+            public List<IInstrument> getInstruments()
             {
-                return  m_listSurveyMeasurement;
+                return  m_listInstrument;
+            }
+            public List<ISurveyPoint> getSurveyPoints()
+            {
+                return  m_listSurveyPoint;
             }
 
             public void setName(String strSet)
@@ -227,6 +227,34 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                 setUpdated();
             }
 
+            public void addSurveyMeasurement(ISurveyMeasurement typeAdd)
+            {
+                addUndoProvider
+                    (
+                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyMeasurement = " + Survey.this.m_listSurveyMeasurement)
+                        {
+                            ISurveyMeasurement m_undoSurveyMeasurement = typeAdd;
+                            public boolean doUndo()
+                            {
+                                if(isPending())
+                                {
+                                    Survey.this.m_listSurveyMeasurement.remove(m_undoSurveyMeasurement);
+                                    if(Survey.this.m_saveState != m_dataSaveState)
+                                    {
+                                        Survey.this.m_saveState = m_dataSaveState;
+                                    }
+                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                    return true;
+                                }
+                                return false;
+                            }
+                        }
+                    );
+
+                m_listSurveyMeasurement.add(typeAdd);
+                ((SurveyMeasurementAdapter.SurveyMeasurement) typeAdd).setSurveyID(getID());
+                setUpdated();
+            }
             public void addSurveyImage(ISurveyImage typeAdd)
             {
                 addUndoProvider
@@ -253,60 +281,6 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
 
                 m_listSurveyImage.add(typeAdd);
                 ((SurveyImageAdapter.SurveyImage) typeAdd).setSurveyID(getID());
-                setUpdated();
-            }
-            public void addSurveyPoint(ISurveyPoint typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyPoint = " + Survey.this.m_listSurveyPoint)
-                        {
-                            ISurveyPoint m_undoSurveyPoint = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listSurveyPoint.remove(m_undoSurveyPoint);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listSurveyPoint.add(typeAdd);
-                setUpdated();
-            }
-            public void addInstrument(IInstrument typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Instrument = " + Survey.this.m_listInstrument)
-                        {
-                            IInstrument m_undoInstrument = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listInstrument.remove(m_undoInstrument);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listInstrument.add(typeAdd);
                 setUpdated();
             }
             public void addTraverse(ITraverse typeAdd)
@@ -337,18 +311,18 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                 ((TraverseAdapter.Traverse) typeAdd).setSurveyID(getID());
                 setUpdated();
             }
-            public void addSurveyMeasurement(ISurveyMeasurement typeAdd)
+            public void addInstrument(IInstrument typeAdd)
             {
                 addUndoProvider
                     (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyMeasurement = " + Survey.this.m_listSurveyMeasurement)
+                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Instrument = " + Survey.this.m_listInstrument)
                         {
-                            ISurveyMeasurement m_undoSurveyMeasurement = typeAdd;
+                            IInstrument m_undoInstrument = typeAdd;
                             public boolean doUndo()
                             {
                                 if(isPending())
                                 {
-                                    Survey.this.m_listSurveyMeasurement.remove(m_undoSurveyMeasurement);
+                                    Survey.this.m_listInstrument.remove(m_undoInstrument);
                                     if(Survey.this.m_saveState != m_dataSaveState)
                                     {
                                         Survey.this.m_saveState = m_dataSaveState;
@@ -361,8 +335,34 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                         }
                     );
 
-                m_listSurveyMeasurement.add(typeAdd);
-                ((SurveyMeasurementAdapter.SurveyMeasurement) typeAdd).setSurveyID(getID());
+                m_listInstrument.add(typeAdd);
+                setUpdated();
+            }
+            public void addSurveyPoint(ISurveyPoint typeAdd)
+            {
+                addUndoProvider
+                    (
+                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyPoint = " + Survey.this.m_listSurveyPoint)
+                        {
+                            ISurveyPoint m_undoSurveyPoint = typeAdd;
+                            public boolean doUndo()
+                            {
+                                if(isPending())
+                                {
+                                    Survey.this.m_listSurveyPoint.remove(m_undoSurveyPoint);
+                                    if(Survey.this.m_saveState != m_dataSaveState)
+                                    {
+                                        Survey.this.m_saveState = m_dataSaveState;
+                                    }
+                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                    return true;
+                                }
+                                return false;
+                            }
+                        }
+                    );
+
+                m_listSurveyPoint.add(typeAdd);
                 setUpdated();
             }
 
@@ -378,11 +378,11 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                 strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
                 strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
                 strJson += "\"ProjectionID\":" + ((ISerialiseState) m_typeProjection).toJson() + ",";
+                strJson += "\"Measurements\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
                 strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Survey_Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
                 strJson += "\"Traverses\":[" + m_listTraverse.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Measurements\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+                strJson += "\"Survey_Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+                strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
                 strJson += "}";
                 return strJson;
             }
@@ -411,14 +411,14 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
         String strName,
         String strDescription,
         IProjection typeProjection,
+        List<ISurveyMeasurement> listSurveyMeasurement,
         List<ISurveyImage> listSurveyImage,
-        List<ISurveyPoint> listSurveyPoint,
-        List<IInstrument> listInstrument,
         List<ITraverse> listTraverse,
-        List<ISurveyMeasurement> listSurveyMeasurement
+        List<IInstrument> listInstrument,
+        List<ISurveyPoint> listSurveyPoint
     )
     {
-        return new Survey(nID, dateCreated, dateUpdated, strName, strDescription, typeProjection, listSurveyImage, listSurveyPoint, listInstrument, listTraverse, listSurveyMeasurement);
+        return new Survey(nID, dateCreated, dateUpdated, strName, strDescription, typeProjection, listSurveyMeasurement, listSurveyImage, listTraverse, listInstrument, listSurveyPoint);
     }
 
     // This method enables the adapter type to be registered to deserialise json as ISurvey
@@ -432,11 +432,11 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(IProjection.class, new ProjectionAdapter());
-        gsonBuilder.registerTypeAdapter(ISurveyImage.class, new SurveyImageAdapter());
-        gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
-        gsonBuilder.registerTypeAdapter(IInstrument.class, new InstrumentAdapter());
-        gsonBuilder.registerTypeAdapter(ITraverse.class, new TraverseAdapter());
         gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyImage.class, new SurveyImageAdapter());
+        gsonBuilder.registerTypeAdapter(ITraverse.class, new TraverseAdapter());
+        gsonBuilder.registerTypeAdapter(IInstrument.class, new InstrumentAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyAdapter.Survey typeSurvey = gsonInstance.fromJson(json, SurveyAdapter.Survey.class);
@@ -638,6 +638,23 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
 
             ((Survey) typeAdd).m_nID = getLastId(connDb);
 
+            ((Survey) typeAdd).m_listSurveyMeasurement = typeAdd.getSurveyMeasurements().stream()
+                .map
+                (
+                    item ->
+                    {
+                        try
+                        {
+                            return SurveyMeasurementAdapter.add(connDb, item);
+                        }
+                        catch (SQLException exc)
+                        {
+                        // TODO: set up error handling
+                            throw new RuntimeException(exc);
+                        }
+                    }
+                )
+                .collect(Collectors.toList());
             ((Survey) typeAdd).m_listSurveyImage = typeAdd.getSurveyImages().stream()
                 .map
                 (
@@ -646,40 +663,6 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                         try
                         {
                             return SurveyImageAdapter.add(connDb, item);
-                        }
-                        catch (SQLException exc)
-                        {
-                        // TODO: set up error handling
-                            throw new RuntimeException(exc);
-                        }
-                    }
-                )
-                .collect(Collectors.toList());
-            ((Survey) typeAdd).m_listSurveyPoint = typeAdd.getSurveyPoints().stream()
-                .map
-                (
-                    item ->
-                    {
-                        try
-                        {
-                            return SurveyPointAdapter.addForSurvey(connDb, item, typeAdd);
-                        }
-                        catch (SQLException exc)
-                        {
-                        // TODO: set up error handling
-                            throw new RuntimeException(exc);
-                        }
-                    }
-                )
-                .collect(Collectors.toList());
-            ((Survey) typeAdd).m_listInstrument = typeAdd.getInstruments().stream()
-                .map
-                (
-                    item ->
-                    {
-                        try
-                        {
-                            return InstrumentAdapter.addForSurvey(connDb, item, typeAdd);
                         }
                         catch (SQLException exc)
                         {
@@ -706,14 +689,31 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                     }
                 )
                 .collect(Collectors.toList());
-            ((Survey) typeAdd).m_listSurveyMeasurement = typeAdd.getSurveyMeasurements().stream()
+            ((Survey) typeAdd).m_listInstrument = typeAdd.getInstruments().stream()
                 .map
                 (
                     item ->
                     {
                         try
                         {
-                            return SurveyMeasurementAdapter.add(connDb, item);
+                            return InstrumentAdapter.addForSurvey(connDb, item, typeAdd);
+                        }
+                        catch (SQLException exc)
+                        {
+                        // TODO: set up error handling
+                            throw new RuntimeException(exc);
+                        }
+                    }
+                )
+                .collect(Collectors.toList());
+            ((Survey) typeAdd).m_listSurveyPoint = typeAdd.getSurveyPoints().stream()
+                .map
+                (
+                    item ->
+                    {
+                        try
+                        {
+                            return SurveyPointAdapter.addForSurvey(connDb, item, typeAdd);
                         }
                         catch (SQLException exc)
                         {
@@ -759,6 +759,23 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                 stmtSelect.setInt(3, typeUpdate.getProjection().getID());
                 stmtSelect.setInt(4, typeUpdate.getID());
 
+                ((Survey) typeUpdate).m_listSurveyMeasurement = typeUpdate.getSurveyMeasurements().stream()
+                    .map
+                    (
+                        item ->
+                        {
+                            try
+                            {
+                                return SurveyMeasurementAdapter.update(connDb, item);
+                            }
+                            catch (SQLException exc)
+                            {
+                            // TODO: set up error handling
+                                throw new RuntimeException(exc);
+                            }
+                        }
+                    )
+                    .collect(Collectors.toList());
                 ((Survey) typeUpdate).m_listSurveyImage = typeUpdate.getSurveyImages().stream()
                     .map
                     (
@@ -767,40 +784,6 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                             try
                             {
                                 return SurveyImageAdapter.update(connDb, item);
-                            }
-                            catch (SQLException exc)
-                            {
-                            // TODO: set up error handling
-                                throw new RuntimeException(exc);
-                            }
-                        }
-                    )
-                    .collect(Collectors.toList());
-                ((Survey) typeUpdate).m_listSurveyPoint = typeUpdate.getSurveyPoints().stream()
-                    .map
-                    (
-                        item ->
-                        {
-                            try
-                            {
-                                return SurveyPointAdapter.updateForSurvey(connDb, item, typeUpdate);
-                            }
-                            catch (SQLException exc)
-                            {
-                            // TODO: set up error handling
-                                throw new RuntimeException(exc);
-                            }
-                        }
-                    )
-                    .collect(Collectors.toList());
-                ((Survey) typeUpdate).m_listInstrument = typeUpdate.getInstruments().stream()
-                    .map
-                    (
-                        item ->
-                        {
-                            try
-                            {
-                                return InstrumentAdapter.updateForSurvey(connDb, item, typeUpdate);
                             }
                             catch (SQLException exc)
                             {
@@ -827,14 +810,31 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                         }
                     )
                     .collect(Collectors.toList());
-                ((Survey) typeUpdate).m_listSurveyMeasurement = typeUpdate.getSurveyMeasurements().stream()
+                ((Survey) typeUpdate).m_listInstrument = typeUpdate.getInstruments().stream()
                     .map
                     (
                         item ->
                         {
                             try
                             {
-                                return SurveyMeasurementAdapter.update(connDb, item);
+                                return InstrumentAdapter.updateForSurvey(connDb, item, typeUpdate);
+                            }
+                            catch (SQLException exc)
+                            {
+                            // TODO: set up error handling
+                                throw new RuntimeException(exc);
+                            }
+                        }
+                    )
+                    .collect(Collectors.toList());
+                ((Survey) typeUpdate).m_listSurveyPoint = typeUpdate.getSurveyPoints().stream()
+                    .map
+                    (
+                        item ->
+                        {
+                            try
+                            {
+                                return SurveyPointAdapter.updateForSurvey(connDb, item, typeUpdate);
                             }
                             catch (SQLException exc)
                             {
@@ -900,10 +900,6 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
 
 
 
-    static boolean addSurveyForSurveyPoint(Connection connDb, int nID, ISurveyPoint typeUpdate) throws SQLException
-    {
-        return SurveyPointAdapter.addForSurvey(connDb, typeUpdate, nID) != null;
-    }
 
 
     static boolean addSurveyForInstrument(Connection connDb, int nID, IInstrument typeUpdate) throws SQLException
@@ -912,6 +908,10 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
     }
 
 
+    static boolean addSurveyForSurveyPoint(Connection connDb, int nID, ISurveyPoint typeUpdate) throws SQLException
+    {
+        return SurveyPointAdapter.addForSurvey(connDb, typeUpdate, nID) != null;
+    }
 
 
 
@@ -925,11 +925,11 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
                        results.getString(FIELD_NAME),
                        results.getString(FIELD_DESCRIPTION),
                        ProjectionAdapter.get(connDb, results.getInt(FIELD_PROJECTIONID)),
+                       SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
                        SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                       SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                       InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
                        TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                       SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID))
+                       InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                       SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID))
                    );
 
     }
@@ -941,11 +941,11 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
        ((Survey)typeUpdate).m_strName = results.getString(FIELD_NAME);
        ((Survey)typeUpdate).m_strDescription = results.getString(FIELD_DESCRIPTION);
        ((Survey)typeUpdate).m_typeProjection = ProjectionAdapter.get(connDb, results.getInt(FIELD_PROJECTIONID));
-       ((Survey)typeUpdate).m_listSurveyImage = SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
-       ((Survey)typeUpdate).m_listSurveyPoint = SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
-       ((Survey)typeUpdate).m_listInstrument = InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
-       ((Survey)typeUpdate).m_listTraverse = TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
        ((Survey)typeUpdate).m_listSurveyMeasurement = SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
+       ((Survey)typeUpdate).m_listSurveyImage = SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
+       ((Survey)typeUpdate).m_listTraverse = TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
+       ((Survey)typeUpdate).m_listInstrument = InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
+       ((Survey)typeUpdate).m_listSurveyPoint = SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID));
 
        return typeUpdate;
     }
