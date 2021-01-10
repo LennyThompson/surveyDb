@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,6 +23,10 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.TraverseClosureAdapter;
 import com.lenny.surveyingDB.interfaces.ITraverseClosure;
 import java.util.Date;
@@ -30,6 +34,7 @@ import java.util.Date;
 
 public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(TraverseClosureAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -59,6 +64,7 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
 
     private void getTraverseClosuresRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("TraverseClosure GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -93,11 +99,11 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "TraverseClosure request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("TraverseClosure request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "TraverseClosure request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("TraverseClosure request: GET IO exception", exc);
         }
         finally
         {
@@ -106,6 +112,7 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
 
     private void replyTraverseClosuresOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("TraverseClosure OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -122,6 +129,7 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
 
     private void addTraverseClosuresRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("TraverseClosure PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -145,11 +153,11 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "TraverseClosure request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("TraverseClosure request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "TraverseClosure request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("TraverseClosure request: POST IO exception", exc);
         }
         finally
         {
@@ -158,6 +166,7 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
 
     private void updateTraverseClosuresRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("TraverseClosure update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -182,10 +191,11 @@ public class TraverseClosuresHttpHandler extends HandlerBase implements HttpHand
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "TraverseClosure request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("TraverseClosure request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("TraverseClosure request: PUT IO exception", exc);
         }
         finally
         {

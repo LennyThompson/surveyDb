@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,12 +23,17 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.InstrumentManufacturerAdapter;
 import com.lenny.surveyingDB.interfaces.IInstrumentManufacturer;
 
 
 public class InstrumentManufacturersHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(InstrumentManufacturerAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -58,6 +63,7 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
 
     private void getInstrumentManufacturersRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("InstrumentManufacturer GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -92,11 +98,11 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "InstrumentManufacturer request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("InstrumentManufacturer request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "InstrumentManufacturer request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("InstrumentManufacturer request: GET IO exception", exc);
         }
         finally
         {
@@ -105,6 +111,7 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
 
     private void replyInstrumentManufacturersOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("InstrumentManufacturer OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -121,6 +128,7 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
 
     private void addInstrumentManufacturersRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("InstrumentManufacturer PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -144,11 +152,11 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "InstrumentManufacturer request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("InstrumentManufacturer request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "InstrumentManufacturer request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("InstrumentManufacturer request: POST IO exception", exc);
         }
         finally
         {
@@ -157,6 +165,7 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
 
     private void updateInstrumentManufacturersRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("InstrumentManufacturer update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -181,10 +190,11 @@ public class InstrumentManufacturersHttpHandler extends HandlerBase implements H
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "InstrumentManufacturer request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("InstrumentManufacturer request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("InstrumentManufacturer request: PUT IO exception", exc);
         }
         finally
         {

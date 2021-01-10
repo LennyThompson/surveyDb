@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ISurveyPointType;
@@ -24,6 +28,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyPointType;
 
 public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType>
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyPointTypeAdapter.class.getName());
 
         // Class implements ISurveyPointType but only accessible through the SurveyPointTypeAdapter
 
@@ -237,6 +242,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
         ISurveyPointType typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyPointType id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -248,11 +254,17 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             if (results.next())
             {
                 typeReturn = createSurveyPointTypeFromQueryResults(connDb, results);
+                LOGGER.debug("SurveyPointType data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No SurveyPointType data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -271,6 +283,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last SurveyPointType from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -279,10 +292,15 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             {
                 return createSurveyPointTypeFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyPointType data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last SurveyPointType  from db", exc);
         }
         finally
         {
@@ -301,6 +319,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating SurveyPointType id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -309,10 +328,15 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             {
                 return updateSurveyPointTypeFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find SurveyPointType id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of SurveyPointType id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -331,6 +355,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyPointType id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -339,10 +364,15 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyPointType in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last SurveyPointType id from db failed", exc);
         }
         finally
         {
@@ -363,6 +393,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
         List<ISurveyPointType> listReturn = new ArrayList<ISurveyPointType>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all SurveyPointType data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -371,10 +402,12 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             {
                 listReturn.add(createSurveyPointTypeFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " SurveyPointType data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all SurveyPointType from db failed", exc);
         }
         finally
         {
@@ -402,6 +435,8 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding SurveyPointType data to db");
+        LOGGER.debug("Adding SurveyPointType data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         try
         {
@@ -414,11 +449,13 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added SurveyPointType data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding SurveyPointType to db failed", exc);
         }
         finally
         {
@@ -431,6 +468,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     }
     public static ISurveyPointType update(Connection connDb, ISurveyPointType typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating SurveyPointType data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -438,6 +476,8 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating SurveyPointType, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating SurveyPointType data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -455,6 +495,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding SurveyPointType to db failed", exc);
             }
             finally
             {
@@ -472,6 +513,7 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database SurveyPointType, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -481,10 +523,15 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             {
                 return updateSurveyPointTypeFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database SurveyPointType, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for SurveyPointType, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -581,8 +628,8 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE `SurveyPointType` " + 
         "( " + 
         "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`Name` TEXT NOT NULL UNIQUE, " + 
         "`Abbreviation`  TEXT NOT NULL UNIQUE, " + 
         "`UserDefined` BOOLEAN NOT NULL " + 
@@ -622,11 +669,14 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating SurveyPointType in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("SurveyPointType create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("SurveyPointType extra script - " + strScript);
         }
     }
 }

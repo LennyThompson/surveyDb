@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ISurveyAdjustment;
@@ -26,6 +30,7 @@ import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
 
 public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustment>
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyAdjustmentAdapter.class.getName());
 
         // Class implements ISurveyAdjustment but only accessible through the SurveyAdjustmentAdapter
 
@@ -319,6 +324,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         ISurveyAdjustment typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyAdjustment id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -330,11 +336,17 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             if (results.next())
             {
                 typeReturn = createSurveyAdjustmentFromQueryResults(connDb, results);
+                LOGGER.debug("SurveyAdjustment data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No SurveyAdjustment data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -353,6 +365,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last SurveyAdjustment from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -361,10 +374,15 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 return createSurveyAdjustmentFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyAdjustment data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last SurveyAdjustment  from db", exc);
         }
         finally
         {
@@ -383,6 +401,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating SurveyAdjustment id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -391,10 +410,15 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 return updateSurveyAdjustmentFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find SurveyAdjustment id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of SurveyAdjustment id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -413,6 +437,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyAdjustment id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -421,10 +446,15 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyAdjustment in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last SurveyAdjustment id from db failed", exc);
         }
         finally
         {
@@ -445,6 +475,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         List<ISurveyAdjustment> listReturn = new ArrayList<ISurveyAdjustment>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all SurveyAdjustment data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -453,10 +484,12 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 listReturn.add(createSurveyAdjustmentFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " SurveyAdjustment data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all SurveyAdjustment from db failed", exc);
         }
         finally
         {
@@ -484,6 +517,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding SurveyAdjustment data to db");
+        LOGGER.debug("Adding SurveyAdjustment data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         if (((UndoTarget) typeAdd.getMeasurement()).isNew())
         {
@@ -507,11 +542,13 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added SurveyAdjustment data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding SurveyAdjustment to db failed", exc);
         }
         finally
         {
@@ -524,6 +561,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     }
     public static ISurveyAdjustment update(Connection connDb, ISurveyAdjustment typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating SurveyAdjustment data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -531,6 +569,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating SurveyAdjustment, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating SurveyAdjustment data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -550,6 +590,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding SurveyAdjustment to db failed", exc);
             }
             finally
             {
@@ -567,6 +608,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database SurveyAdjustment, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -576,10 +618,15 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 return updateSurveyAdjustmentFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database SurveyAdjustment, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for SurveyAdjustment, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -688,8 +735,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE `SurveyAdjustment` " + 
         "( " + 
         "`ID`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`MeasurementID` INTEGER NOT NULL, " + 
         "`DeltaX`    REAL NOT NULL, " + 
         "`DeltaY`    REAL NOT NULL, " + 
@@ -717,11 +764,14 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating SurveyAdjustment in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("SurveyAdjustment create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("SurveyAdjustment extra script - " + strScript);
         }
     }
 }

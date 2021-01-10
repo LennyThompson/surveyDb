@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,6 +23,10 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.SurveyAdapter;
 import com.lenny.surveyingDB.interfaces.ISurvey;
 import com.lenny.surveyingDB.interfaces.IProjection;
@@ -41,6 +45,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyPoint;
 
 public class SurveysHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -70,6 +75,7 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
 
     private void getSurveysRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("Survey GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -104,11 +110,11 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "Survey request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("Survey request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "Survey request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("Survey request: GET IO exception", exc);
         }
         finally
         {
@@ -117,6 +123,7 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
 
     private void replySurveysOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("Survey OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -133,6 +140,7 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
 
     private void addSurveysRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("Survey PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -156,11 +164,11 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "Survey request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("Survey request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "Survey request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("Survey request: POST IO exception", exc);
         }
         finally
         {
@@ -169,6 +177,7 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
 
     private void updateSurveysRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("Survey update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -193,10 +202,11 @@ public class SurveysHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "Survey request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("Survey request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("Survey request: PUT IO exception", exc);
         }
         finally
         {

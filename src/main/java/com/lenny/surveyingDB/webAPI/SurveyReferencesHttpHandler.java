@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,12 +23,17 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.SurveyReferenceAdapter;
 import com.lenny.surveyingDB.interfaces.ISurveyReference;
 
 
 public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyReferenceAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -58,6 +63,7 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
 
     private void getSurveyReferencesRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyReference GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -92,11 +98,11 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyReference request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyReference request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "SurveyReference request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("SurveyReference request: GET IO exception", exc);
         }
         finally
         {
@@ -105,6 +111,7 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
 
     private void replySurveyReferencesOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyReference OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -121,6 +128,7 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
 
     private void addSurveyReferencesRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyReference PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -144,11 +152,11 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyReference request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyReference request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "SurveyReference request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("SurveyReference request: POST IO exception", exc);
         }
         finally
         {
@@ -157,6 +165,7 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
 
     private void updateSurveyReferencesRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyReference update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -181,10 +190,11 @@ public class SurveyReferencesHttpHandler extends HandlerBase implements HttpHand
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyReference request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyReference request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("SurveyReference request: PUT IO exception", exc);
         }
         finally
         {

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:53 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ISurveyImage;
@@ -24,6 +28,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyImage;
 
 public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyImageAdapter.class.getName());
 
         // Class implements ISurveyImage but only accessible through the SurveyImageAdapter
 
@@ -269,6 +274,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         ISurveyImage typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyImage id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -280,11 +286,17 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             if (results.next())
             {
                 typeReturn = createSurveyImageFromQueryResults(connDb, results);
+                LOGGER.debug("SurveyImage data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No SurveyImage data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -303,6 +315,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last SurveyImage from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -311,10 +324,15 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 return createSurveyImageFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyImage data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last SurveyImage  from db", exc);
         }
         finally
         {
@@ -333,6 +351,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating SurveyImage id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -341,10 +360,15 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 return updateSurveyImageFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find SurveyImage id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of SurveyImage id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -363,6 +387,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyImage id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -371,10 +396,15 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyImage in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last SurveyImage id from db failed", exc);
         }
         finally
         {
@@ -395,6 +425,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         List<ISurveyImage> listReturn = new ArrayList<ISurveyImage>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all SurveyImage data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -403,10 +434,12 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 listReturn.add(createSurveyImageFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " SurveyImage data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all SurveyImage from db failed", exc);
         }
         finally
         {
@@ -497,6 +530,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding SurveyImage data to db");
+        LOGGER.debug("Adding SurveyImage data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         try
         {
@@ -510,11 +545,13 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added SurveyImage data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding SurveyImage to db failed", exc);
         }
         finally
         {
@@ -527,6 +564,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     }
     public static ISurveyImage update(Connection connDb, ISurveyImage typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating SurveyImage data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -534,6 +572,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating SurveyImage, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating SurveyImage data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -552,6 +592,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding SurveyImage to db failed", exc);
             }
             finally
             {
@@ -569,6 +610,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database SurveyImage, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -578,10 +620,15 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             {
                 return updateSurveyImageFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database SurveyImage, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for SurveyImage, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -715,8 +762,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE `SurveyImage` " + 
         "( " + 
         "`ID`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`Path`  TEXT NOT NULL, " + 
         "`SurveyID` INTEGER NOT NULL, " + 
         "`PointAtID` INTEGER NOT NULL, " + 
@@ -744,11 +791,14 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating SurveyImage in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("SurveyImage create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("SurveyImage extra script - " + strScript);
         }
     }
 }

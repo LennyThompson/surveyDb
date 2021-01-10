@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,6 +23,10 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.InstrumentAdapter;
 import com.lenny.surveyingDB.interfaces.IInstrument;
 import com.lenny.surveyingDB.interfaces.IInstrumentManufacturer;
@@ -32,6 +36,7 @@ import com.lenny.surveyingDB.interfaces.ISurvey;
 
 public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(InstrumentAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -61,6 +66,7 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
 
     private void getInstrumentsRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("Instrument GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -95,11 +101,11 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "Instrument request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("Instrument request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "Instrument request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("Instrument request: GET IO exception", exc);
         }
         finally
         {
@@ -108,6 +114,7 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
 
     private void replyInstrumentsOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("Instrument OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -124,6 +131,7 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
 
     private void addInstrumentsRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("Instrument PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -147,11 +155,11 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "Instrument request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("Instrument request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "Instrument request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("Instrument request: POST IO exception", exc);
         }
         finally
         {
@@ -160,6 +168,7 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
 
     private void updateInstrumentsRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("Instrument update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -184,10 +193,11 @@ public class InstrumentsHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "Instrument request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("Instrument request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("Instrument request: PUT IO exception", exc);
         }
         finally
         {

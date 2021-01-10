@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ITraverseClosure;
@@ -25,6 +29,7 @@ import java.util.Date;
 
 public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure>
 {
+    private static final Logger LOGGER = LogManager.getLogger(TraverseClosureAdapter.class.getName());
 
         // Class implements ITraverseClosure but only accessible through the TraverseClosureAdapter
 
@@ -386,6 +391,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         ITraverseClosure typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting TraverseClosure id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -397,11 +403,17 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             if (results.next())
             {
                 typeReturn = createTraverseClosureFromQueryResults(connDb, results);
+                LOGGER.debug("TraverseClosure data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No TraverseClosure data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -420,6 +432,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last TraverseClosure from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -428,10 +441,15 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 return createTraverseClosureFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last TraverseClosure data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last TraverseClosure  from db", exc);
         }
         finally
         {
@@ -450,6 +468,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating TraverseClosure id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -458,10 +477,15 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 return updateTraverseClosureFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find TraverseClosure id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of TraverseClosure id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -480,6 +504,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting TraverseClosure id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -488,10 +513,15 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last TraverseClosure in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last TraverseClosure id from db failed", exc);
         }
         finally
         {
@@ -512,6 +542,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         List<ITraverseClosure> listReturn = new ArrayList<ITraverseClosure>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all TraverseClosure data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -520,10 +551,12 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 listReturn.add(createTraverseClosureFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " TraverseClosure data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all TraverseClosure from db failed", exc);
         }
         finally
         {
@@ -583,6 +616,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding TraverseClosure data to db");
+        LOGGER.debug("Adding TraverseClosure data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         try
         {
@@ -599,11 +634,13 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added TraverseClosure data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding TraverseClosure to db failed", exc);
         }
         finally
         {
@@ -616,6 +653,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     }
     public static ITraverseClosure update(Connection connDb, ITraverseClosure typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating TraverseClosure data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -623,6 +661,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating TraverseClosure, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating TraverseClosure data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -644,6 +684,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding TraverseClosure to db failed", exc);
             }
             finally
             {
@@ -661,6 +702,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database TraverseClosure, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -670,10 +712,15 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 return updateTraverseClosureFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database TraverseClosure, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for TraverseClosure, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -813,8 +860,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE `TraverseClosure` " + 
         "( " + 
         "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`TraverseID`    INTEGER NOT NULL, " + 
         "`MiscZ` REAL, " + 
         "`MiscY` REAL, " + 
@@ -844,11 +891,14 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating TraverseClosure in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("TraverseClosure create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("TraverseClosure extra script - " + strScript);
         }
     }
 }

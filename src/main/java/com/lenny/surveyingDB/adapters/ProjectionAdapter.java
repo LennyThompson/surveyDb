@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.IProjection;
@@ -24,6 +28,7 @@ import com.lenny.surveyingDB.interfaces.IProjection;
 
 public class ProjectionAdapter implements JsonDeserializer<IProjection>
 {
+    private static final Logger LOGGER = LogManager.getLogger(ProjectionAdapter.class.getName());
 
         // Class implements IProjection but only accessible through the ProjectionAdapter
 
@@ -263,6 +268,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         IProjection typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting Projection id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -274,11 +280,17 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             if (results.next())
             {
                 typeReturn = createProjectionFromQueryResults(connDb, results);
+                LOGGER.debug("Projection data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No Projection data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -297,6 +309,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last Projection from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -305,10 +318,15 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 return createProjectionFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last Projection data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last Projection  from db", exc);
         }
         finally
         {
@@ -327,6 +345,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating Projection id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -335,10 +354,15 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 return updateProjectionFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find Projection id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of Projection id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -357,6 +381,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting Projection id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -365,10 +390,15 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last Projection in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last Projection id from db failed", exc);
         }
         finally
         {
@@ -389,6 +419,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         List<IProjection> listReturn = new ArrayList<IProjection>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all Projection data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -397,10 +428,12 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 listReturn.add(createProjectionFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " Projection data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all Projection from db failed", exc);
         }
         finally
         {
@@ -428,6 +461,8 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding Projection data to db");
+        LOGGER.debug("Adding Projection data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         try
         {
@@ -440,11 +475,13 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added Projection data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding Projection to db failed", exc);
         }
         finally
         {
@@ -457,6 +494,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     }
     public static IProjection update(Connection connDb, IProjection typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating Projection data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -464,6 +502,8 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating Projection, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating Projection data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -481,6 +521,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding Projection to db failed", exc);
             }
             finally
             {
@@ -498,6 +539,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database Projection, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -507,10 +549,15 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             {
                 return updateProjectionFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database Projection, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for Projection, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -607,8 +654,8 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE Projection " + 
         "( " + 
         "`ID`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`Name`  TEXT NOT NULL, " + 
         "`Date`      TIMESTAMP, " + 
         "`Description`   TEXT " + 
@@ -635,11 +682,14 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating Projection in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("Projection create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("Projection extra script - " + strScript);
         }
     }
 }

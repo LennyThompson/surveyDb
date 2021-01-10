@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ISurveyReference;
@@ -24,6 +28,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyReference;
 
 public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference>
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyReferenceAdapter.class.getName());
 
         // Class implements ISurveyReference but only accessible through the SurveyReferenceAdapter
 
@@ -274,6 +279,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         ISurveyReference typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyReference id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -285,11 +291,17 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             if (results.next())
             {
                 typeReturn = createSurveyReferenceFromQueryResults(connDb, results);
+                LOGGER.debug("SurveyReference data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No SurveyReference data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -308,6 +320,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last SurveyReference from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -316,10 +329,15 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return createSurveyReferenceFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyReference data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last SurveyReference  from db", exc);
         }
         finally
         {
@@ -338,6 +356,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating SurveyReference id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -346,10 +365,15 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return updateSurveyReferenceFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find SurveyReference id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of SurveyReference id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -368,6 +392,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting SurveyReference id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -376,10 +401,15 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last SurveyReference in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last SurveyReference id from db failed", exc);
         }
         finally
         {
@@ -400,6 +430,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         List<ISurveyReference> listReturn = new ArrayList<ISurveyReference>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all SurveyReference data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -408,10 +439,12 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 listReturn.add(createSurveyReferenceFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " SurveyReference data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all SurveyReference from db failed", exc);
         }
         finally
         {
@@ -439,6 +472,8 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding SurveyReference data to db");
+        LOGGER.debug("Adding SurveyReference data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         try
         {
@@ -452,11 +487,13 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added SurveyReference data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding SurveyReference to db failed", exc);
         }
         finally
         {
@@ -469,6 +506,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     }
     public static ISurveyReference update(Connection connDb, ISurveyReference typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating SurveyReference data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -476,6 +514,8 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating SurveyReference, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating SurveyReference data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -494,6 +534,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding SurveyReference to db failed", exc);
             }
             finally
             {
@@ -511,6 +552,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database SurveyReference, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -520,10 +562,15 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return updateSurveyReferenceFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database SurveyReference, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for SurveyReference, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -626,8 +673,8 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE `SurveyReference` " + 
         "( " + 
         "`ID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`Name` TEXT NOT NULL, " + 
         "`Description` TEXT NOT NULL, " + 
         "`Date`      TIMESTAMP, " + 
@@ -655,11 +702,14 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating SurveyReference in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("SurveyReference create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("SurveyReference extra script - " + strScript);
         }
     }
 }

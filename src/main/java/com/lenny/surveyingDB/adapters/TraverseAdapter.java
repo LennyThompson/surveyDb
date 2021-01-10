@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.ITraverse;
@@ -30,6 +34,7 @@ import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 
 public class TraverseAdapter implements JsonDeserializer<ITraverse>
 {
+    private static final Logger LOGGER = LogManager.getLogger(TraverseAdapter.class.getName());
 
         // Class implements ITraverse but only accessible through the TraverseAdapter
 
@@ -405,6 +410,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         ITraverse typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting Traverse id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -416,11 +422,17 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             if (results.next())
             {
                 typeReturn = createTraverseFromQueryResults(connDb, results);
+                LOGGER.debug("Traverse data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No Traverse data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -439,6 +451,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last Traverse from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -447,10 +460,15 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             {
                 return createTraverseFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last Traverse data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last Traverse  from db", exc);
         }
         finally
         {
@@ -469,6 +487,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating Traverse id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -477,10 +496,15 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             {
                 return updateTraverseFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find Traverse id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of Traverse id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -499,6 +523,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting Traverse id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -507,10 +532,15 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last Traverse in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last Traverse id from db failed", exc);
         }
         finally
         {
@@ -531,6 +561,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         List<ITraverse> listReturn = new ArrayList<ITraverse>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all Traverse data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -539,10 +570,12 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             {
                 listReturn.add(createTraverseFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " Traverse data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all Traverse from db failed", exc);
         }
         finally
         {
@@ -602,6 +635,8 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding Traverse data to db");
+        LOGGER.debug("Adding Traverse data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         if (((UndoTarget) typeAdd.getStartPoint()).isNew())
         {
@@ -670,11 +705,13 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added Traverse data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding Traverse to db failed", exc);
         }
         finally
         {
@@ -687,6 +724,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     }
     public static ITraverse update(Connection connDb, ITraverse typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating Traverse data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -694,6 +732,8 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating Traverse, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating Traverse data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -748,6 +788,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding Traverse to db failed", exc);
             }
             finally
             {
@@ -765,6 +806,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database Traverse, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -774,10 +816,15 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             {
                 return updateTraverseFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database Traverse, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for Traverse, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -915,8 +962,8 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE `Traverse` " + 
         "( " + 
         "`ID`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`Name`  TEXT, " + 
         "`Description`   TEXT, " + 
         "`SurveyID` INTEGER NOT NULL, " + 
@@ -946,11 +993,14 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating Traverse in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("Traverse create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("Traverse extra script - " + strScript);
         }
     }
 }

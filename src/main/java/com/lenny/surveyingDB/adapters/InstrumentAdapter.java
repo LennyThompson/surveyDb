@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:54:24 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.interfaces.IInstrument;
@@ -27,6 +31,7 @@ import com.lenny.surveyingDB.interfaces.ISurvey;
 
 public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 {
+    private static final Logger LOGGER = LogManager.getLogger(InstrumentAdapter.class.getName());
 
         // Class implements IInstrument but only accessible through the InstrumentAdapter
 
@@ -246,6 +251,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         IInstrument typeReturn = null;
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting Instrument id = " + nIdGet + " from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
@@ -257,11 +263,17 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             if (results.next())
             {
                 typeReturn = createInstrumentFromQueryResults(connDb, results);
+                LOGGER.debug("Instrument data for id = " + nIdGet + " - " + ((ISerialiseState) typeReturn).toJson());
+            }
+            else
+            {
+                LOGGER.debug("No Instrument data for id = " + nIdGet + " from db");
             }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading from db for id = " + nIdGet, exc);
         }
         finally
         {
@@ -280,6 +292,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting last Instrument from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -288,10 +301,15 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 return createInstrumentFromQueryResults(connDb, results);
             }
+            else
+            {
+                LOGGER.debug("No last Instrument data from db");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Error reading last Instrument  from db", exc);
         }
         finally
         {
@@ -310,6 +328,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating Instrument id = " + typeUpdate.getID() + " in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastQuery());
@@ -318,10 +337,15 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 return updateInstrumentFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Cannot find Instrument id = " + typeUpdate.getID() + " in db for update");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Update of Instrument id = " + typeUpdate.getID() + " to db failed", exc);
         }
         finally
         {
@@ -340,6 +364,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting Instrument id from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
@@ -348,10 +373,15 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 return results.getInt(1);
             }
+            else
+            {
+                LOGGER.debug("No last Instrument in db failed");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting last Instrument id from db failed", exc);
         }
         finally
         {
@@ -372,6 +402,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         List<IInstrument> listReturn = new ArrayList<IInstrument>();
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Getting all Instrument data from db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
@@ -380,10 +411,12 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 listReturn.add(createInstrumentFromQueryResults(connDb, results));
             }
+            LOGGER.info("Found " + listReturn.size() + " Instrument data from db");
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Getting all Instrument from db failed", exc);
         }
         finally
         {
@@ -478,6 +511,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             // Nothing to save...
             return null;
         }
+        LOGGER.info("Adding Instrument data to db");
+        LOGGER.debug("Adding Instrument data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
         if (((UndoTarget) typeAdd.getManufacturer()).isNew())
         {
@@ -499,11 +534,13 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 
             // This will cancel any pending undo items
             ((ISerialiseState) typeAdd).setSaved();
+            LOGGER.info("Added Instrument data to db");
             return updateFromLast(connDb, typeAdd);
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Adding Instrument to db failed", exc);
         }
         finally
         {
@@ -522,6 +559,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     } 
     public static IInstrument update(Connection connDb, IInstrument typeUpdate) throws SQLException
     {
+        LOGGER.debug("Updating Instrument data in db");
         if (((ISerialiseState) typeUpdate).isNew())
         {
             // A new object has to be added first
@@ -529,6 +567,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         }
         else if (((ISerialiseState) typeUpdate).isUpdated())
         {
+            LOGGER.info("Updating Instrument, id = " + typeUpdate.getID() + " data in db");
+            LOGGER.debug("Updating Instrument data - " + ((ISerialiseState) typeUpdate).toJson());
             PreparedStatement stmtSelect = null;
             try
             {
@@ -546,6 +586,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             catch (SQLException exc)
             {
                 // TODO: set up error handling
+                LOGGER.error("Adding Instrument to db failed", exc);
             }
             finally
             {
@@ -563,6 +604,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     {
         PreparedStatement stmtSelect = null;
         ResultSet results = null;
+        LOGGER.info("Updating from database Instrument, id = " + typeUpdate.getID() + " data in db");
         try
         {
             stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
@@ -572,10 +614,15 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             {
                 return updateInstrumentFromQueryResults(connDb, results, typeUpdate);
             }
+            else
+            {
+                LOGGER.debug("Updating from database Instrument, id = " + typeUpdate.getID() + " returned no data");
+            }
         }
         catch (SQLException exc)
         {
             // TODO: set up error handling
+            LOGGER.error("Updating from database for Instrument, id = " + typeUpdate.getID() + " from db failed", exc);
         }
         finally
         {
@@ -703,8 +750,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
     private static String CREATE_TABLE_SCRIPT =         "CREATE TABLE Instrument " + 
         "( " + 
         "`ID`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
-        "`created`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`updated`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
+        "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`Name`  TEXT NOT NULL, " + 
         "`Description`   TEXT, " + 
         "`ManufacturerID` INTEGER, " + 
@@ -738,11 +785,14 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 
     public static void createInDatabase(Connection connDb) throws SQLException
     {
+        LOGGER.debug("Creating Instrument in database");
         Statement stmtExecute = connDb.createStatement();
         stmtExecute.execute(CREATE_TABLE_SCRIPT);
+        LOGGER.debug("Instrument create script - " + CREATE_TABLE_SCRIPT);
         for(String strScript : TABLE_EXTRA_SCRIPTS)
         {
             stmtExecute.execute(strScript);
+            LOGGER.debug("Instrument extra script - " + strScript);
         }
     }
 }

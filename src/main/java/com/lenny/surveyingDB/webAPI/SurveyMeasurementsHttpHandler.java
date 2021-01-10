@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,6 +23,10 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
 import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 import com.lenny.surveyingDB.interfaces.ISurveyPoint;
@@ -32,6 +36,7 @@ import com.lenny.surveyingDB.interfaces.ITraverse;
 
 public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyMeasurementAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -61,6 +66,7 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
 
     private void getSurveyMeasurementsRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyMeasurement GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -95,11 +101,11 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyMeasurement request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyMeasurement request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "SurveyMeasurement request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("SurveyMeasurement request: GET IO exception", exc);
         }
         finally
         {
@@ -108,6 +114,7 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
 
     private void replySurveyMeasurementsOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyMeasurement OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -124,6 +131,7 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
 
     private void addSurveyMeasurementsRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyMeasurement PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -147,11 +155,11 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyMeasurement request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyMeasurement request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "SurveyMeasurement request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("SurveyMeasurement request: POST IO exception", exc);
         }
         finally
         {
@@ -160,6 +168,7 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
 
     private void updateSurveyMeasurementsRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyMeasurement update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -184,10 +193,11 @@ public class SurveyMeasurementsHttpHandler extends HandlerBase implements HttpHa
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyMeasurement request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyMeasurement request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("SurveyMeasurement request: PUT IO exception", exc);
         }
         finally
         {

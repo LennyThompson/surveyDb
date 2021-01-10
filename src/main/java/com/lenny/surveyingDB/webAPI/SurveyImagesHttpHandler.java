@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Nov 12 20:29:54 AEST 2018
+// Generated on Sun Jan 10 14:55:28 AEST 2021
 
 package com.lenny.surveyingDB.webAPI;
 
@@ -23,12 +23,17 @@ import com.lenny.Utils.HandlerBase;
 import com.lenny.Utils.ConnectionManager;
 import com.lenny.Utils.ISerialiseState;
 
+// log4j types
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 import com.lenny.surveyingDB.adapters.SurveyImageAdapter;
 import com.lenny.surveyingDB.interfaces.ISurveyImage;
 
 
 public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
 {
+    private static final Logger LOGGER = LogManager.getLogger(SurveyImageAdapter.class.getName());
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException
@@ -58,6 +63,7 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
 
     private void getSurveyImagesRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyImage GET request", httpExchange);
         try
         {
             RequestMap requestMap = new RequestMap();
@@ -92,11 +98,11 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyImage request: GET SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyImage request: GET SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "SurveyImage request: GET IO exception: " + exc.getMessage());
+            LOGGER.error("SurveyImage request: GET IO exception", exc);
         }
         finally
         {
@@ -105,6 +111,7 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
 
     private void replySurveyImagesOptions(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyImage OPTIONS request", httpExchange);
         try
         {
             updateHeaders(httpExchange);
@@ -121,6 +128,7 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
 
     private void addSurveyImagesRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyImage PUT request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -144,11 +152,11 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyImage request: POST SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyImage request: POST SQL exception", exc);
         }
         catch (IOException exc)
         {
-            System.out.println(getTimestamp() + "SurveyImage request: POST IO exception: " + exc.getMessage());
+            LOGGER.error("SurveyImage request: POST IO exception", exc);
         }
         finally
         {
@@ -157,6 +165,7 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
 
     private void updateSurveyImagesRequest(HttpExchange httpExchange)
     {
+        LOGGER.debug("SurveyImage update request", httpExchange);
         try
         {
             // TODO: add request map...
@@ -181,10 +190,11 @@ public class SurveyImagesHttpHandler extends HandlerBase implements HttpHandler
         }
         catch (SQLException exc)
         {
-            System.out.println(getTimestamp() + "SurveyImage request: PUT SQL exception: " + exc.getMessage());
+            LOGGER.error("SurveyImage request: PUT SQL exception", exc);
         }
         catch (IOException exc)
         {
+            LOGGER.error("SurveyImage request: PUT IO exception", exc);
         }
         finally
         {
