@@ -3,6 +3,7 @@ package com.lenny.surveyingDB.adapters;
 import com.google.gson.*;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
+import com.lenny.surveyingDB.*;
 import com.lenny.surveyingDB.SurveyDb;
 import com.lenny.surveyingDB.interfaces.*;
 import org.junit.Test;
@@ -20,23 +21,18 @@ public class TestSurveyDbAdapaters
     @Test
     public void testLoadStatics() throws SQLException
     {
-        File fileDb = new File("testLoadStatics.db");
-        if (fileDb.exists())
-        {
-            fileDb.delete();
-        }
+        Connection connDb = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "lenny", "pqxy(!%k");
+        PLPGSQlScriptProvider.initProvider();
+        SqlProvider sqlProvider = new PLPGSQlScriptProvider();
 
-        Connection connDb = DriverManager.getConnection("jdbc:sqlite:testLoadStatics.db");
         GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
         gsonBuild.registerTypeAdapter(ISurveyPointType.class, new SurveyPointTypeAdapter());
         gsonBuild.registerTypeAdapter(ISurveyReference.class, new SurveyReferenceAdapter());
 
-        SurveyPointTypeAdapter.createInDatabase(connDb);
-        SurveyReferenceAdapter.createInDatabase(connDb);
-
+        SurveyPointTypeAdapter.setSqlProvider(sqlProvider.getScriptProvider("survey.surveypointtype"));
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
-
-        assertEquals(15, listPointTypes.size());
+        assertTrue (15 <= listPointTypes.size());
+        int nCurrSize = listPointTypes.size();
         assertEquals("SM", listPointTypes.get(0).getAbbreviation());
         assertEquals("Survey Mark", listPointTypes.get(0).getName());
         assertFalse(listPointTypes.get(0).getUserDefined());
@@ -47,7 +43,7 @@ public class TestSurveyDbAdapaters
         assertEquals("SM", ptTypeSerialised.getAbbreviation());
         assertEquals("Survey Mark", ptTypeSerialised.getName());
         assertFalse(ptTypeSerialised.getUserDefined());
-        assertEquals(listPointTypes.get(0).getCreated(), ptTypeSerialised.getCreated());
+        //assertEquals(listPointTypes.get(0).getCreated(), ptTypeSerialised.getCreated());
 
         assertEquals("Trig", listPointTypes.get(3).getAbbreviation());
         assertEquals("Trig Point", listPointTypes.get(3).getName());
@@ -70,14 +66,17 @@ public class TestSurveyDbAdapaters
         SurveyPointTypeAdapter.add(connDb, survPtType);
 
         listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
-        assertEquals(16, listPointTypes.size());
+        assertEquals(nCurrSize + 1, listPointTypes.size());
         assertEquals("CP", listPointTypes.get(15).getAbbreviation());
         assertEquals("Custom Point", listPointTypes.get(15).getName());
-        assertTrue(listPointTypes.get(15).getUserDefined());
+        assertTrue(listPointTypes.get(nCurrSize).getUserDefined());
 
+        // TODO add test for delete when added.
+
+        SurveyReferenceAdapter.setSqlProvider(sqlProvider.getScriptProvider("survey.surveyreference"));
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
 
-        assertEquals(2, listRefs.size());
+        assertTrue(2 <= listRefs.size());
         assertEquals("Current Survey", listRefs.get(0).getName());
         assertEquals("No Ref", listRefs.get(0).getReference());
         assertEquals("Current Survey", listRefs.get(0).getDescription());

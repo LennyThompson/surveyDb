@@ -1,9 +1,9 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:31:05 AEST 2021
+// Generated on Mon Apr 26 15:32:27 AEST 2021
 
 package com.lenny.surveyingDB.interfaces;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import com.lenny.surveyingDB.interfaces.ITraverseClosure;
 import java.util.Date;
 
@@ -11,8 +11,8 @@ import java.util.Date;
 public interface ITraverseClosure
 {
     int getID();
-    LocalDateTime getCreated();
-    LocalDateTime getUpdated();
+    OffsetDateTime getCreated();
+    OffsetDateTime getUpdated();
     double getMiscZ();
     double getMiscY();
     double getMiscX();

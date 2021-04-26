@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
 
 // log4j types
@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ISurveyAdjustment;
 import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
@@ -34,14 +35,14 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
         // Class implements ISurveyAdjustment but only accessible through the SurveyAdjustmentAdapter
 
-        static class SurveyAdjustment extends UndoTarget implements ISurveyAdjustment
+        public static class SurveyAdjustment extends UndoTarget implements ISurveyAdjustment
         {
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private LocalDateTime m_dateCreated;
+            private OffsetDateTime m_dateCreated;
             @SerializedName("updated")
-            private LocalDateTime m_dateUpdated;
+            private OffsetDateTime m_dateUpdated;
             @SerializedName("DeltaX")
             private double m_dDeltaX;
             @SerializedName("DeltaY")
@@ -57,8 +58,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             SurveyAdjustment()
             {
                 m_nID = 0;
-                m_dateCreated = LocalDateTime.now();
-                m_dateUpdated = LocalDateTime.now();
+                m_dateCreated = OffsetDateTime.now();
+                m_dateUpdated = OffsetDateTime.now();
                 m_dDeltaX = 0.0;
                 m_dDeltaY = 0.0;
                 m_dDeltaZ = 0.0;
@@ -68,7 +69,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyAdjustment(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, double dDeltaX, double dDeltaY, double dDeltaZ, double dBearingAdj, ISurveyMeasurement typeMeasurement)
+            SurveyAdjustment(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dDeltaX, double dDeltaY, double dDeltaZ, double dBearingAdj, ISurveyMeasurement typeMeasurement)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -85,11 +86,11 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             {
                 return  m_nID;
             }
-            public LocalDateTime getCreated()
+            public OffsetDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public LocalDateTime getUpdated()
+            public OffsetDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -286,8 +287,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     public static ISurveyAdjustment createSurveyAdjustment
     (
         int nID,
-        LocalDateTime dateCreated,
-        LocalDateTime dateUpdated,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
         double dDeltaX,
         double dDeltaY,
         double dDeltaZ,
@@ -296,6 +297,31 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     )
     {
         return new SurveyAdjustment(nID, dateCreated, dateUpdated, dDeltaX, dDeltaY, dDeltaZ, dBearingAdj, typeMeasurement);
+    }
+
+    public static ISurveyAdjustment updateSurveyAdjustment
+    (
+        ISurveyAdjustment typeUpdate,
+        int nID,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
+        double dDeltaX,
+        double dDeltaY,
+        double dDeltaZ,
+        double dBearingAdj,
+        ISurveyMeasurement typeMeasurement
+    )
+    {
+        SurveyAdjustment updating = (SurveyAdjustment) typeUpdate;
+        updating.m_nID = nID;;
+        updating.m_dateCreated = dateCreated;;
+        updating.m_dateUpdated = dateUpdated;;
+        updating.m_dDeltaX = dDeltaX;;
+        updating.m_dDeltaY = dDeltaY;;
+        updating.m_dDeltaZ = dDeltaZ;;
+        updating.m_dBearingAdj = dBearingAdj;;
+        updating.m_typeMeasurement = typeMeasurement;;
+        return updating;
     }
 
     // This method enables the adapter type to be registered to deserialise json as ISurveyAdjustment
@@ -307,7 +333,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
     public ISurveyAdjustment deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
@@ -327,7 +353,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Getting SurveyAdjustment id = " + nIdGet + " from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -368,7 +394,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Getting last SurveyAdjustment from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -404,7 +430,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Updating SurveyAdjustment id = " + typeUpdate.getID() + " in db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -440,7 +466,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Getting SurveyAdjustment id from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -478,7 +504,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Getting all SurveyAdjustment data from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             while (results.next())
             {
@@ -531,13 +557,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
         try
         {
-            stmtSelect = connDb.prepareStatement(getInsertQuery());
-            stmtSelect.setDouble(1, typeAdd.getDeltaX());
-            stmtSelect.setDouble(2, typeAdd.getDeltaY());
-            stmtSelect.setDouble(3, typeAdd.getDeltaZ());
-            stmtSelect.setDouble(4, typeAdd.getBearingAdj());
-            stmtSelect.setInt(5, typeAdd.getMeasurement().getID());
-
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
+            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -574,14 +595,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             PreparedStatement stmtSelect = null;
             try
             {
-                stmtSelect = connDb.prepareStatement(getUpdateQuery());
-                stmtSelect.setDouble(1, typeUpdate.getDeltaX());
-                stmtSelect.setDouble(2, typeUpdate.getDeltaY());
-                stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
-                stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
-                stmtSelect.setInt(5, typeUpdate.getMeasurement().getID());
-                stmtSelect.setInt(6, typeUpdate.getID());
-
+                stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
+                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -611,7 +626,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Updating from database SurveyAdjustment, id = " + typeUpdate.getID() + " data in db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
             if (results.next())
@@ -645,31 +660,11 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
 
     private static ISurveyAdjustment createSurveyAdjustmentFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {
-        return createSurveyAdjustment
-                   (
-                       results.getInt(FIELD_ID),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                       results.getDouble(FIELD_DELTAX),
-                       results.getDouble(FIELD_DELTAY),
-                       results.getDouble(FIELD_DELTAZ),
-                       results.getDouble(FIELD_BEARINGADJ),
-                       SurveyMeasurementAdapter.get(connDb, results.getInt(FIELD_MEASUREMENTID))
-                   );
-
+        return (ISurveyAdjustment) SQL_PROVIDER.resultsHandler().fromResults(connDb, results);
     }
     private static ISurveyAdjustment updateSurveyAdjustmentFromQueryResults(Connection connDb, ResultSet results, ISurveyAdjustment typeUpdate) throws SQLException
     {
-       ((SurveyAdjustment)typeUpdate).m_nID = results.getInt(FIELD_ID);
-       ((SurveyAdjustment)typeUpdate).m_dateCreated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED));
-       ((SurveyAdjustment)typeUpdate).m_dateUpdated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED));
-       ((SurveyAdjustment)typeUpdate).m_dDeltaX = results.getDouble(FIELD_DELTAX);
-       ((SurveyAdjustment)typeUpdate).m_dDeltaY = results.getDouble(FIELD_DELTAY);
-       ((SurveyAdjustment)typeUpdate).m_dDeltaZ = results.getDouble(FIELD_DELTAZ);
-       ((SurveyAdjustment)typeUpdate).m_dBearingAdj = results.getDouble(FIELD_BEARINGADJ);
-       ((SurveyAdjustment)typeUpdate).m_typeMeasurement = SurveyMeasurementAdapter.get(connDb, results.getInt(FIELD_MEASUREMENTID));
-
-       return typeUpdate;
+        return (ISurveyAdjustment) SQL_PROVIDER.resultsHandler().updateFromResults(typeUpdate, connDb, results);
     }
 
     private static String getSelectQuery(int nIdFor)
@@ -766,12 +761,265 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     {
         LOGGER.debug("Creating SurveyAdjustment in database");
         Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(CREATE_TABLE_SCRIPT);
-        LOGGER.debug("SurveyAdjustment create script - " + CREATE_TABLE_SCRIPT);
-        for(String strScript : TABLE_EXTRA_SCRIPTS)
-        {
-            stmtExecute.execute(strScript);
-            LOGGER.debug("SurveyAdjustment extra script - " + strScript);
-        }
+        stmtExecute.execute(SQL_PROVIDER.createScript());
+        LOGGER.debug("SurveyAdjustment create script - " + SQL_PROVIDER.createScript());
+        stmtExecute.execute(SQL_PROVIDER.triggerScript());
+        LOGGER.debug("SurveyAdjustment extra script - " + SQL_PROVIDER.triggerScript());
+        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
+        LOGGER.debug("SurveyAdjustment extra script - " + SQL_PROVIDER.staticInsertsScript());
     }
+
+    public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+    {
+        if(provider != null)
+        {
+            SQL_PROVIDER = provider;
+            return true;
+        }
+        else
+        {
+            SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+        }
+        return false;
+    }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "surveyadjustment";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                       FIELD_ID + ",  " +
+                       FIELD_CREATED + ",  " +
+                       FIELD_UPDATED + ",  " +
+                       FIELD_DELTAX + ",  " +
+                       FIELD_DELTAY + ",  " +
+                       FIELD_DELTAZ + ",  " +
+                       FIELD_BEARINGADJ + ",  " +
+                       FIELD_MEASUREMENTID
+                       + " FROM " +
+                       TABLE_NAME;
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_CREATED + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_DELTAX + ",  " +
+            FIELD_DELTAY + ",  " +
+            FIELD_DELTAZ + ",  " +
+            FIELD_BEARINGADJ + ",  " +
+            FIELD_MEASUREMENTID
+            + " FROM " +
+            TABLE_NAME + " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        public String selectFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+        }
+        @Override
+        public String selectLast()
+        {
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, " +
+                             FIELD_ID + ",  " +
+                             FIELD_CREATED + ",  " +
+                             FIELD_UPDATED + ",  " +
+                             FIELD_DELTAX + ",  " +
+                             FIELD_DELTAY + ",  " +
+                             FIELD_DELTAZ + ",  " +
+                             FIELD_BEARINGADJ + ",  " +
+                             FIELD_MEASUREMENTID
+                             + " FROM " +
+                             TABLE_NAME;
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+            return "";
+        }
+        @Override
+        public String insertScript()
+        {
+            return "INSERT INTO " + TABLE_NAME + "(" +
+                        FIELD_DELTAX + ",  " +
+                        FIELD_DELTAY + ",  " +
+                        FIELD_DELTAZ + ",  " +
+                        FIELD_BEARINGADJ + ",  " +
+                        FIELD_MEASUREMENTID
+                        + ") VALUES (?,  ?,  ?,  ?,  ?)";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String updateScript()
+        {
+            return "UPDATE " + TABLE_NAME + " SET " +
+                               FIELD_DELTAX + " = ?,  " +
+                               FIELD_DELTAY + " = ?,  " +
+                               FIELD_DELTAZ + " = ?,  " +
+                               FIELD_BEARINGADJ + " = ?,  " +
+                               FIELD_MEASUREMENTID + " = ?"
+                           + " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        public String deleteFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String createScript()
+        {
+            return CREATE_TABLE_SCRIPT;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return Arrays.stream(TABLE_EXTRA_SCRIPTS).collect(Collectors.joining(" \n"));
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ISurveyAdjustment> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ISurveyAdjustment> resultsHandler()
+        {
+                if(m_resultsHandler == null)
+                {
+                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyAdjustment>()
+                           {
+                                @Override
+                                public ISurveyAdjustment fromResults(Connection connDb, ResultSet results)
+                                {
+                                    try
+                                    {
+                                        return createSurveyAdjustment
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getDouble(FIELD_DELTAX),
+                                            results.getDouble(FIELD_DELTAY),
+                                            results.getDouble(FIELD_DELTAZ),
+                                            results.getDouble(FIELD_BEARINGADJ),
+                                            SurveyMeasurementAdapter.get(connDb, results.getInt(FIELD_MEASUREMENTID))
+                                        );
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error parsing result set", exc);
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public ISurveyAdjustment updateFromResults(ISurveyAdjustment typeUpdate, Connection connDb, ResultSet results)
+                                {
+                                    try
+                                    {
+                                        return updateSurveyAdjustment
+                                        (
+                                            typeUpdate,
+                                            results.getInt(FIELD_ID),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getDouble(FIELD_DELTAX),
+                                            results.getDouble(FIELD_DELTAY),
+                                            results.getDouble(FIELD_DELTAZ),
+                                            results.getDouble(FIELD_BEARINGADJ),
+                                            SurveyMeasurementAdapter.get(connDb, results.getInt(FIELD_MEASUREMENTID))
+                                        );
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error parsing result set", exc);
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public boolean insertNew(ISurveyAdjustment typeInsert, PreparedStatement stmtSelect)
+                                {
+                                    try
+                                    {
+                                        stmtSelect.setDouble(1, typeInsert.getDeltaX());
+                                        stmtSelect.setDouble(2, typeInsert.getDeltaY());
+                                        stmtSelect.setDouble(3, typeInsert.getDeltaZ());
+                                        stmtSelect.setDouble(4, typeInsert.getBearingAdj());
+                                        stmtSelect.setInt(5, typeInsert.getMeasurement().getID());
+
+                                        return true;
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error setting data to prepared statement", exc);
+                                    }
+                                    return false;
+                                }
+                                @Override
+                                public boolean updateExisting(ISurveyAdjustment typeUpdate, PreparedStatement stmtSelect)
+                                {
+                                    try
+                                    {
+                                        stmtSelect.setDouble(1, typeUpdate.getDeltaX());
+                                        stmtSelect.setDouble(2, typeUpdate.getDeltaY());
+                                        stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
+                                        stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
+                                        stmtSelect.setInt(5, typeUpdate.getMeasurement().getID());
+                                        stmtSelect.setInt(6, typeUpdate.getID());
+
+                                        return true;
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error setting data to prepared statement", exc);
+                                    }
+                                    return false;
+
+                                }
+
+                           };
+               }
+               return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+
 }

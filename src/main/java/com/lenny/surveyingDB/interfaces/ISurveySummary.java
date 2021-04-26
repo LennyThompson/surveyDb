@@ -1,9 +1,9 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:31:05 AEST 2021
+// Generated on Mon Apr 26 15:32:27 AEST 2021
 
 package com.lenny.surveyingDB.interfaces;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.surveyingDB.interfaces.ISurveySummary;
@@ -23,7 +23,7 @@ public interface ISurveySummary extends ISerialiseState
     {
         int getTravID();
         String getTravName();
-        LocalDateTime getTravUpdated();
+        OffsetDateTime getTravUpdated();
         String getPtTravStart();
         String getPtTravEnd();
 
@@ -42,8 +42,8 @@ public interface ISurveySummary extends ISerialiseState
 
     int getID();
     String getName();
-    LocalDateTime getCreated();
-    LocalDateTime getUpdated();
+    OffsetDateTime getCreated();
+    OffsetDateTime getUpdated();
     String getDescription();
     ISurveySummary_Proj getProj();
     List<ISurveySummary_Trav> getTravs();

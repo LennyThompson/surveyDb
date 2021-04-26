@@ -10,11 +10,8 @@ import java.lang.reflect.Type;
 import java.sql.Time;
 import java.text.Format;
 import java.text.ParseException;
-import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.sql.Timestamp;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
@@ -59,18 +56,17 @@ public class SQLiteConverter
         return null;
     }
 
-    public static String convertDateTimeToString(LocalDateTime dateConvert)
+    public static String convertDateTimeToString(OffsetDateTime dateConvert)
     {
         return FORMAT_DATE.format(dateConvert);
     }
-    public static String convertDateTimeToJSString(LocalDateTime dateConvert)
+    public static String convertDateTimeToJSString(OffsetDateTime dateConvert)
     {
         return FORMAT_DATE_JS.format(dateConvert);
     }
 
-    public static LocalDateTime convertISOStringToDateTime(String strISODate)
+    public static OffsetDateTime convertISOStringToDateTime(String strISODate)
     {
-        ZonedDateTime timeZone = ZonedDateTime.parse(strISODate);
-        return timeZone.toLocalDateTime();
+        return OffsetDateTime.parse(strISODate);
     }
 }

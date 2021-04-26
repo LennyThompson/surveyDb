@@ -1,9 +1,9 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:31:05 AEST 2021
+// Generated on Mon Apr 26 15:32:27 AEST 2021
 
 package com.lenny.surveyingDB.interfaces;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.surveyingDB.interfaces.ITraverseSummary;
@@ -36,7 +36,7 @@ public interface ITraverseSummary extends ISerialiseState
     int getID();
     int getSurveyID();
     String getName();
-    LocalDateTime getUpdated();
+    OffsetDateTime getUpdated();
     String getDescription();
     ITraverseSummary_PtStart getPtStart();
     ITraverseSummary_PtEnd getPtEnd();

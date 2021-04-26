@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -13,21 +13,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ITraverseSummary;
 import com.lenny.surveyingDB.interfaces.ITraverseSummary.*;
 
 
 public class TraverseSummaryAdapter
 {
-    // Class implements ITraverseSummary but only accessible through the TraverseSummaryAdapter
+     private static final Logger LOGGER = LogManager.getLogger(TraverseSummaryAdapter.class.getName());
+   // Class implements ITraverseSummary but only accessible through the TraverseSummaryAdapter
 
         static class TraverseSummary_PtStart
                 implements ITraverseSummary_PtStart
@@ -188,7 +193,7 @@ public class TraverseSummaryAdapter
         @SerializedName("Name")
          String m_strName;
         @SerializedName("Updated")
-         LocalDateTime m_dateUpdated;
+         OffsetDateTime m_dateUpdated;
         @SerializedName("Description")
          String m_strDescription;
         @SerializedName("ptStart")
@@ -202,7 +207,7 @@ public class TraverseSummaryAdapter
             m_nID = 0;
             m_nSurveyID = 0;
             m_strName = "";
-            m_dateUpdated = LocalDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
             m_strDescription = "";
 
             m_typePtStart = new TraverseSummary_PtStart();
@@ -217,7 +222,7 @@ public class TraverseSummaryAdapter
             int nID,
             int nSurveyID,
             String strName,
-            LocalDateTime dateUpdated,
+            OffsetDateTime dateUpdated,
             String strDescription,
             int nPtStartID,
             String strPtStartName,
@@ -282,7 +287,7 @@ public class TraverseSummaryAdapter
         {
             return  m_strName;
         }
-        public LocalDateTime getUpdated()
+        public OffsetDateTime getUpdated()
         {
             return  m_dateUpdated;
         }
@@ -354,7 +359,7 @@ public class TraverseSummaryAdapter
         int nID,
         int nSurveyID,
         String strName,
-        LocalDateTime dateUpdated,
+        OffsetDateTime dateUpdated,
         String strDescription,
         int nPtStartID,
         String strPtStartName,
@@ -395,7 +400,7 @@ public class TraverseSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -411,7 +416,7 @@ public class TraverseSummaryAdapter
                             results.getInt(FIELD_ID),
                             results.getInt(FIELD_SURVEYID),
                             results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
                             results.getString(FIELD_DESCRIPTION),
                             results.getInt(FIELD_PTSTARTID),
                             results.getString(FIELD_PTSTARTNAME),
@@ -470,7 +475,7 @@ public class TraverseSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nSurveyID, nID));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectForPath(new Integer[] { nSurveyID, nID }));
             int nIndex = 1;
             if (nSurveyID > 0)
             {
@@ -492,7 +497,7 @@ public class TraverseSummaryAdapter
                             results.getInt(FIELD_ID),
                             results.getInt(FIELD_SURVEYID),
                             results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
                             results.getString(FIELD_DESCRIPTION),
                             results.getInt(FIELD_PTSTARTID),
                             results.getString(FIELD_PTSTARTNAME),
@@ -603,31 +608,14 @@ public class TraverseSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             List<ITraverseSummary> listRawData = new ArrayList<ITraverseSummary>();
             while (results.next())
             {
                 listRawData.add
                     (
-                        createTraverseSummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getInt(FIELD_SURVEYID),
-                            results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                            results.getString(FIELD_DESCRIPTION),
-                            results.getInt(FIELD_PTSTARTID),
-                            results.getString(FIELD_PTSTARTNAME),
-                            results.getDouble(FIELD_PTSTARTX),
-                            results.getDouble(FIELD_PTSTARTY),
-                            results.getDouble(FIELD_PTSTARTZ),
-                            results.getInt(FIELD_PTENDID),
-                            results.getString(FIELD_PTENDNAME),
-                            results.getDouble(FIELD_PTENDX),
-                            results.getDouble(FIELD_PTENDY),
-                            results.getDouble(FIELD_PTENDZ)
-                        )
+                        (ITraverseSummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())
@@ -734,5 +722,207 @@ public class TraverseSummaryAdapter
             stmtExecute.execute(strScript);
         }
     }
+
+     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+     {
+         if(provider != null)
+         {
+             SQL_PROVIDER = provider;
+             return true;
+         }
+         else
+         {
+             SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+         }
+         return false;
+     }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "traversesummary";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                    "id,  surveyid,  name,  updated,  description,  ptstartid,  ptstartname,  ptstartx,  ptstarty,  ptstartz,  ptendid,  ptendname,  ptendx,  ptendy,  ptendz " +
+                    " FROM traversesummary;";
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return selectScript() + " WHERE id = ?";
+        }
+        @Override
+        public String selectFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "";
+        }
+        @Override
+        public String selectLast()
+        {
+            return "";
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+        String strSelect = "SELECT "
+             + "id,  surveyid,  name,  updated,  description,  ptstartid,  ptstartname,  ptstartx,  ptstarty,  ptstartz,  ptendid,  ptendname,  ptendx,  ptendy,  ptendz"
+             + " FROM traversesummary";
+        String strWhere = "";
+        if (path[0] > 0)
+        {
+            if (strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_SURVEYID + " = ?";
+        }if (path[1] > 0)
+        {
+            if (strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_ID + " = ?";
+        }
+        if (!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+
+        }
+        @Override
+        public String insertScript()
+        {
+            return "";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String updateScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String createScript()
+        {
+            return "CREATE VIEW traversesummary " +
+"AS " +
+"    SELECT " +
+"        trav.id AS id, trav.surveyid AS surveyid, trav.name AS name, trav.updated AS updated, trav.description AS description, ptstart.id AS ptstartid, ptstart.name AS ptstartname, ptstart.x AS ptstartx, ptstart.y AS ptstarty, ptstart.z AS ptstartz, ptend.id AS ptendid, ptend.name AS ptendname, ptend.x AS ptendx, ptend.y AS ptendy, ptend.z AS ptendz " +
+"    FROM " +
+"        traverse trav "
+        + "INNER JOIN surveypoint ptstart ON trav.startpointid = ptstart.id "
+
+        + "INNER JOIN surveypoint ptend ON trav.endpointid = ptend.id "
+ + ";"
+;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return "";
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ITraverseSummary> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ITraverseSummary> resultsHandler()
+        {
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverseSummary>()
+                       {
+                            @Override
+                            public ITraverseSummary fromResults(Connection connDb, ResultSet results)
+                            {
+                                try
+                                {
+                                    return TraverseSummaryAdapter.createTraverseSummary
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            results.getInt(FIELD_SURVEYID),
+                                            results.getString(FIELD_NAME),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getString(FIELD_DESCRIPTION),
+                                            results.getInt(FIELD_PTSTARTID),
+                                            results.getString(FIELD_PTSTARTNAME),
+                                            results.getDouble(FIELD_PTSTARTX),
+                                            results.getDouble(FIELD_PTSTARTY),
+                                            results.getDouble(FIELD_PTSTARTZ),
+                                            results.getInt(FIELD_PTENDID),
+                                            results.getString(FIELD_PTENDNAME),
+                                            results.getDouble(FIELD_PTENDX),
+                                            results.getDouble(FIELD_PTENDY),
+                                            results.getDouble(FIELD_PTENDZ)
+                                        );
+                                }
+                                catch(SQLException exc)
+                                {
+                                    LOGGER.error("Error parsing result set", exc);
+                                }
+                                return null;
+                            }
+                            @Override
+                            public ITraverseSummary updateFromResults(ITraverseSummary typeUpdate, Connection connDb, ResultSet results)
+                            {
+                                return typeUpdate;
+                            }
+                            @Override
+                            public boolean insertNew(ITraverseSummary typeInsert, PreparedStatement stmtNew)
+                            {
+                                return false;
+                            }
+                            @Override
+                            public boolean updateExisting(ITraverseSummary typeUpdate, PreparedStatement stmtUpdate)
+                            {
+                                return false;
+                            }
+                       };
+           }
+           return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
 }
 

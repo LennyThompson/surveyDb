@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -13,21 +13,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ISurveySummary;
 import com.lenny.surveyingDB.interfaces.ISurveySummary.*;
 
 
 public class SurveySummaryAdapter
 {
-    // Class implements ISurveySummary but only accessible through the SurveySummaryAdapter
+     private static final Logger LOGGER = LogManager.getLogger(SurveySummaryAdapter.class.getName());
+   // Class implements ISurveySummary but only accessible through the SurveySummaryAdapter
 
         static class SurveySummary_Proj
                 implements ISurveySummary_Proj
@@ -82,7 +87,7 @@ public class SurveySummaryAdapter
             @SerializedName("travName")
              String m_strTravName;
             @SerializedName("travUpdated")
-             LocalDateTime m_dateTravUpdated;
+             OffsetDateTime m_dateTravUpdated;
             @SerializedName("ptTravStart")
              String m_strPtTravStart;
             @SerializedName("ptTravEnd")
@@ -93,7 +98,7 @@ public class SurveySummaryAdapter
             {
                 m_nTravID = 0;
                 m_strTravName = "";
-                m_dateTravUpdated = LocalDateTime.now();
+                m_dateTravUpdated = OffsetDateTime.now();
                 m_strPtTravStart = "";
                 m_strPtTravEnd = "";
             }
@@ -101,7 +106,7 @@ public class SurveySummaryAdapter
             (
                 int nTravID,
                 String strTravName,
-                LocalDateTime dateTravUpdated,
+                OffsetDateTime dateTravUpdated,
                 String strPtTravStart,
                 String strPtTravEnd
             )
@@ -121,7 +126,7 @@ public class SurveySummaryAdapter
             {
                 return  m_strTravName;
             }
-            public LocalDateTime getTravUpdated()
+            public OffsetDateTime getTravUpdated()
             {
                 return  m_dateTravUpdated;
             }
@@ -230,9 +235,9 @@ public class SurveySummaryAdapter
         @SerializedName("Name")
          String m_strName;
         @SerializedName("created")
-         LocalDateTime m_dateCreated;
+         OffsetDateTime m_dateCreated;
         @SerializedName("updated")
-         LocalDateTime m_dateUpdated;
+         OffsetDateTime m_dateUpdated;
         @SerializedName("Description")
          String m_strDescription;
         @SerializedName("proj")
@@ -247,8 +252,8 @@ public class SurveySummaryAdapter
         {
             m_nID = 0;
             m_strName = "";
-            m_dateCreated = LocalDateTime.now();
-            m_dateUpdated = LocalDateTime.now();
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
             m_strDescription = "";
 
             m_typeProj = new SurveySummary_Proj();
@@ -265,14 +270,14 @@ public class SurveySummaryAdapter
         (
             int nID,
             String strName,
-            LocalDateTime dateCreated,
-            LocalDateTime dateUpdated,
+            OffsetDateTime dateCreated,
+            OffsetDateTime dateUpdated,
             String strDescription,
             int nProjID,
             String strProjName,
             int nTravID,
             String strTravName,
-            LocalDateTime dateTravUpdated,
+            OffsetDateTime dateTravUpdated,
             String strPtTravStart,
             String strPtTravEnd,
             int nPtID,
@@ -349,11 +354,11 @@ public class SurveySummaryAdapter
         {
             return  m_strName;
         }
-        public LocalDateTime getCreated()
+        public OffsetDateTime getCreated()
         {
             return  m_dateCreated;
         }
-        public LocalDateTime getUpdated()
+        public OffsetDateTime getUpdated()
         {
             return  m_dateUpdated;
         }
@@ -451,14 +456,14 @@ public class SurveySummaryAdapter
     (
         int nID,
         String strName,
-        LocalDateTime dateCreated,
-        LocalDateTime dateUpdated,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
         String strDescription,
         int nProjID,
         String strProjName,
         int nTravID,
         String strTravName,
-        LocalDateTime dateTravUpdated,
+        OffsetDateTime dateTravUpdated,
         String strPtTravStart,
         String strPtTravEnd,
         int nPtID,
@@ -497,7 +502,7 @@ public class SurveySummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -512,14 +517,14 @@ public class SurveySummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
                             results.getString(FIELD_DESCRIPTION),
                             results.getInt(FIELD_PROJID),
                             results.getString(FIELD_PROJNAME),
                             results.getInt(FIELD_TRAVID),
                             results.getString(FIELD_TRAVNAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_TRAVUPDATED)),
                             results.getString(FIELD_PTTRAVSTART),
                             results.getString(FIELD_PTTRAVEND),
                             results.getInt(FIELD_PTID),
@@ -574,7 +579,7 @@ public class SurveySummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nTravID));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectForPath(new Integer[] { nTravID }));
             int nIndex = 1;
             if (nTravID > 0)
             {
@@ -591,14 +596,14 @@ public class SurveySummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
                             results.getString(FIELD_DESCRIPTION),
                             results.getInt(FIELD_PROJID),
                             results.getString(FIELD_PROJNAME),
                             results.getInt(FIELD_TRAVID),
                             results.getString(FIELD_TRAVNAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
+                            OffsetDateTime.parse(results.getString(FIELD_TRAVUPDATED)),
                             results.getString(FIELD_PTTRAVSTART),
                             results.getString(FIELD_PTTRAVEND),
                             results.getInt(FIELD_PTID),
@@ -695,33 +700,14 @@ public class SurveySummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             List<ISurveySummary> listRawData = new ArrayList<ISurveySummary>();
             while (results.next())
             {
                 listRawData.add
                     (
-                        createSurveySummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                            results.getString(FIELD_DESCRIPTION),
-                            results.getInt(FIELD_PROJID),
-                            results.getString(FIELD_PROJNAME),
-                            results.getInt(FIELD_TRAVID),
-                            results.getString(FIELD_TRAVNAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
-                            results.getString(FIELD_PTTRAVSTART),
-                            results.getString(FIELD_PTTRAVEND),
-                            results.getInt(FIELD_PTID),
-                            results.getString(FIELD_PTNAME),
-                            results.getDouble(FIELD_PTX),
-                            results.getDouble(FIELD_PTY),
-                            results.getDouble(FIELD_PTZ)
-                        )
+                        (ISurveySummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())
@@ -833,5 +819,200 @@ public class SurveySummaryAdapter
             stmtExecute.execute(strScript);
         }
     }
+
+     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+     {
+         if(provider != null)
+         {
+             SQL_PROVIDER = provider;
+             return true;
+         }
+         else
+         {
+             SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+         }
+         return false;
+     }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "surveysummary";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                    "id,  name,  created,  updated,  description,  projid,  projname,  travid,  travname,  travupdated,  pttravstart,  pttravend,  ptid,  ptname,  ptx,  pty,  ptz " +
+                    " FROM surveysummary;";
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return selectScript() + " WHERE id = ?";
+        }
+        @Override
+        public String selectFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "";
+        }
+        @Override
+        public String selectLast()
+        {
+            return "";
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+        String strSelect = "SELECT "
+             + "id,  name,  created,  updated,  description,  projid,  projname,  travid,  travname,  travupdated,  pttravstart,  pttravend,  ptid,  ptname,  ptx,  pty,  ptz"
+             + " FROM surveysummary";
+        String strWhere = "";
+        if (path[0] > 0)
+        {
+            if (strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_TRAVID + " = ?";
+        }
+        if (!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+
+        }
+        @Override
+        public String insertScript()
+        {
+            return "";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String updateScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String createScript()
+        {
+            return "CREATE VIEW surveysummary " +
+"AS " +
+"    SELECT " +
+"        surv.id AS id, surv.name AS name, surv.created AS created, surv.updated AS updated, surv.description AS description, proj.id AS projid, proj.name AS projname, trav.id AS travid, trav.name AS travname, trav.updated AS travupdated, trav.ptstartname AS pttravstart, trav.ptendname AS pttravend, ptsurv.ptid AS ptid, ptsurv.ptname AS ptname, ptsurv.x AS ptx, ptsurv.y AS pty, ptsurv.z AS ptz " +
+"    FROM " +
+"        survey surv "
+        + "INNER JOIN projection proj ON surv.projectionid = proj.id "
+
+        + "INNER JOIN traversesummary trav ON surv.id = trav.surveyid "
+
+        + "INNER JOIN surveypointsummary ptsurv ON surv.id = ptsurv.id "
+ + ";"
+;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return "";
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ISurveySummary> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ISurveySummary> resultsHandler()
+        {
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveySummary>()
+                       {
+                            @Override
+                            public ISurveySummary fromResults(Connection connDb, ResultSet results)
+                            {
+                                try
+                                {
+                                    return SurveySummaryAdapter.createSurveySummary
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            results.getString(FIELD_NAME),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getString(FIELD_DESCRIPTION),
+                                            results.getInt(FIELD_PROJID),
+                                            results.getString(FIELD_PROJNAME),
+                                            results.getInt(FIELD_TRAVID),
+                                            results.getString(FIELD_TRAVNAME),
+                                            OffsetDateTime.parse(results.getString(FIELD_TRAVUPDATED)),
+                                            results.getString(FIELD_PTTRAVSTART),
+                                            results.getString(FIELD_PTTRAVEND),
+                                            results.getInt(FIELD_PTID),
+                                            results.getString(FIELD_PTNAME),
+                                            results.getDouble(FIELD_PTX),
+                                            results.getDouble(FIELD_PTY),
+                                            results.getDouble(FIELD_PTZ)
+                                        );
+                                }
+                                catch(SQLException exc)
+                                {
+                                    LOGGER.error("Error parsing result set", exc);
+                                }
+                                return null;
+                            }
+                            @Override
+                            public ISurveySummary updateFromResults(ISurveySummary typeUpdate, Connection connDb, ResultSet results)
+                            {
+                                return typeUpdate;
+                            }
+                            @Override
+                            public boolean insertNew(ISurveySummary typeInsert, PreparedStatement stmtNew)
+                            {
+                                return false;
+                            }
+                            @Override
+                            public boolean updateExisting(ISurveySummary typeUpdate, PreparedStatement stmtUpdate)
+                            {
+                                return false;
+                            }
+                       };
+           }
+           return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
 }
 

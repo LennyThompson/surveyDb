@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -13,21 +13,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ISurveyPointSummary;
 import com.lenny.surveyingDB.interfaces.ISurveyPointSummary.*;
 
 
 public class SurveyPointSummaryAdapter
 {
-    // Class implements ISurveyPointSummary but only accessible through the SurveyPointSummaryAdapter
+     private static final Logger LOGGER = LogManager.getLogger(SurveyPointSummaryAdapter.class.getName());
+   // Class implements ISurveyPointSummary but only accessible through the SurveyPointSummaryAdapter
 
         static class SurveyPointSummary_Pt
                 implements ISurveyPointSummary_Pt
@@ -400,7 +405,7 @@ public class SurveyPointSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -472,27 +477,14 @@ public class SurveyPointSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             List<ISurveyPointSummary> listRawData = new ArrayList<ISurveyPointSummary>();
             while (results.next())
             {
                 listRawData.add
                     (
-                        createSurveyPointSummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getInt(FIELD_PTID),
-                            results.getString(FIELD_PTNAME),
-                            results.getString(FIELD_PTDESC),
-                            results.getDouble(FIELD_X),
-                            results.getDouble(FIELD_Y),
-                            results.getDouble(FIELD_Z),
-                            results.getString(FIELD_PTTYPENAME),
-                            results.getString(FIELD_PTTYPEABBREVIATION),
-                            results.getString(FIELD_REFNAME),
-                            results.getString(FIELD_REFDESCRIPTION)
-                        )
+                        (ISurveyPointSummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())
@@ -593,5 +585,183 @@ public class SurveyPointSummaryAdapter
             stmtExecute.execute(strScript);
         }
     }
+
+     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+     {
+         if(provider != null)
+         {
+             SQL_PROVIDER = provider;
+             return true;
+         }
+         else
+         {
+             SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+         }
+         return false;
+     }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "surveypointsummary";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                    "id,  ptid,  ptname,  ptdesc,  x,  y,  z,  pttypename,  pttypeabbreviation,  refname,  refdescription " +
+                    " FROM surveypointsummary;";
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return selectScript() + " WHERE id = ?";
+        }
+        @Override
+        public String selectFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "";
+        }
+        @Override
+        public String selectLast()
+        {
+            return "";
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+        String strSelect = "SELECT "
+             + "id,  ptid,  ptname,  ptdesc,  x,  y,  z,  pttypename,  pttypeabbreviation,  refname,  refdescription"
+             + " FROM surveypointsummary";
+        String strWhere = "";
+        if (!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+
+        }
+        @Override
+        public String insertScript()
+        {
+            return "";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String updateScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String createScript()
+        {
+            return "CREATE VIEW surveypointsummary " +
+"AS " +
+"    SELECT " +
+"        surv.id AS id, pt.id AS ptid, pt.name AS ptname, pt.description AS ptdesc, pt.x AS x, pt.y AS y, pt.z AS z, pttype.name AS pttypename, pttype.abbreviation AS pttypeabbreviation, ref.name AS refname, ref.description AS refdescription " +
+"    FROM " +
+"        survey surv "
+        + "INNER JOIN surveypointlink link ON surv.id = link.surveyid "
+
+        + "INNER JOIN surveypoint pt ON link.surveypointid = pt.id "
+            + "LEFT JOIN surveypointtype pttype ON pt.pointtypeid = pttype.id "
+
+            + "LEFT JOIN surveyreference ref ON pt.refid = ref.id "
+ + ";"
+;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return "";
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ISurveyPointSummary> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ISurveyPointSummary> resultsHandler()
+        {
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyPointSummary>()
+                       {
+                            @Override
+                            public ISurveyPointSummary fromResults(Connection connDb, ResultSet results)
+                            {
+                                try
+                                {
+                                    return SurveyPointSummaryAdapter.createSurveyPointSummary
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            results.getInt(FIELD_PTID),
+                                            results.getString(FIELD_PTNAME),
+                                            results.getString(FIELD_PTDESC),
+                                            results.getDouble(FIELD_X),
+                                            results.getDouble(FIELD_Y),
+                                            results.getDouble(FIELD_Z),
+                                            results.getString(FIELD_PTTYPENAME),
+                                            results.getString(FIELD_PTTYPEABBREVIATION),
+                                            results.getString(FIELD_REFNAME),
+                                            results.getString(FIELD_REFDESCRIPTION)
+                                        );
+                                }
+                                catch(SQLException exc)
+                                {
+                                    LOGGER.error("Error parsing result set", exc);
+                                }
+                                return null;
+                            }
+                            @Override
+                            public ISurveyPointSummary updateFromResults(ISurveyPointSummary typeUpdate, Connection connDb, ResultSet results)
+                            {
+                                return typeUpdate;
+                            }
+                            @Override
+                            public boolean insertNew(ISurveyPointSummary typeInsert, PreparedStatement stmtNew)
+                            {
+                                return false;
+                            }
+                            @Override
+                            public boolean updateExisting(ISurveyPointSummary typeUpdate, PreparedStatement stmtUpdate)
+                            {
+                                return false;
+                            }
+                       };
+           }
+           return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
 }
 

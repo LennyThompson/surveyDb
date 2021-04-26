@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
 
 // log4j types
@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ITraverseClosure;
 import java.util.Date;
 
@@ -33,14 +34,14 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
         // Class implements ITraverseClosure but only accessible through the TraverseClosureAdapter
 
-        static class TraverseClosure extends UndoTarget implements ITraverseClosure
+        public static class TraverseClosure extends UndoTarget implements ITraverseClosure
         {
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private LocalDateTime m_dateCreated;
+            private OffsetDateTime m_dateCreated;
             @SerializedName("updated")
-            private LocalDateTime m_dateUpdated;
+            private OffsetDateTime m_dateUpdated;
             @SerializedName("MiscZ")
             private double m_dMiscZ;
             @SerializedName("MiscY")
@@ -61,8 +62,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             TraverseClosure()
             {
                 m_nID = 0;
-                m_dateCreated = LocalDateTime.now();
-                m_dateUpdated = LocalDateTime.now();
+                m_dateCreated = OffsetDateTime.now();
+                m_dateUpdated = OffsetDateTime.now();
                 m_dMiscZ = 0.0;
                 m_dMiscY = 0.0;
                 m_dMiscX = 0.0;
@@ -74,7 +75,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            TraverseClosure(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, double dMiscZ, double dMiscY, double dMiscX, double dBearingMisclose, double dTraverseLength, boolean bAdjusted, int nTraverseID)
+            TraverseClosure(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dMiscZ, double dMiscY, double dMiscX, double dBearingMisclose, double dTraverseLength, boolean bAdjusted, int nTraverseID)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -93,11 +94,11 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             {
                 return  m_nID;
             }
-            public LocalDateTime getCreated()
+            public OffsetDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public LocalDateTime getUpdated()
+            public OffsetDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -283,6 +284,10 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
                 setUpdated();
             }
 
+            public int getTraverseID()
+            {
+                return m_nTraverseID;
+            }
             void setTraverseID(int nTraverseID)
             {
                 addUndoProvider
@@ -353,8 +358,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     public static ITraverseClosure createTraverseClosure
     (
         int nID,
-        LocalDateTime dateCreated,
-        LocalDateTime dateUpdated,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
         double dMiscZ,
         double dMiscY,
         double dMiscX,
@@ -367,6 +372,35 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         return new TraverseClosure(nID, dateCreated, dateUpdated, dMiscZ, dMiscY, dMiscX, dBearingMisclose, dTraverseLength, bAdjusted, nTraverseID);
     }
 
+    public static ITraverseClosure updateTraverseClosure
+    (
+        ITraverseClosure typeUpdate,
+        int nID,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
+        double dMiscZ,
+        double dMiscY,
+        double dMiscX,
+        double dBearingMisclose,
+        double dTraverseLength,
+        boolean bAdjusted,
+        int nTraverseID
+    )
+    {
+        TraverseClosure updating = (TraverseClosure) typeUpdate;
+        updating.m_nID = nID;;
+        updating.m_dateCreated = dateCreated;;
+        updating.m_dateUpdated = dateUpdated;;
+        updating.m_dMiscZ = dMiscZ;;
+        updating.m_dMiscY = dMiscY;;
+        updating.m_dMiscX = dMiscX;;
+        updating.m_dBearingMisclose = dBearingMisclose;;
+        updating.m_dTraverseLength = dTraverseLength;;
+        updating.m_bAdjusted = bAdjusted;;
+        updating.m_nTraverseID = nTraverseID;;
+        return updating;
+    }
+
     // This method enables the adapter type to be registered to deserialise json as ITraverseClosure
     // Code to deserialise is along these lines
     //      GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
@@ -376,7 +410,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
     public ITraverseClosure deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         TraverseClosureAdapter.TraverseClosure typeTraverseClosure = gsonInstance.fromJson(json, TraverseClosureAdapter.TraverseClosure.class);
         if (typeTraverseClosure.m_nID > 0)
@@ -394,7 +428,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         LOGGER.info("Getting TraverseClosure id = " + nIdGet + " from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -435,7 +469,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         LOGGER.info("Getting last TraverseClosure from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -471,7 +505,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         LOGGER.info("Updating TraverseClosure id = " + typeUpdate.getID() + " in db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -507,7 +541,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         LOGGER.info("Getting TraverseClosure id from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -545,7 +579,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         LOGGER.info("Getting all TraverseClosure data from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             while (results.next())
             {
@@ -579,7 +613,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectForTraverseQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectFor("Traverse"));
             stmtSelect.setInt(1, nParentId);
             results = stmtSelect.executeQuery();
             while (results.next())
@@ -621,15 +655,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         PreparedStatement stmtSelect = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getInsertQuery());
-            stmtSelect.setDouble(1, typeAdd.getMiscZ());
-            stmtSelect.setDouble(2, typeAdd.getMiscY());
-            stmtSelect.setDouble(3, typeAdd.getMiscX());
-            stmtSelect.setDouble(4, typeAdd.getBearingMisclose());
-            stmtSelect.setDouble(5, typeAdd.getTraverseLength());
-            stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeAdd.getAdjusted()));
-            stmtSelect.setInt(7, ((TraverseClosure) typeAdd).m_nTraverseID);
-
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
+            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -666,16 +693,8 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             PreparedStatement stmtSelect = null;
             try
             {
-                stmtSelect = connDb.prepareStatement(getUpdateQuery());
-                stmtSelect.setDouble(1, typeUpdate.getMiscZ());
-                stmtSelect.setDouble(2, typeUpdate.getMiscY());
-                stmtSelect.setDouble(3, typeUpdate.getMiscX());
-                stmtSelect.setDouble(4, typeUpdate.getBearingMisclose());
-                stmtSelect.setDouble(5, typeUpdate.getTraverseLength());
-                stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeUpdate.getAdjusted()));
-                stmtSelect.setInt(7, ((TraverseClosure) typeUpdate).m_nTraverseID);
-                stmtSelect.setInt(8, typeUpdate.getID());
-
+                stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
+                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -705,7 +724,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         LOGGER.info("Updating from database TraverseClosure, id = " + typeUpdate.getID() + " data in db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
             if (results.next())
@@ -739,35 +758,11 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
     private static ITraverseClosure createTraverseClosureFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {
-        return createTraverseClosure
-                   (
-                       results.getInt(FIELD_ID),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                       results.getDouble(FIELD_MISCZ),
-                       results.getDouble(FIELD_MISCY),
-                       results.getDouble(FIELD_MISCX),
-                       results.getDouble(FIELD_BEARINGMISCLOSE),
-                       results.getDouble(FIELD_TRAVERSELENGTH),
-                       SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
-                       results.getInt(FIELD_TRAVERSEID)
-                   );
-
+        return (ITraverseClosure) SQL_PROVIDER.resultsHandler().fromResults(connDb, results);
     }
     private static ITraverseClosure updateTraverseClosureFromQueryResults(Connection connDb, ResultSet results, ITraverseClosure typeUpdate) throws SQLException
     {
-       ((TraverseClosure)typeUpdate).m_nID = results.getInt(FIELD_ID);
-       ((TraverseClosure)typeUpdate).m_dateCreated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED));
-       ((TraverseClosure)typeUpdate).m_dateUpdated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED));
-       ((TraverseClosure)typeUpdate).m_dMiscZ = results.getDouble(FIELD_MISCZ);
-       ((TraverseClosure)typeUpdate).m_dMiscY = results.getDouble(FIELD_MISCY);
-       ((TraverseClosure)typeUpdate).m_dMiscX = results.getDouble(FIELD_MISCX);
-       ((TraverseClosure)typeUpdate).m_dBearingMisclose = results.getDouble(FIELD_BEARINGMISCLOSE);
-       ((TraverseClosure)typeUpdate).m_dTraverseLength = results.getDouble(FIELD_TRAVERSELENGTH);
-       ((TraverseClosure)typeUpdate).m_bAdjusted = SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED));
-       ((TraverseClosure)typeUpdate).m_nTraverseID = results.getInt(FIELD_TRAVERSEID);
-
-       return typeUpdate;
+        return (ITraverseClosure) SQL_PROVIDER.resultsHandler().updateFromResults(typeUpdate, connDb, results);
     }
 
     private static String getSelectQuery(int nIdFor)
@@ -793,7 +788,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     }
     private static String getSelectForTraverseQuery()
     {
-        String strSelect = "SELECT " +
+        return "SELECT " +
             FIELD_ID + ",  " +
             FIELD_CREATED + ",  " +
             FIELD_UPDATED + ",  " +
@@ -808,7 +803,6 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             TABLE_NAME  +
             " WHERE " +
             FIELD_TRAVERSEID + " = ?";
-        return strSelect;
     }
     private static String getInsertQuery()
     {
@@ -893,12 +887,299 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
     {
         LOGGER.debug("Creating TraverseClosure in database");
         Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(CREATE_TABLE_SCRIPT);
-        LOGGER.debug("TraverseClosure create script - " + CREATE_TABLE_SCRIPT);
-        for(String strScript : TABLE_EXTRA_SCRIPTS)
-        {
-            stmtExecute.execute(strScript);
-            LOGGER.debug("TraverseClosure extra script - " + strScript);
-        }
+        stmtExecute.execute(SQL_PROVIDER.createScript());
+        LOGGER.debug("TraverseClosure create script - " + SQL_PROVIDER.createScript());
+        stmtExecute.execute(SQL_PROVIDER.triggerScript());
+        LOGGER.debug("TraverseClosure extra script - " + SQL_PROVIDER.triggerScript());
+        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
+        LOGGER.debug("TraverseClosure extra script - " + SQL_PROVIDER.staticInsertsScript());
     }
+
+    public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+    {
+        if(provider != null)
+        {
+            SQL_PROVIDER = provider;
+            return true;
+        }
+        else
+        {
+            SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+        }
+        return false;
+    }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "traverseclosure";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                       FIELD_ID + ",  " +
+                       FIELD_CREATED + ",  " +
+                       FIELD_UPDATED + ",  " +
+                       FIELD_MISCZ + ",  " +
+                       FIELD_MISCY + ",  " +
+                       FIELD_MISCX + ",  " +
+                       FIELD_BEARINGMISCLOSE + ",  " +
+                       FIELD_TRAVERSELENGTH + ",  " +
+                       FIELD_ADJUSTED + ",  " +
+                       FIELD_TRAVERSEID
+                       + " FROM " +
+                       TABLE_NAME;
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_CREATED + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_MISCZ + ",  " +
+            FIELD_MISCY + ",  " +
+            FIELD_MISCX + ",  " +
+            FIELD_BEARINGMISCLOSE + ",  " +
+            FIELD_TRAVERSELENGTH + ",  " +
+            FIELD_ADJUSTED + ",  " +
+            FIELD_TRAVERSEID
+            + " FROM " +
+            TABLE_NAME + " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        public String selectFor(String strContext)
+        {
+            switch(strContext)
+            {
+                case "traverse":
+                    return "SELECT " +
+                        FIELD_ID + ",  " +
+                        FIELD_CREATED + ",  " +
+                        FIELD_UPDATED + ",  " +
+                        FIELD_MISCZ + ",  " +
+                        FIELD_MISCY + ",  " +
+                        FIELD_MISCX + ",  " +
+                        FIELD_BEARINGMISCLOSE + ",  " +
+                        FIELD_TRAVERSELENGTH + ",  " +
+                        FIELD_ADJUSTED + ",  " +
+                        FIELD_TRAVERSEID
+                        + " FROM " +
+                        TABLE_NAME  +
+                        " WHERE " +
+                        FIELD_TRAVERSEID + " = ?";
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+        }
+        @Override
+        public String selectLast()
+        {
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, " +
+                             FIELD_ID + ",  " +
+                             FIELD_CREATED + ",  " +
+                             FIELD_UPDATED + ",  " +
+                             FIELD_MISCZ + ",  " +
+                             FIELD_MISCY + ",  " +
+                             FIELD_MISCX + ",  " +
+                             FIELD_BEARINGMISCLOSE + ",  " +
+                             FIELD_TRAVERSELENGTH + ",  " +
+                             FIELD_ADJUSTED + ",  " +
+                             FIELD_TRAVERSEID
+                             + " FROM " +
+                             TABLE_NAME;
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+            return "";
+        }
+        @Override
+        public String insertScript()
+        {
+            return "INSERT INTO " + TABLE_NAME + "(" +
+                        FIELD_MISCZ + ",  " +
+                        FIELD_MISCY + ",  " +
+                        FIELD_MISCX + ",  " +
+                        FIELD_BEARINGMISCLOSE + ",  " +
+                        FIELD_TRAVERSELENGTH + ",  " +
+                        FIELD_ADJUSTED + ",  " +
+                        FIELD_TRAVERSEID
+                        + ") VALUES (?,  ?,  ?,  ?,  ?,  ?,  ?)";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String updateScript()
+        {
+            return "UPDATE " + TABLE_NAME + " SET " +
+                               FIELD_MISCZ + " = ?,  " +
+                               FIELD_MISCY + " = ?,  " +
+                               FIELD_MISCX + " = ?,  " +
+                               FIELD_BEARINGMISCLOSE + " = ?,  " +
+                               FIELD_TRAVERSELENGTH + " = ?,  " +
+                               FIELD_ADJUSTED + " = ?,  " +
+                               FIELD_TRAVERSEID + " = ?"
+                           + " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        public String deleteFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String createScript()
+        {
+            return CREATE_TABLE_SCRIPT;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return Arrays.stream(TABLE_EXTRA_SCRIPTS).collect(Collectors.joining(" \n"));
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ITraverseClosure> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ITraverseClosure> resultsHandler()
+        {
+                if(m_resultsHandler == null)
+                {
+                    m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverseClosure>()
+                           {
+                                @Override
+                                public ITraverseClosure fromResults(Connection connDb, ResultSet results)
+                                {
+                                    try
+                                    {
+                                        return createTraverseClosure
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getDouble(FIELD_MISCZ),
+                                            results.getDouble(FIELD_MISCY),
+                                            results.getDouble(FIELD_MISCX),
+                                            results.getDouble(FIELD_BEARINGMISCLOSE),
+                                            results.getDouble(FIELD_TRAVERSELENGTH),
+                                            SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
+                                            results.getInt(FIELD_TRAVERSEID)
+                                        );
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error parsing result set", exc);
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public ITraverseClosure updateFromResults(ITraverseClosure typeUpdate, Connection connDb, ResultSet results)
+                                {
+                                    try
+                                    {
+                                        return updateTraverseClosure
+                                        (
+                                            typeUpdate,
+                                            results.getInt(FIELD_ID),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getDouble(FIELD_MISCZ),
+                                            results.getDouble(FIELD_MISCY),
+                                            results.getDouble(FIELD_MISCX),
+                                            results.getDouble(FIELD_BEARINGMISCLOSE),
+                                            results.getDouble(FIELD_TRAVERSELENGTH),
+                                            SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
+                                            results.getInt(FIELD_TRAVERSEID)
+                                        );
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error parsing result set", exc);
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public boolean insertNew(ITraverseClosure typeInsert, PreparedStatement stmtSelect)
+                                {
+                                    try
+                                    {
+                                        stmtSelect.setDouble(1, typeInsert.getMiscZ());
+                                        stmtSelect.setDouble(2, typeInsert.getMiscY());
+                                        stmtSelect.setDouble(3, typeInsert.getMiscX());
+                                        stmtSelect.setDouble(4, typeInsert.getBearingMisclose());
+                                        stmtSelect.setDouble(5, typeInsert.getTraverseLength());
+                                        stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeInsert.getAdjusted()));
+                                        stmtSelect.setInt(7, ((TraverseClosureAdapter.TraverseClosure) typeInsert).getTraverseID());
+
+                                        return true;
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error setting data to prepared statement", exc);
+                                    }
+                                    return false;
+                                }
+                                @Override
+                                public boolean updateExisting(ITraverseClosure typeUpdate, PreparedStatement stmtSelect)
+                                {
+                                    try
+                                    {
+                                        stmtSelect.setDouble(1, typeUpdate.getMiscZ());
+                                        stmtSelect.setDouble(2, typeUpdate.getMiscY());
+                                        stmtSelect.setDouble(3, typeUpdate.getMiscX());
+                                        stmtSelect.setDouble(4, typeUpdate.getBearingMisclose());
+                                        stmtSelect.setDouble(5, typeUpdate.getTraverseLength());
+                                        stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeUpdate.getAdjusted()));
+                                        stmtSelect.setInt(7, ((TraverseClosureAdapter.TraverseClosure) typeUpdate).getTraverseID());
+                                        stmtSelect.setInt(8, typeUpdate.getID());
+
+                                        return true;
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error setting data to prepared statement", exc);
+                                    }
+                                    return false;
+
+                                }
+
+                           };
+               }
+               return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+
 }

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -13,21 +13,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.Utils.DataSaveState;
 import com.lenny.Utils.SQLiteConverter;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ITraverseMeasurementSummary;
 import com.lenny.surveyingDB.interfaces.ITraverseMeasurementSummary.*;
 
 
 public class TraverseMeasurementSummaryAdapter
 {
-    // Class implements ITraverseMeasurementSummary but only accessible through the TraverseMeasurementSummaryAdapter
+     private static final Logger LOGGER = LogManager.getLogger(TraverseMeasurementSummaryAdapter.class.getName());
+   // Class implements ITraverseMeasurementSummary but only accessible through the TraverseMeasurementSummaryAdapter
 
         static class TraverseMeasurementSummary_SurvMeas
                 implements ITraverseMeasurementSummary_SurvMeas
@@ -500,7 +505,7 @@ public class TraverseMeasurementSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -577,7 +582,7 @@ public class TraverseMeasurementSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectByPathKeyQuery(nSurveyID, nID));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectForPath(new Integer[] { nSurveyID, nID }));
             int nIndex = 1;
             if (nSurveyID > 0)
             {
@@ -714,33 +719,14 @@ public class TraverseMeasurementSummaryAdapter
         ResultSet results = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             List<ITraverseMeasurementSummary> listRawData = new ArrayList<ITraverseMeasurementSummary>();
             while (results.next())
             {
                 listRawData.add
                     (
-                        createTraverseMeasurementSummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getInt(FIELD_SURVEYID),
-                            results.getString(FIELD_NAME),
-                            results.getInt(FIELD_MEASID),
-                            results.getDouble(FIELD_HORIZONTAL),
-                            results.getDouble(FIELD_VERTICAL),
-                            results.getDouble(FIELD_BEARING),
-                            results.getInt(FIELD_PTFROMID),
-                            results.getString(FIELD_PTFROMNAME),
-                            results.getDouble(FIELD_PTFROMX),
-                            results.getDouble(FIELD_PTFROMY),
-                            results.getDouble(FIELD_PTFROMZ),
-                            results.getInt(FIELD_PTTOID),
-                            results.getString(FIELD_PTTONAME),
-                            results.getDouble(FIELD_PTTOX),
-                            results.getDouble(FIELD_PTTOY),
-                            results.getDouble(FIELD_PTTOZ)
-                        )
+                        (ITraverseMeasurementSummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())
@@ -853,5 +839,212 @@ public class TraverseMeasurementSummaryAdapter
             stmtExecute.execute(strScript);
         }
     }
+
+     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+     {
+         if(provider != null)
+         {
+             SQL_PROVIDER = provider;
+             return true;
+         }
+         else
+         {
+             SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+         }
+         return false;
+     }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "traversemeasurementsummary";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                    "id,  surveyid,  name,  measid,  horizontal,  vertical,  bearing,  ptfromid,  ptfromname,  ptfromx,  ptfromy,  ptfromz,  pttoid,  pttoname,  pttox,  pttoy,  pttoz " +
+                    " FROM traversemeasurementsummary;";
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return selectScript() + " WHERE id = ?";
+        }
+        @Override
+        public String selectFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "";
+        }
+        @Override
+        public String selectLast()
+        {
+            return "";
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+        String strSelect = "SELECT "
+             + "id,  surveyid,  name,  measid,  horizontal,  vertical,  bearing,  ptfromid,  ptfromname,  ptfromx,  ptfromy,  ptfromz,  pttoid,  pttoname,  pttox,  pttoy,  pttoz"
+             + " FROM traversemeasurementsummary";
+        String strWhere = "";
+        if (path[0] > 0)
+        {
+            if (strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_SURVEYID + " = ?";
+        }if (path[1] > 0)
+        {
+            if (strWhere.isEmpty())
+            {
+                strWhere = " WHERE ";
+            }
+            else
+            {
+                strWhere += " AND ";
+            }
+            strWhere += FIELD_ID + " = ?";
+        }
+        if (!strWhere.isEmpty())
+        {
+            strSelect += strWhere;
+        }
+        return strSelect;
+
+        }
+        @Override
+        public String insertScript()
+        {
+            return "";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String updateScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteFor(String strContext)
+        {
+            return "";
+        }
+        @Override
+        public String createScript()
+        {
+            return "CREATE VIEW traversemeasurementsummary " +
+"AS " +
+"    SELECT " +
+"        trav.id AS id, trav.surveyid AS surveyid, trav.name AS name, survmeas.id AS measid, survmeas.horizdistance AS horizontal, survmeas.vertdistance AS vertical, survmeas.bearing AS bearing, ptfrom.id AS ptfromid, ptfrom.name AS ptfromname, ptfrom.x AS ptfromx, ptfrom.y AS ptfromy, ptfrom.z AS ptfromz, ptto.id AS pttoid, ptto.name AS pttoname, ptto.x AS pttox, ptto.y AS pttoy, ptto.z AS pttoz " +
+"    FROM " +
+"        traverse trav "
+        + "INNER JOIN traversemeasurement link ON trav.id = link.traverseid "
+
+        + "INNER JOIN surveymeasurement survmeas ON link.measurementid = survmeas.id "
+            + "LEFT JOIN surveypoint ptfrom ON survmeas.fromptid = ptfrom.id "
+
+            + "LEFT JOIN surveypoint ptto ON survmeas.toptid = ptto.id "
+ + ";"
+;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return "";
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ITraverseMeasurementSummary> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ITraverseMeasurementSummary> resultsHandler()
+        {
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverseMeasurementSummary>()
+                       {
+                            @Override
+                            public ITraverseMeasurementSummary fromResults(Connection connDb, ResultSet results)
+                            {
+                                try
+                                {
+                                    return TraverseMeasurementSummaryAdapter.createTraverseMeasurementSummary
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            results.getInt(FIELD_SURVEYID),
+                                            results.getString(FIELD_NAME),
+                                            results.getInt(FIELD_MEASID),
+                                            results.getDouble(FIELD_HORIZONTAL),
+                                            results.getDouble(FIELD_VERTICAL),
+                                            results.getDouble(FIELD_BEARING),
+                                            results.getInt(FIELD_PTFROMID),
+                                            results.getString(FIELD_PTFROMNAME),
+                                            results.getDouble(FIELD_PTFROMX),
+                                            results.getDouble(FIELD_PTFROMY),
+                                            results.getDouble(FIELD_PTFROMZ),
+                                            results.getInt(FIELD_PTTOID),
+                                            results.getString(FIELD_PTTONAME),
+                                            results.getDouble(FIELD_PTTOX),
+                                            results.getDouble(FIELD_PTTOY),
+                                            results.getDouble(FIELD_PTTOZ)
+                                        );
+                                }
+                                catch(SQLException exc)
+                                {
+                                    LOGGER.error("Error parsing result set", exc);
+                                }
+                                return null;
+                            }
+                            @Override
+                            public ITraverseMeasurementSummary updateFromResults(ITraverseMeasurementSummary typeUpdate, Connection connDb, ResultSet results)
+                            {
+                                return typeUpdate;
+                            }
+                            @Override
+                            public boolean insertNew(ITraverseMeasurementSummary typeInsert, PreparedStatement stmtNew)
+                            {
+                                return false;
+                            }
+                            @Override
+                            public boolean updateExisting(ITraverseMeasurementSummary typeUpdate, PreparedStatement stmtUpdate)
+                            {
+                                return false;
+                            }
+                       };
+           }
+           return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
 }
 

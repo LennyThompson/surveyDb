@@ -1,9 +1,9 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:31:05 AEST 2021
+// Generated on Mon Apr 26 15:32:27 AEST 2021
 
 package com.lenny.surveyingDB.interfaces;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import com.lenny.surveyingDB.interfaces.ISurveyPoint;
 import com.lenny.surveyingDB.interfaces.ISurveyPointType;
@@ -18,8 +18,8 @@ import com.lenny.surveyingDB.interfaces.ISurvey;
 public interface ISurveyPoint
 {
     int getID();
-    LocalDateTime getCreated();
-    LocalDateTime getUpdated();
+    OffsetDateTime getCreated();
+    OffsetDateTime getUpdated();
     double getX();
     double getY();
     double getZ();

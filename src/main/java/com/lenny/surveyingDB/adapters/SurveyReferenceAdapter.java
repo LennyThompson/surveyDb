@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun Jan 10 14:54:24 AEST 2021
+// Generated on Mon Apr 26 20:29:43 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
 
 // log4j types
@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 
 import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
+import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ISurveyReference;
 
 
@@ -32,36 +33,36 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
 
         // Class implements ISurveyReference but only accessible through the SurveyReferenceAdapter
 
-        static class SurveyReference extends UndoTarget implements ISurveyReference
+        public static class SurveyReference extends UndoTarget implements ISurveyReference
         {
             @SerializedName("ID")
             private int m_nID;
             @SerializedName("created")
-            private LocalDateTime m_dateCreated;
+            private OffsetDateTime m_dateCreated;
             @SerializedName("updated")
-            private LocalDateTime m_dateUpdated;
+            private OffsetDateTime m_dateUpdated;
             @SerializedName("Name")
             private String m_strName;
             @SerializedName("Description")
             private String m_strDescription;
             @SerializedName("Date")
-            private LocalDateTime m_dateDate;
+            private OffsetDateTime m_dateDate;
             @SerializedName("Reference")
             private String m_strReference;
 
             SurveyReference()
             {
                 m_nID = 0;
-                m_dateCreated = LocalDateTime.now();
-                m_dateUpdated = LocalDateTime.now();
+                m_dateCreated = OffsetDateTime.now();
+                m_dateUpdated = OffsetDateTime.now();
                 m_strName = "";
                 m_strDescription = "";
-                m_dateDate = LocalDateTime.now();
+                m_dateDate = OffsetDateTime.now();
                 m_strReference = "";
 
                 m_saveState = DataSaveState.SAVE_STATE_NEW;
             }
-            SurveyReference(int nID, LocalDateTime dateCreated, LocalDateTime dateUpdated, String strName, String strDescription, LocalDateTime dateDate, String strReference)
+            SurveyReference(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, OffsetDateTime dateDate, String strReference)
             {
                 m_nID = nID;
                 m_dateCreated = dateCreated;
@@ -77,11 +78,11 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return  m_nID;
             }
-            public LocalDateTime getCreated()
+            public OffsetDateTime getCreated()
             {
                 return  m_dateCreated;
             }
-            public LocalDateTime getUpdated()
+            public OffsetDateTime getUpdated()
             {
                 return  m_dateUpdated;
             }
@@ -93,7 +94,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             {
                 return  m_strDescription;
             }
-            public LocalDateTime getDate()
+            public OffsetDateTime getDate()
             {
                 return  m_dateDate;
             }
@@ -154,13 +155,13 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
                 m_strDescription = strSet;
                 setUpdated();
             }
-            public void setDate(LocalDateTime dateSet)
+            public void setDate(OffsetDateTime dateSet)
             {
                 addUndoProvider
                 (
                     new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Date = " + SurveyReference.this.m_dateDate)
                     {
-                        LocalDateTime m_undoDate = SurveyReference.this.m_dateDate;
+                        OffsetDateTime m_undoDate = SurveyReference.this.m_dateDate;
                         public boolean doUndo()
                         {
                             if(isPending())
@@ -244,15 +245,38 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     public static ISurveyReference createSurveyReference
     (
         int nID,
-        LocalDateTime dateCreated,
-        LocalDateTime dateUpdated,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
         String strName,
         String strDescription,
-        LocalDateTime dateDate,
+        OffsetDateTime dateDate,
         String strReference
     )
     {
         return new SurveyReference(nID, dateCreated, dateUpdated, strName, strDescription, dateDate, strReference);
+    }
+
+    public static ISurveyReference updateSurveyReference
+    (
+        ISurveyReference typeUpdate,
+        int nID,
+        OffsetDateTime dateCreated,
+        OffsetDateTime dateUpdated,
+        String strName,
+        String strDescription,
+        OffsetDateTime dateDate,
+        String strReference
+    )
+    {
+        SurveyReference updating = (SurveyReference) typeUpdate;
+        updating.m_nID = nID;;
+        updating.m_dateCreated = dateCreated;;
+        updating.m_dateUpdated = dateUpdated;;
+        updating.m_strName = strName;;
+        updating.m_strDescription = strDescription;;
+        updating.m_dateDate = dateDate;;
+        updating.m_strReference = strReference;;
+        return updating;
     }
 
     // This method enables the adapter type to be registered to deserialise json as ISurveyReference
@@ -264,7 +288,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
 
     public ISurveyReference deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerialiser());
+        GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         SurveyReferenceAdapter.SurveyReference typeSurveyReference = gsonInstance.fromJson(json, SurveyReferenceAdapter.SurveyReference.class);
         if (typeSurveyReference.m_nID > 0)
@@ -282,7 +306,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         LOGGER.info("Getting SurveyReference id = " + nIdGet + " from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(nIdGet));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             if (nIdGet > 0)
             {
                 stmtSelect.setInt(1, nIdGet);
@@ -323,7 +347,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         LOGGER.info("Getting last SurveyReference from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -359,7 +383,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         LOGGER.info("Updating SurveyReference id = " + typeUpdate.getID() + " in db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -395,7 +419,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         LOGGER.info("Getting SurveyReference id from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectLastIdQuery());
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectLast());
             results = stmtSelect.executeQuery();
             if (results.next())
             {
@@ -433,7 +457,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         LOGGER.info("Getting all SurveyReference data from db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(-1));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectScript());
             results = stmtSelect.executeQuery();
             while (results.next())
             {
@@ -477,12 +501,8 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         PreparedStatement stmtSelect = null;
         try
         {
-            stmtSelect = connDb.prepareStatement(getInsertQuery());
-            stmtSelect.setString(1, typeAdd.getName());
-            stmtSelect.setString(2, typeAdd.getDescription());
-            stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeAdd.getDate()));
-            stmtSelect.setString(4, typeAdd.getReference());
-
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
+            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -519,13 +539,8 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             PreparedStatement stmtSelect = null;
             try
             {
-                stmtSelect = connDb.prepareStatement(getUpdateQuery());
-                stmtSelect.setString(1, typeUpdate.getName());
-                stmtSelect.setString(2, typeUpdate.getDescription());
-                stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
-                stmtSelect.setString(4, typeUpdate.getReference());
-                stmtSelect.setInt(5, typeUpdate.getID());
-
+                stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
+                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -555,7 +570,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         LOGGER.info("Updating from database SurveyReference, id = " + typeUpdate.getID() + " data in db");
         try
         {
-            stmtSelect = connDb.prepareStatement(getSelectQuery(typeUpdate.getID()));
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.selectByPrimaryKeyScript());
             stmtSelect.setInt(1, typeUpdate.getID());
             results = stmtSelect.executeQuery();
             if (results.next())
@@ -589,29 +604,11 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
 
     private static ISurveyReference createSurveyReferenceFromQueryResults(Connection connDb, ResultSet results) throws SQLException
     {
-        return createSurveyReference
-                   (
-                       results.getInt(FIELD_ID),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                       results.getString(FIELD_NAME),
-                       results.getString(FIELD_DESCRIPTION),
-                       SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
-                       results.getString(FIELD_REFERENCE)
-                   );
-
+        return (ISurveyReference) SQL_PROVIDER.resultsHandler().fromResults(connDb, results);
     }
     private static ISurveyReference updateSurveyReferenceFromQueryResults(Connection connDb, ResultSet results, ISurveyReference typeUpdate) throws SQLException
     {
-       ((SurveyReference)typeUpdate).m_nID = results.getInt(FIELD_ID);
-       ((SurveyReference)typeUpdate).m_dateCreated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED));
-       ((SurveyReference)typeUpdate).m_dateUpdated = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED));
-       ((SurveyReference)typeUpdate).m_strName = results.getString(FIELD_NAME);
-       ((SurveyReference)typeUpdate).m_strDescription = results.getString(FIELD_DESCRIPTION);
-       ((SurveyReference)typeUpdate).m_dateDate = SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE));
-       ((SurveyReference)typeUpdate).m_strReference = results.getString(FIELD_REFERENCE);
-
-       return typeUpdate;
+        return (ISurveyReference) SQL_PROVIDER.resultsHandler().updateFromResults(typeUpdate, connDb, results);
     }
 
     private static String getSelectQuery(int nIdFor)
@@ -704,12 +701,256 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
     {
         LOGGER.debug("Creating SurveyReference in database");
         Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(CREATE_TABLE_SCRIPT);
-        LOGGER.debug("SurveyReference create script - " + CREATE_TABLE_SCRIPT);
-        for(String strScript : TABLE_EXTRA_SCRIPTS)
-        {
-            stmtExecute.execute(strScript);
-            LOGGER.debug("SurveyReference extra script - " + strScript);
-        }
+        stmtExecute.execute(SQL_PROVIDER.createScript());
+        LOGGER.debug("SurveyReference create script - " + SQL_PROVIDER.createScript());
+        stmtExecute.execute(SQL_PROVIDER.triggerScript());
+        LOGGER.debug("SurveyReference extra script - " + SQL_PROVIDER.triggerScript());
+        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
+        LOGGER.debug("SurveyReference extra script - " + SQL_PROVIDER.staticInsertsScript());
     }
+
+    public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+    {
+        if(provider != null)
+        {
+            SQL_PROVIDER = provider;
+            return true;
+        }
+        else
+        {
+            SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+        }
+        return false;
+    }
+
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
+    {
+        @Override
+        public String target()
+        {
+            return "surveyreference";
+        }
+        @Override
+        public String selectScript()
+        {
+            return "SELECT " +
+                       FIELD_ID + ",  " +
+                       FIELD_CREATED + ",  " +
+                       FIELD_UPDATED + ",  " +
+                       FIELD_NAME + ",  " +
+                       FIELD_DESCRIPTION + ",  " +
+                       FIELD_DATE + ",  " +
+                       FIELD_REFERENCE
+                       + " FROM " +
+                       TABLE_NAME;
+        }
+        @Override
+        public String selectByPrimaryKeyScript()
+        {
+            return "SELECT " +
+            FIELD_ID + ",  " +
+            FIELD_CREATED + ",  " +
+            FIELD_UPDATED + ",  " +
+            FIELD_NAME + ",  " +
+            FIELD_DESCRIPTION + ",  " +
+            FIELD_DATE + ",  " +
+            FIELD_REFERENCE
+            + " FROM " +
+            TABLE_NAME + " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        public String selectFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String selectLastId()
+        {
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+        }
+        @Override
+        public String selectLast()
+        {
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, " +
+                             FIELD_ID + ",  " +
+                             FIELD_CREATED + ",  " +
+                             FIELD_UPDATED + ",  " +
+                             FIELD_NAME + ",  " +
+                             FIELD_DESCRIPTION + ",  " +
+                             FIELD_DATE + ",  " +
+                             FIELD_REFERENCE
+                             + " FROM " +
+                             TABLE_NAME;
+        }
+        @Override
+        public String selectForPath(Integer[] path)
+        {
+            return "";
+        }
+        @Override
+        public String insertScript()
+        {
+            return "INSERT INTO " + TABLE_NAME + "(" +
+                        FIELD_NAME + ",  " +
+                        FIELD_DESCRIPTION + ",  " +
+                        FIELD_DATE + ",  " +
+                        FIELD_REFERENCE
+                        + ") VALUES (?,  ?,  ?,  ?)";
+        }
+        @Override
+        public String insertFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String updateScript()
+        {
+            return "UPDATE " + TABLE_NAME + " SET " +
+                               FIELD_NAME + " = ?,  " +
+                               FIELD_DESCRIPTION + " = ?,  " +
+                               FIELD_DATE + " = ?,  " +
+                               FIELD_REFERENCE + " = ?"
+                           + " WHERE " + PRIMARY_KEY + " = ?";
+        }
+        @Override
+        public String deleteScript()
+        {
+            return "";
+        }
+        @Override
+        public String deleteByPrimaryKeyScript()
+        {
+            return "";
+        }
+        public String deleteFor(String strContext)
+        {
+            switch(strContext)
+            {
+                default:
+                    return "";
+            }
+        }
+        @Override
+        public String createScript()
+        {
+            return CREATE_TABLE_SCRIPT;
+        }
+        @Override
+        public String triggerScript()
+        {
+            return Arrays.stream(TABLE_EXTRA_SCRIPTS).collect(Collectors.joining(" \n"));
+        }
+        @Override
+        public String staticInsertsScript()
+        {
+            return "";
+        }
+
+        private SqlProvider.SqlResultHandler<ISurveyReference> m_resultsHandler;
+        @Override
+        public SqlProvider.SqlResultHandler<ISurveyReference> resultsHandler()
+        {
+                if(m_resultsHandler == null)
+                {
+                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyReference>()
+                           {
+                                @Override
+                                public ISurveyReference fromResults(Connection connDb, ResultSet results)
+                                {
+                                    try
+                                    {
+                                        return createSurveyReference
+                                        (
+                                            results.getInt(FIELD_ID),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getString(FIELD_NAME),
+                                            results.getString(FIELD_DESCRIPTION),
+                                            OffsetDateTime.parse(results.getString(FIELD_DATE)),
+                                            results.getString(FIELD_REFERENCE)
+                                        );
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error parsing result set", exc);
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public ISurveyReference updateFromResults(ISurveyReference typeUpdate, Connection connDb, ResultSet results)
+                                {
+                                    try
+                                    {
+                                        return updateSurveyReference
+                                        (
+                                            typeUpdate,
+                                            results.getInt(FIELD_ID),
+                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
+                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            results.getString(FIELD_NAME),
+                                            results.getString(FIELD_DESCRIPTION),
+                                            OffsetDateTime.parse(results.getString(FIELD_DATE)),
+                                            results.getString(FIELD_REFERENCE)
+                                        );
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error parsing result set", exc);
+                                    }
+                                    return null;
+                                }
+                                @Override
+                                public boolean insertNew(ISurveyReference typeInsert, PreparedStatement stmtSelect)
+                                {
+                                    try
+                                    {
+                                        stmtSelect.setString(1, typeInsert.getName());
+                                        stmtSelect.setString(2, typeInsert.getDescription());
+                                        stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeInsert.getDate()));
+                                        stmtSelect.setString(4, typeInsert.getReference());
+
+                                        return true;
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error setting data to prepared statement", exc);
+                                    }
+                                    return false;
+                                }
+                                @Override
+                                public boolean updateExisting(ISurveyReference typeUpdate, PreparedStatement stmtSelect)
+                                {
+                                    try
+                                    {
+                                        stmtSelect.setString(1, typeUpdate.getName());
+                                        stmtSelect.setString(2, typeUpdate.getDescription());
+                                        stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
+                                        stmtSelect.setString(4, typeUpdate.getReference());
+                                        stmtSelect.setInt(5, typeUpdate.getID());
+
+                                        return true;
+                                    }
+                                    catch(SQLException exc)
+                                    {
+                                        LOGGER.error("Error setting data to prepared statement", exc);
+                                    }
+                                    return false;
+
+                                }
+
+                           };
+               }
+               return m_resultsHandler;
+        }
+
+    };
+    private static SqlProvider.SqlScriptProvider SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+
 }
