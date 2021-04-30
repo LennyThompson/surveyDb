@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon Apr 26 20:29:43 AEST 2021
+// Generated on Fri Apr 30 12:19:02 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -774,7 +774,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         @Override
         public String selectLast()
         {
-            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, " +
+            return "SELECT " +
                              FIELD_ID + ",  " +
                              FIELD_CREATED + ",  " +
                              FIELD_UPDATED + ",  " +
@@ -783,7 +783,8 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
                              FIELD_DATE + ",  " +
                              FIELD_REFERENCE
                              + " FROM " +
-                             TABLE_NAME;
+                             TABLE_NAME +
+                             " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
         }
         @Override
         public String selectForPath(Integer[] path)

@@ -38,5 +38,7 @@ public interface SqlProvider
 
         <OutType> SqlResultHandler<OutType> resultsHandler();
     }
+    String getProviderName();
     SqlScriptProvider getScriptProvider(String strTarget);
+    boolean createDatabase(Connection connDb);
 }

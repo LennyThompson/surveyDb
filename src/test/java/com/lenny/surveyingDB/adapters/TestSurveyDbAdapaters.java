@@ -12,24 +12,55 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
 public class TestSurveyDbAdapaters
 {
+    void dropSchema(Properties propsConn, String strSchemaName) throws SQLException
+    {
+        Connection connDb = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", propsConn);
+        Statement stmtExecute = connDb.createStatement();
+        stmtExecute.execute(String.format("DROP SCHEMA IF EXISTS %s CASCADE", strSchemaName));
+        stmtExecute.execute(String.format("CREATE SCHEMA IF NOT EXISTS %s", strSchemaName));
+        connDb.close();
+    }
+
+    @Test
+    public void testCreateDatabasePostgres() throws SQLException
+    {
+        Properties propsConn = new Properties();
+        propsConn.put("user", "lenny");
+        propsConn.put("password", "pqxy(!%k");
+        dropSchema(propsConn, "test");
+
+        propsConn.put("currentSchema", "test");
+        Connection connDb = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", propsConn);
+        PLPGSQlScriptProvider.initProvider();
+        SqlProvider sqlProvider = new PLPGSQlScriptProvider();
+        SqlProviderManager.setCompatibleProvider(sqlProvider);
+
+        assertTrue(sqlProvider.createDatabase(connDb));
+
+    }
     @Test
     public void testLoadStatics() throws SQLException
     {
-        Connection connDb = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "lenny", "pqxy(!%k");
+        Properties propsConn = new Properties();
+        propsConn.put("user", "lenny");
+        propsConn.put("password", "pqxy(!%k");
+        propsConn.put("currentSchema", "survey");
+        Connection connDb = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", propsConn);
         PLPGSQlScriptProvider.initProvider();
-        SqlProvider sqlProvider = new PLPGSQlScriptProvider();
+        SqlProviderManager.setCompatibleProvider(new PLPGSQlScriptProvider());
 
         GsonBuilder gsonBuild = new GsonBuilder().setDateFormat("yyyy-MM-dd hh:mm:ss");
         gsonBuild.registerTypeAdapter(ISurveyPointType.class, new SurveyPointTypeAdapter());
         gsonBuild.registerTypeAdapter(ISurveyReference.class, new SurveyReferenceAdapter());
 
-        SurveyPointTypeAdapter.setSqlProvider(sqlProvider.getScriptProvider("survey.surveypointtype"));
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(connDb);
         assertTrue (15 <= listPointTypes.size());
         int nCurrSize = listPointTypes.size();
@@ -73,7 +104,6 @@ public class TestSurveyDbAdapaters
 
         // TODO add test for delete when added.
 
-        SurveyReferenceAdapter.setSqlProvider(sqlProvider.getScriptProvider("survey.surveyreference"));
         List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(connDb);
 
         assertTrue(2 <= listRefs.size());
