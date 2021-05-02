@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -31,166 +31,167 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
 {
     private static final Logger LOGGER = LogManager.getLogger(SurveyPointTypeAdapter.class.getName());
 
-        // Class implements ISurveyPointType but only accessible through the SurveyPointTypeAdapter
+    // Class implements ISurveyPointType but only accessible through the SurveyPointTypeAdapter
 
-        public static class SurveyPointType extends UndoTarget implements ISurveyPointType
+    public static class SurveyPointType extends UndoTarget implements ISurveyPointType
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Abbreviation")
+        private String m_strAbbreviation;
+        @SerializedName("UserDefined")
+        private boolean m_bUserDefined;
+
+        SurveyPointType()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Abbreviation")
-            private String m_strAbbreviation;
-            @SerializedName("UserDefined")
-            private boolean m_bUserDefined;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_strAbbreviation = "";
+            m_bUserDefined = false;
 
-            SurveyPointType()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_strName = "";
-                m_strAbbreviation = "";
-                m_bUserDefined = false;
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            SurveyPointType(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strAbbreviation, boolean bUserDefined)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_strName = strName;
-                m_strAbbreviation = strAbbreviation;
-                m_bUserDefined = bUserDefined;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public String getAbbreviation()
-            {
-                return  m_strAbbreviation;
-            }
-            public boolean getUserDefined()
-            {
-                return  m_bUserDefined;
-            }
-
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPointType.this.m_saveState, "Undo set SurveyPointType member Name = " + SurveyPointType.this.m_strName)
-                    {
-                        String m_undoName = SurveyPointType.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPointType.this.m_strName = m_undoName;
-                                if(SurveyPointType.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPointType.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setAbbreviation(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPointType.this.m_saveState, "Undo set SurveyPointType member Abbreviation = " + SurveyPointType.this.m_strAbbreviation)
-                    {
-                        String m_undoAbbreviation = SurveyPointType.this.m_strAbbreviation;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPointType.this.m_strAbbreviation = m_undoAbbreviation;
-                                if(SurveyPointType.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPointType.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strAbbreviation = strSet;
-                setUpdated();
-            }
-            public void setUserDefined(boolean bSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPointType.this.m_saveState, "Undo set SurveyPointType member UserDefined = " + SurveyPointType.this.m_bUserDefined)
-                    {
-                        boolean m_undoUserDefined = SurveyPointType.this.m_bUserDefined;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPointType.this.m_bUserDefined = m_undoUserDefined;
-                                if(SurveyPointType.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPointType.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_bUserDefined = bSet;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Abbreviation\":" + "\"" + m_strAbbreviation + "\"" + ",";
-                strJson += "\"UserDefined\":" + m_bUserDefined;
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        SurveyPointType(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strAbbreviation, boolean bUserDefined)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_strName = strName;
+            m_strAbbreviation = strAbbreviation;
+            m_bUserDefined = bUserDefined;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public String getAbbreviation()
+        {
+            return  m_strAbbreviation;
+        }
+        public boolean getUserDefined()
+        {
+            return  m_bUserDefined;
+        }
+
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPointType.this.m_saveState, "Undo set SurveyPointType member Name = " + SurveyPointType.this.m_strName)
+                {
+                    String m_undoName = SurveyPointType.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPointType.this.m_strName = m_undoName;
+                            if(SurveyPointType.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPointType.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setAbbreviation(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPointType.this.m_saveState, "Undo set SurveyPointType member Abbreviation = " + SurveyPointType.this.m_strAbbreviation)
+                {
+                    String m_undoAbbreviation = SurveyPointType.this.m_strAbbreviation;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPointType.this.m_strAbbreviation = m_undoAbbreviation;
+                            if(SurveyPointType.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPointType.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strAbbreviation = strSet;
+            setUpdated();
+        }
+        public void setUserDefined(boolean bSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPointType.this.m_saveState, "Undo set SurveyPointType member UserDefined = " + SurveyPointType.this.m_bUserDefined)
+                {
+                    boolean m_undoUserDefined = SurveyPointType.this.m_bUserDefined;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPointType.this.m_bUserDefined = m_undoUserDefined;
+                            if(SurveyPointType.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPointType.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_bUserDefined = bSet;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Abbreviation\":" + "\"" + m_strAbbreviation + "\"" + ",";
+            strJson += "\"UserDefined\":" + m_bUserDefined;
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "SurveyPointType";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";

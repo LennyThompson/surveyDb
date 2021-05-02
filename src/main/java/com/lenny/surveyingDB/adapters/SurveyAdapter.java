@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -43,357 +43,358 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
 {
     private static final Logger LOGGER = LogManager.getLogger(SurveyAdapter.class.getName());
 
-        // Class implements ISurvey but only accessible through the SurveyAdapter
+    // Class implements ISurvey but only accessible through the SurveyAdapter
 
-        public static class Survey extends UndoTarget implements ISurvey
+    public static class Survey extends UndoTarget implements ISurvey
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Description")
+        private String m_strDescription;
+
+        @SerializedName("ProjectionID")
+        private IProjection m_typeProjection;
+
+        @SerializedName("Measurements")
+        private List<ISurveyMeasurement> m_listSurveyMeasurement;
+        @SerializedName("Images")
+        private List<ISurveyImage> m_listSurveyImage;
+        @SerializedName("Traverses")
+        private List<ITraverse> m_listTraverse;
+        @SerializedName("Survey_Instrument")
+        private List<IInstrument> m_listInstrument;
+        @SerializedName("Survey_SurveyPoint")
+        private List<ISurveyPoint> m_listSurveyPoint;
+
+        Survey()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Description")
-            private String m_strDescription;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_strDescription = "";
 
-            @SerializedName("ProjectionID")
-            private IProjection m_typeProjection;
+            m_typeProjection = ProjectionAdapter.createNewProjection();
 
-            @SerializedName("Measurements")
-            private List<ISurveyMeasurement> m_listSurveyMeasurement;
-            @SerializedName("Images")
-            private List<ISurveyImage> m_listSurveyImage;
-            @SerializedName("Traverses")
-            private List<ITraverse> m_listTraverse;
-            @SerializedName("Survey_Instrument")
-            private List<IInstrument> m_listInstrument;
-            @SerializedName("Survey_SurveyPoint")
-            private List<ISurveyPoint> m_listSurveyPoint;
+            m_listSurveyMeasurement = new ArrayList<>();
+            m_listSurveyImage = new ArrayList<>();
+            m_listTraverse = new ArrayList<>();
+            m_listInstrument = new ArrayList<>();
+            m_listSurveyPoint = new ArrayList<>();
 
-            Survey()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_strName = "";
-                m_strDescription = "";
-
-                m_typeProjection = ProjectionAdapter.createNewProjection();
-
-                m_listSurveyMeasurement = new ArrayList<>();
-                m_listSurveyImage = new ArrayList<>();
-                m_listTraverse = new ArrayList<>();
-                m_listInstrument = new ArrayList<>();
-                m_listSurveyPoint = new ArrayList<>();
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            Survey(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, IProjection typeProjection, List<ISurveyMeasurement> listSurveyMeasurement, List<ISurveyImage> listSurveyImage, List<ITraverse> listTraverse, List<IInstrument> listInstrument, List<ISurveyPoint> listSurveyPoint)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_strName = strName;
-                m_strDescription = strDescription;
-                m_typeProjection = typeProjection;
-                m_listSurveyMeasurement = listSurveyMeasurement;
-                m_listSurveyImage = listSurveyImage;
-                m_listTraverse = listTraverse;
-                m_listInstrument = listInstrument;
-                m_listSurveyPoint = listSurveyPoint;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public String getDescription()
-            {
-                return  m_strDescription;
-            }
-
-            public IProjection getProjection()
-            {
-                return  m_typeProjection;
-            }
-
-            public List<ISurveyMeasurement> getSurveyMeasurements()
-            {
-                return  m_listSurveyMeasurement;
-            }
-            public List<ISurveyImage> getSurveyImages()
-            {
-                return  m_listSurveyImage;
-            }
-            public List<ITraverse> getTraverses()
-            {
-                return  m_listTraverse;
-            }
-            public List<IInstrument> getInstruments()
-            {
-                return  m_listInstrument;
-            }
-            public List<ISurveyPoint> getSurveyPoints()
-            {
-                return  m_listSurveyPoint;
-            }
-
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Name = " + Survey.this.m_strName)
-                    {
-                        String m_undoName = Survey.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Survey.this.m_strName = m_undoName;
-                                if(Survey.this.m_saveState != m_dataSaveState)
-                                {
-                                    Survey.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setDescription(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Description = " + Survey.this.m_strDescription)
-                    {
-                        String m_undoDescription = Survey.this.m_strDescription;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Survey.this.m_strDescription = m_undoDescription;
-                                if(Survey.this.m_saveState != m_dataSaveState)
-                                {
-                                    Survey.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strDescription = strSet;
-                setUpdated();
-            }
-
-            public void setProjection(IProjection typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Projection = " + Survey.this.m_typeProjection)
-                    {
-                        IProjection m_undoProjection = Survey.this.m_typeProjection;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Survey.this.m_typeProjection = m_undoProjection;
-                                if(Survey.this.m_saveState != m_dataSaveState)
-                                {
-                                    Survey.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typeProjection = typeSet;
-                setUpdated();
-            }
-
-            public void addSurveyMeasurement(ISurveyMeasurement typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyMeasurement = " + Survey.this.m_listSurveyMeasurement)
-                        {
-                            ISurveyMeasurement m_undoSurveyMeasurement = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listSurveyMeasurement.remove(m_undoSurveyMeasurement);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listSurveyMeasurement.add(typeAdd);
-                ((SurveyMeasurementAdapter.SurveyMeasurement) typeAdd).setSurveyID(getID());
-                setUpdated();
-            }
-            public void addSurveyImage(ISurveyImage typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyImage = " + Survey.this.m_listSurveyImage)
-                        {
-                            ISurveyImage m_undoSurveyImage = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listSurveyImage.remove(m_undoSurveyImage);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listSurveyImage.add(typeAdd);
-                ((SurveyImageAdapter.SurveyImage) typeAdd).setSurveyID(getID());
-                setUpdated();
-            }
-            public void addTraverse(ITraverse typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Traverse = " + Survey.this.m_listTraverse)
-                        {
-                            ITraverse m_undoTraverse = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listTraverse.remove(m_undoTraverse);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listTraverse.add(typeAdd);
-                ((TraverseAdapter.Traverse) typeAdd).setSurveyID(getID());
-                setUpdated();
-            }
-            public void addInstrument(IInstrument typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Instrument = " + Survey.this.m_listInstrument)
-                        {
-                            IInstrument m_undoInstrument = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listInstrument.remove(m_undoInstrument);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listInstrument.add(typeAdd);
-                setUpdated();
-            }
-            public void addSurveyPoint(ISurveyPoint typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyPoint = " + Survey.this.m_listSurveyPoint)
-                        {
-                            ISurveyPoint m_undoSurveyPoint = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Survey.this.m_listSurveyPoint.remove(m_undoSurveyPoint);
-                                    if(Survey.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Survey.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listSurveyPoint.add(typeAdd);
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-                strJson += "\"ProjectionID\":" + ((ISerialiseState) m_typeProjection).toJson() + ",";
-                strJson += "\"Measurements\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Traverses\":[" + m_listTraverse.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Survey_Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        Survey(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, IProjection typeProjection, List<ISurveyMeasurement> listSurveyMeasurement, List<ISurveyImage> listSurveyImage, List<ITraverse> listTraverse, List<IInstrument> listInstrument, List<ISurveyPoint> listSurveyPoint)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_strName = strName;
+            m_strDescription = strDescription;
+            m_typeProjection = typeProjection;
+            m_listSurveyMeasurement = listSurveyMeasurement;
+            m_listSurveyImage = listSurveyImage;
+            m_listTraverse = listTraverse;
+            m_listInstrument = listInstrument;
+            m_listSurveyPoint = listSurveyPoint;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public String getDescription()
+        {
+            return  m_strDescription;
+        }
+
+        public IProjection getProjection()
+        {
+            return  m_typeProjection;
+        }
+
+        public List<ISurveyMeasurement> getSurveyMeasurements()
+        {
+            return  m_listSurveyMeasurement;
+        }
+        public List<ISurveyImage> getSurveyImages()
+        {
+            return  m_listSurveyImage;
+        }
+        public List<ITraverse> getTraverses()
+        {
+            return  m_listTraverse;
+        }
+        public List<IInstrument> getInstruments()
+        {
+            return  m_listInstrument;
+        }
+        public List<ISurveyPoint> getSurveyPoints()
+        {
+            return  m_listSurveyPoint;
+        }
+
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Name = " + Survey.this.m_strName)
+                {
+                    String m_undoName = Survey.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Survey.this.m_strName = m_undoName;
+                            if(Survey.this.m_saveState != m_dataSaveState)
+                            {
+                                Survey.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setDescription(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Description = " + Survey.this.m_strDescription)
+                {
+                    String m_undoDescription = Survey.this.m_strDescription;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Survey.this.m_strDescription = m_undoDescription;
+                            if(Survey.this.m_saveState != m_dataSaveState)
+                            {
+                                Survey.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strDescription = strSet;
+            setUpdated();
+        }
+
+        public void setProjection(IProjection typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Projection = " + Survey.this.m_typeProjection)
+                {
+                    IProjection m_undoProjection = Survey.this.m_typeProjection;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Survey.this.m_typeProjection = m_undoProjection;
+                            if(Survey.this.m_saveState != m_dataSaveState)
+                            {
+                                Survey.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typeProjection = typeSet;
+            setUpdated();
+        }
+
+        public void addSurveyMeasurement(ISurveyMeasurement typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyMeasurement = " + Survey.this.m_listSurveyMeasurement)
+                    {
+                        ISurveyMeasurement m_undoSurveyMeasurement = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Survey.this.m_listSurveyMeasurement.remove(m_undoSurveyMeasurement);
+                                if(Survey.this.m_saveState != m_dataSaveState)
+                                {
+                                    Survey.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listSurveyMeasurement.add(typeAdd);
+            ((SurveyMeasurementAdapter.SurveyMeasurement) typeAdd).setSurveyID(getID());
+            setUpdated();
+        }
+        public void addSurveyImage(ISurveyImage typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyImage = " + Survey.this.m_listSurveyImage)
+                    {
+                        ISurveyImage m_undoSurveyImage = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Survey.this.m_listSurveyImage.remove(m_undoSurveyImage);
+                                if(Survey.this.m_saveState != m_dataSaveState)
+                                {
+                                    Survey.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listSurveyImage.add(typeAdd);
+            ((SurveyImageAdapter.SurveyImage) typeAdd).setSurveyID(getID());
+            setUpdated();
+        }
+        public void addTraverse(ITraverse typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Traverse = " + Survey.this.m_listTraverse)
+                    {
+                        ITraverse m_undoTraverse = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Survey.this.m_listTraverse.remove(m_undoTraverse);
+                                if(Survey.this.m_saveState != m_dataSaveState)
+                                {
+                                    Survey.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listTraverse.add(typeAdd);
+            ((TraverseAdapter.Traverse) typeAdd).setSurveyID(getID());
+            setUpdated();
+        }
+        public void addInstrument(IInstrument typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member Instrument = " + Survey.this.m_listInstrument)
+                    {
+                        IInstrument m_undoInstrument = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Survey.this.m_listInstrument.remove(m_undoInstrument);
+                                if(Survey.this.m_saveState != m_dataSaveState)
+                                {
+                                    Survey.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listInstrument.add(typeAdd);
+            setUpdated();
+        }
+        public void addSurveyPoint(ISurveyPoint typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Survey.this.m_saveState, "Undo set Survey member SurveyPoint = " + Survey.this.m_listSurveyPoint)
+                    {
+                        ISurveyPoint m_undoSurveyPoint = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Survey.this.m_listSurveyPoint.remove(m_undoSurveyPoint);
+                                if(Survey.this.m_saveState != m_dataSaveState)
+                                {
+                                    Survey.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listSurveyPoint.add(typeAdd);
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+            strJson += "\"ProjectionID\":" + ((ISerialiseState) m_typeProjection).toJson() + ",";
+            strJson += "\"Measurements\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"Traverses\":[" + m_listTraverse.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"Survey_Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "Survey";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";

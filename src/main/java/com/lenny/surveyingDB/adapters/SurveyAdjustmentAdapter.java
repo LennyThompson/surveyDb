@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -25,253 +25,212 @@ import com.google.gson.annotations.SerializedName;
 import com.lenny.Utils.*;
 import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ISurveyAdjustment;
-import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
-import com.lenny.surveyingDB.adapters.SurveyMeasurementAdapter;
 
 
 public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustment>
 {
     private static final Logger LOGGER = LogManager.getLogger(SurveyAdjustmentAdapter.class.getName());
 
-        // Class implements ISurveyAdjustment but only accessible through the SurveyAdjustmentAdapter
+    // Class implements ISurveyAdjustment but only accessible through the SurveyAdjustmentAdapter
 
-        public static class SurveyAdjustment extends UndoTarget implements ISurveyAdjustment
+    public static class SurveyAdjustment extends UndoTarget implements ISurveyAdjustment
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("DeltaX")
+        private double m_dDeltaX;
+        @SerializedName("DeltaY")
+        private double m_dDeltaY;
+        @SerializedName("DeltaZ")
+        private double m_dDeltaZ;
+        @SerializedName("BearingAdj")
+        private double m_dBearingAdj;
+
+        SurveyAdjustment()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("DeltaX")
-            private double m_dDeltaX;
-            @SerializedName("DeltaY")
-            private double m_dDeltaY;
-            @SerializedName("DeltaZ")
-            private double m_dDeltaZ;
-            @SerializedName("BearingAdj")
-            private double m_dBearingAdj;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_dDeltaX = 0.0;
+            m_dDeltaY = 0.0;
+            m_dDeltaZ = 0.0;
+            m_dBearingAdj = 0.0;
 
-            @SerializedName("MeasurementID")
-            private ISurveyMeasurement m_typeMeasurement;
-
-            SurveyAdjustment()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_dDeltaX = 0.0;
-                m_dDeltaY = 0.0;
-                m_dDeltaZ = 0.0;
-                m_dBearingAdj = 0.0;
-
-                m_typeMeasurement = SurveyMeasurementAdapter.createNewSurveyMeasurement();
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            SurveyAdjustment(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dDeltaX, double dDeltaY, double dDeltaZ, double dBearingAdj, ISurveyMeasurement typeMeasurement)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_dDeltaX = dDeltaX;
-                m_dDeltaY = dDeltaY;
-                m_dDeltaZ = dDeltaZ;
-                m_dBearingAdj = dBearingAdj;
-                m_typeMeasurement = typeMeasurement;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public double getDeltaX()
-            {
-                return  m_dDeltaX;
-            }
-            public double getDeltaY()
-            {
-                return  m_dDeltaY;
-            }
-            public double getDeltaZ()
-            {
-                return  m_dDeltaZ;
-            }
-            public double getBearingAdj()
-            {
-                return  m_dBearingAdj;
-            }
-
-            public ISurveyMeasurement getMeasurement()
-            {
-                return  m_typeMeasurement;
-            }
-
-            public void setDeltaX(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member DeltaX = " + SurveyAdjustment.this.m_dDeltaX)
-                    {
-                        double m_undoDeltaX = SurveyAdjustment.this.m_dDeltaX;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyAdjustment.this.m_dDeltaX = m_undoDeltaX;
-                                if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyAdjustment.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dDeltaX = dSet;
-                setUpdated();
-            }
-            public void setDeltaY(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member DeltaY = " + SurveyAdjustment.this.m_dDeltaY)
-                    {
-                        double m_undoDeltaY = SurveyAdjustment.this.m_dDeltaY;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyAdjustment.this.m_dDeltaY = m_undoDeltaY;
-                                if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyAdjustment.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dDeltaY = dSet;
-                setUpdated();
-            }
-            public void setDeltaZ(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member DeltaZ = " + SurveyAdjustment.this.m_dDeltaZ)
-                    {
-                        double m_undoDeltaZ = SurveyAdjustment.this.m_dDeltaZ;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyAdjustment.this.m_dDeltaZ = m_undoDeltaZ;
-                                if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyAdjustment.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dDeltaZ = dSet;
-                setUpdated();
-            }
-            public void setBearingAdj(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member BearingAdj = " + SurveyAdjustment.this.m_dBearingAdj)
-                    {
-                        double m_undoBearingAdj = SurveyAdjustment.this.m_dBearingAdj;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyAdjustment.this.m_dBearingAdj = m_undoBearingAdj;
-                                if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyAdjustment.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dBearingAdj = dSet;
-                setUpdated();
-            }
-
-            public void setMeasurement(ISurveyMeasurement typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member Measurement = " + SurveyAdjustment.this.m_typeMeasurement)
-                    {
-                        ISurveyMeasurement m_undoMeasurement = SurveyAdjustment.this.m_typeMeasurement;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyAdjustment.this.m_typeMeasurement = m_undoMeasurement;
-                                if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyAdjustment.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typeMeasurement = typeSet;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"DeltaX\":" + m_dDeltaX + ",";
-                strJson += "\"DeltaY\":" + m_dDeltaY + ",";
-                strJson += "\"DeltaZ\":" + m_dDeltaZ + ",";
-                strJson += "\"BearingAdj\":" + m_dBearingAdj + ",";
-                strJson += "\"MeasurementID\":" + ((ISerialiseState) m_typeMeasurement).toJson();
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        SurveyAdjustment(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dDeltaX, double dDeltaY, double dDeltaZ, double dBearingAdj)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_dDeltaX = dDeltaX;
+            m_dDeltaY = dDeltaY;
+            m_dDeltaZ = dDeltaZ;
+            m_dBearingAdj = dBearingAdj;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public double getDeltaX()
+        {
+            return  m_dDeltaX;
+        }
+        public double getDeltaY()
+        {
+            return  m_dDeltaY;
+        }
+        public double getDeltaZ()
+        {
+            return  m_dDeltaZ;
+        }
+        public double getBearingAdj()
+        {
+            return  m_dBearingAdj;
+        }
+
+        public void setDeltaX(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member DeltaX = " + SurveyAdjustment.this.m_dDeltaX)
+                {
+                    double m_undoDeltaX = SurveyAdjustment.this.m_dDeltaX;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyAdjustment.this.m_dDeltaX = m_undoDeltaX;
+                            if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyAdjustment.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dDeltaX = dSet;
+            setUpdated();
+        }
+        public void setDeltaY(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member DeltaY = " + SurveyAdjustment.this.m_dDeltaY)
+                {
+                    double m_undoDeltaY = SurveyAdjustment.this.m_dDeltaY;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyAdjustment.this.m_dDeltaY = m_undoDeltaY;
+                            if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyAdjustment.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dDeltaY = dSet;
+            setUpdated();
+        }
+        public void setDeltaZ(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member DeltaZ = " + SurveyAdjustment.this.m_dDeltaZ)
+                {
+                    double m_undoDeltaZ = SurveyAdjustment.this.m_dDeltaZ;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyAdjustment.this.m_dDeltaZ = m_undoDeltaZ;
+                            if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyAdjustment.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dDeltaZ = dSet;
+            setUpdated();
+        }
+        public void setBearingAdj(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyAdjustment.this.m_saveState, "Undo set SurveyAdjustment member BearingAdj = " + SurveyAdjustment.this.m_dBearingAdj)
+                {
+                    double m_undoBearingAdj = SurveyAdjustment.this.m_dBearingAdj;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyAdjustment.this.m_dBearingAdj = m_undoBearingAdj;
+                            if(SurveyAdjustment.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyAdjustment.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dBearingAdj = dSet;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"DeltaX\":" + m_dDeltaX + ",";
+            strJson += "\"DeltaY\":" + m_dDeltaY + ",";
+            strJson += "\"DeltaZ\":" + m_dDeltaZ + ",";
+            strJson += "\"BearingAdj\":" + m_dBearingAdj;
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "SurveyAdjustment";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
     public static final String FIELD_UPDATED = "updated";
-    public static final String FIELD_MEASUREMENTID = "MeasurementID";
     public static final String FIELD_DELTAX = "DeltaX";
     public static final String FIELD_DELTAY = "DeltaY";
     public static final String FIELD_DELTAZ = "DeltaZ";
@@ -292,11 +251,10 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         double dDeltaX,
         double dDeltaY,
         double dDeltaZ,
-        double dBearingAdj,
-        ISurveyMeasurement typeMeasurement
+        double dBearingAdj
     )
     {
-        return new SurveyAdjustment(nID, dateCreated, dateUpdated, dDeltaX, dDeltaY, dDeltaZ, dBearingAdj, typeMeasurement);
+        return new SurveyAdjustment(nID, dateCreated, dateUpdated, dDeltaX, dDeltaY, dDeltaZ, dBearingAdj);
     }
 
     public static ISurveyAdjustment updateSurveyAdjustment
@@ -308,8 +266,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         double dDeltaX,
         double dDeltaY,
         double dDeltaZ,
-        double dBearingAdj,
-        ISurveyMeasurement typeMeasurement
+        double dBearingAdj
     )
     {
         SurveyAdjustment updating = (SurveyAdjustment) typeUpdate;
@@ -320,7 +277,6 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         updating.m_dDeltaY = dDeltaY;;
         updating.m_dDeltaZ = dDeltaZ;;
         updating.m_dBearingAdj = dBearingAdj;;
-        updating.m_typeMeasurement = typeMeasurement;;
         return updating;
     }
 
@@ -334,8 +290,6 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
     public ISurveyAdjustment deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
-        gsonBuilder.registerTypeAdapter(ISurveyMeasurement.class, new SurveyMeasurementAdapter());
-
         Gson gsonInstance = gsonBuilder.create();
         SurveyAdjustmentAdapter.SurveyAdjustment typeSurveyAdjustment = gsonInstance.fromJson(json, SurveyAdjustmentAdapter.SurveyAdjustment.class);
         if (typeSurveyAdjustment.m_nID > 0)
@@ -546,15 +500,6 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         LOGGER.info("Adding SurveyAdjustment data to db");
         LOGGER.debug("Adding SurveyAdjustment data - " + ((ISerialiseState) typeAdd).toJson());
         PreparedStatement stmtSelect = null;
-        if (((UndoTarget) typeAdd.getMeasurement()).isNew())
-        {
-            typeAdd.setMeasurement(SurveyMeasurementAdapter.add(connDb, typeAdd.getMeasurement()));
-        }
-        else if (((UndoTarget) typeAdd.getMeasurement()).isUpdated())
-        {
-            typeAdd.setMeasurement(SurveyMeasurementAdapter.update(connDb, typeAdd.getMeasurement()));
-        }
-
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
@@ -676,8 +621,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             FIELD_DELTAX + ",  " +
             FIELD_DELTAY + ",  " +
             FIELD_DELTAZ + ",  " +
-            FIELD_BEARINGADJ + ",  " +
-            FIELD_MEASUREMENTID
+            FIELD_BEARINGADJ
             + " FROM " +
             TABLE_NAME;
         if (nIdFor > 0)
@@ -692,9 +636,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             FIELD_DELTAX + ",  " +
             FIELD_DELTAY + ",  " +
             FIELD_DELTAZ + ",  " +
-            FIELD_BEARINGADJ + ",  " +
-            FIELD_MEASUREMENTID
-            + ") VALUES (?,  ?,  ?,  ?,  ?)";
+            FIELD_BEARINGADJ
+            + ") VALUES (?,  ?,  ?,  ?)";
         return strInsert;
     }
     private static String getSelectLastIdQuery()
@@ -710,8 +653,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             FIELD_DELTAX + ",  " +
             FIELD_DELTAY + ",  " +
             FIELD_DELTAZ + ",  " +
-            FIELD_BEARINGADJ + ",  " +
-            FIELD_MEASUREMENTID
+            FIELD_BEARINGADJ
             + " FROM " +
             TABLE_NAME;
         return strSelectLast;
@@ -722,8 +664,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             FIELD_DELTAX + " = ?,  " +
             FIELD_DELTAY + " = ?,  " +
             FIELD_DELTAZ + " = ?,  " +
-            FIELD_BEARINGADJ + " = ?,  " +
-            FIELD_MEASUREMENTID + " = ?"
+            FIELD_BEARINGADJ + " = ?"
         + " WHERE " + PRIMARY_KEY + " = ?";
         return strUpdate;
     }
@@ -732,12 +673,10 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         "`ID`    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " + 
         "`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
         "`updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " + 
-        "`MeasurementID` INTEGER NOT NULL, " + 
         "`DeltaX`    REAL NOT NULL, " + 
         "`DeltaY`    REAL NOT NULL, " + 
         "`DeltaZ`    REAL NOT NULL, " + 
-        "`BearingAdj`    REAL NOT NULL, " + 
-        "FOREIGN KEY (MeasurementID) REFERENCES SurveyMeasurement(ID) " + 
+        "`BearingAdj`    REAL NOT NULL " + 
         ");";
     public static String getCreateTableScript()
     {
@@ -800,8 +739,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                        FIELD_DELTAX + ",  " +
                        FIELD_DELTAY + ",  " +
                        FIELD_DELTAZ + ",  " +
-                       FIELD_BEARINGADJ + ",  " +
-                       FIELD_MEASUREMENTID
+                       FIELD_BEARINGADJ
                        + " FROM " +
                        TABLE_NAME;
         }
@@ -815,8 +753,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             FIELD_DELTAX + ",  " +
             FIELD_DELTAY + ",  " +
             FIELD_DELTAZ + ",  " +
-            FIELD_BEARINGADJ + ",  " +
-            FIELD_MEASUREMENTID
+            FIELD_BEARINGADJ
             + " FROM " +
             TABLE_NAME + " WHERE " + PRIMARY_KEY + " = ?";
         }
@@ -843,8 +780,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                              FIELD_DELTAX + ",  " +
                              FIELD_DELTAY + ",  " +
                              FIELD_DELTAZ + ",  " +
-                             FIELD_BEARINGADJ + ",  " +
-                             FIELD_MEASUREMENTID
+                             FIELD_BEARINGADJ
                              + " FROM " +
                              TABLE_NAME +
                              " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
@@ -861,9 +797,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                         FIELD_DELTAX + ",  " +
                         FIELD_DELTAY + ",  " +
                         FIELD_DELTAZ + ",  " +
-                        FIELD_BEARINGADJ + ",  " +
-                        FIELD_MEASUREMENTID
-                        + ") VALUES (?,  ?,  ?,  ?,  ?)";
+                        FIELD_BEARINGADJ
+                        + ") VALUES (?,  ?,  ?,  ?)";
         }
         @Override
         public String insertFor(String strContext)
@@ -881,8 +816,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                FIELD_DELTAX + " = ?,  " +
                                FIELD_DELTAY + " = ?,  " +
                                FIELD_DELTAZ + " = ?,  " +
-                               FIELD_BEARINGADJ + " = ?,  " +
-                               FIELD_MEASUREMENTID + " = ?"
+                               FIELD_BEARINGADJ + " = ?"
                            + " WHERE " + PRIMARY_KEY + " = ?";
         }
         @Override
@@ -940,8 +874,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                             results.getDouble(FIELD_DELTAX),
                                             results.getDouble(FIELD_DELTAY),
                                             results.getDouble(FIELD_DELTAZ),
-                                            results.getDouble(FIELD_BEARINGADJ),
-                                            SurveyMeasurementAdapter.get(connDb, results.getInt(FIELD_MEASUREMENTID))
+                                            results.getDouble(FIELD_BEARINGADJ)
                                         );
                                     }
                                     catch(SQLException exc)
@@ -964,8 +897,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                             results.getDouble(FIELD_DELTAX),
                                             results.getDouble(FIELD_DELTAY),
                                             results.getDouble(FIELD_DELTAZ),
-                                            results.getDouble(FIELD_BEARINGADJ),
-                                            SurveyMeasurementAdapter.get(connDb, results.getInt(FIELD_MEASUREMENTID))
+                                            results.getDouble(FIELD_BEARINGADJ)
                                         );
                                     }
                                     catch(SQLException exc)
@@ -983,7 +915,6 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                         stmtSelect.setDouble(2, typeInsert.getDeltaY());
                                         stmtSelect.setDouble(3, typeInsert.getDeltaZ());
                                         stmtSelect.setDouble(4, typeInsert.getBearingAdj());
-                                        stmtSelect.setInt(5, typeInsert.getMeasurement().getID());
 
                                         return true;
                                     }
@@ -1002,8 +933,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                         stmtSelect.setDouble(2, typeUpdate.getDeltaY());
                                         stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
                                         stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
-                                        stmtSelect.setInt(5, typeUpdate.getMeasurement().getID());
-                                        stmtSelect.setInt(6, typeUpdate.getID());
+                                        stmtSelect.setInt(5, typeUpdate.getID());
 
                                         return true;
                                     }

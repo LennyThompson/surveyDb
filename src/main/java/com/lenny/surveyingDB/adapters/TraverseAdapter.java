@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -37,321 +37,345 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
 {
     private static final Logger LOGGER = LogManager.getLogger(TraverseAdapter.class.getName());
 
-        // Class implements ITraverse but only accessible through the TraverseAdapter
+    // Class implements ITraverse but only accessible through the TraverseAdapter
 
-        public static class Traverse extends UndoTarget implements ITraverse
+    public static class Traverse extends UndoTarget implements ITraverse
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Description")
+        private String m_strDescription;
+
+        @SerializedName("StartPointID")
+        private ISurveyPoint m_typeStartPoint;
+        @SerializedName("EndPointID")
+        private ISurveyPoint m_typeEndPoint;
+
+        @SerializedName("TraverseClosure")
+        private List<ITraverseClosure> m_listTraverseClosure;
+        @SerializedName("Traverse_SurveyMeasurement")
+        private List<ISurveyMeasurement> m_listSurveyMeasurement;
+
+        @SerializedName("SurveyID")
+        private int m_nSurveyID;
+
+
+        // This constructor is specically for json serialisation, not to be used...
+        Traverse()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Description")
-            private String m_strDescription;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_strDescription = "";
 
-            @SerializedName("StartPointID")
-            private ISurveyPoint m_typeStartPoint;
-            @SerializedName("EndPointID")
-            private ISurveyPoint m_typeEndPoint;
+            m_typeStartPoint = SurveyPointAdapter.createNewSurveyPoint();
+            m_typeEndPoint = SurveyPointAdapter.createNewSurveyPoint();
 
-            @SerializedName("TraverseClosure")
-            private List<ITraverseClosure> m_listTraverseClosure;
-            @SerializedName("Traverse_SurveyMeasurement")
-            private List<ISurveyMeasurement> m_listSurveyMeasurement;
+            m_listTraverseClosure = new ArrayList<>();
+            m_listSurveyMeasurement = new ArrayList<>();
 
-            @SerializedName("SurveyID")
-            private int m_nSurveyID;
+            m_nSurveyID = 0;
 
-
-            Traverse()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_strName = "";
-                m_strDescription = "";
-
-                m_typeStartPoint = SurveyPointAdapter.createNewSurveyPoint();
-                m_typeEndPoint = SurveyPointAdapter.createNewSurveyPoint();
-
-                m_listTraverseClosure = new ArrayList<>();
-                m_listSurveyMeasurement = new ArrayList<>();
-
-                m_nSurveyID = 0;
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            Traverse(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, ISurveyPoint typeStartPoint, ISurveyPoint typeEndPoint, int nSurveyID, List<ITraverseClosure> listTraverseClosure, List<ISurveyMeasurement> listSurveyMeasurement)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_strName = strName;
-                m_strDescription = strDescription;
-                m_typeStartPoint = typeStartPoint;
-                m_typeEndPoint = typeEndPoint;
-                m_listTraverseClosure = listTraverseClosure;
-                m_listSurveyMeasurement = listSurveyMeasurement;
-                m_nSurveyID = nSurveyID;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public String getDescription()
-            {
-                return  m_strDescription;
-            }
-
-            public ISurveyPoint getStartPoint()
-            {
-                return  m_typeStartPoint;
-            }
-            public ISurveyPoint getEndPoint()
-            {
-                return  m_typeEndPoint;
-            }
-
-            public List<ITraverseClosure> getTraverseClosures()
-            {
-                return  m_listTraverseClosure;
-            }
-            public List<ISurveyMeasurement> getSurveyMeasurements()
-            {
-                return  m_listSurveyMeasurement;
-            }
-
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member Name = " + Traverse.this.m_strName)
-                    {
-                        String m_undoName = Traverse.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Traverse.this.m_strName = m_undoName;
-                                if(Traverse.this.m_saveState != m_dataSaveState)
-                                {
-                                    Traverse.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setDescription(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member Description = " + Traverse.this.m_strDescription)
-                    {
-                        String m_undoDescription = Traverse.this.m_strDescription;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Traverse.this.m_strDescription = m_undoDescription;
-                                if(Traverse.this.m_saveState != m_dataSaveState)
-                                {
-                                    Traverse.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strDescription = strSet;
-                setUpdated();
-            }
-
-            public void setStartPoint(ISurveyPoint typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member StartPoint = " + Traverse.this.m_typeStartPoint)
-                    {
-                        ISurveyPoint m_undoStartPoint = Traverse.this.m_typeStartPoint;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Traverse.this.m_typeStartPoint = m_undoStartPoint;
-                                if(Traverse.this.m_saveState != m_dataSaveState)
-                                {
-                                    Traverse.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typeStartPoint = typeSet;
-                setUpdated();
-            }
-            public void setEndPoint(ISurveyPoint typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member EndPoint = " + Traverse.this.m_typeEndPoint)
-                    {
-                        ISurveyPoint m_undoEndPoint = Traverse.this.m_typeEndPoint;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Traverse.this.m_typeEndPoint = m_undoEndPoint;
-                                if(Traverse.this.m_saveState != m_dataSaveState)
-                                {
-                                    Traverse.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typeEndPoint = typeSet;
-                setUpdated();
-            }
-
-            public void addTraverseClosure(ITraverseClosure typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member TraverseClosure = " + Traverse.this.m_listTraverseClosure)
-                        {
-                            ITraverseClosure m_undoTraverseClosure = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Traverse.this.m_listTraverseClosure.remove(m_undoTraverseClosure);
-                                    if(Traverse.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Traverse.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listTraverseClosure.add(typeAdd);
-                ((TraverseClosureAdapter.TraverseClosure) typeAdd).setTraverseID(getID());
-                setUpdated();
-            }
-            public void addSurveyMeasurement(ISurveyMeasurement typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member SurveyMeasurement = " + Traverse.this.m_listSurveyMeasurement)
-                        {
-                            ISurveyMeasurement m_undoSurveyMeasurement = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    Traverse.this.m_listSurveyMeasurement.remove(m_undoSurveyMeasurement);
-                                    if(Traverse.this.m_saveState != m_dataSaveState)
-                                    {
-                                        Traverse.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listSurveyMeasurement.add(typeAdd);
-                setUpdated();
-            }
-
-            public int getSurveyID()
-            {
-                return m_nSurveyID;
-            }
-            void setSurveyID(int nSurveyID)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member SurveyID = " + Traverse.this.m_nSurveyID)
-                    {
-                        int m_undoSurveyID = Traverse.this.m_nSurveyID;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Traverse.this.m_nSurveyID = m_undoSurveyID;
-                                if(Traverse.this.m_saveState != m_dataSaveState)
-                                {
-                                    Traverse.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_nSurveyID = nSurveyID;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-                strJson += "\"StartPointID\":" + ((ISerialiseState) m_typeStartPoint).toJson() + ",";
-                strJson += "\"EndPointID\":" + ((ISerialiseState) m_typeEndPoint).toJson() + ",";
-                strJson += "\"SurveyID\":" + m_nSurveyID + ",";
-                strJson += "\"TraverseClosure\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-                strJson += "\"Traverse_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
         }
 
+        Traverse
+        (
+            int nSurveyID
+        )
+        {
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_strDescription = "";
+
+            m_typeStartPoint = SurveyPointAdapter.createNewSurveyPoint();
+            m_typeEndPoint = SurveyPointAdapter.createNewSurveyPoint();
+
+            m_listTraverseClosure = new ArrayList<>();
+            m_listSurveyMeasurement = new ArrayList<>();
+
+            m_nSurveyID = nSurveyID;
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        Traverse(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, ISurveyPoint typeStartPoint, ISurveyPoint typeEndPoint, int nSurveyID, List<ITraverseClosure> listTraverseClosure, List<ISurveyMeasurement> listSurveyMeasurement)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_strName = strName;
+            m_strDescription = strDescription;
+            m_typeStartPoint = typeStartPoint;
+            m_typeEndPoint = typeEndPoint;
+            m_listTraverseClosure = listTraverseClosure;
+            m_listSurveyMeasurement = listSurveyMeasurement;
+            m_nSurveyID = nSurveyID;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
+        }
+
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public String getDescription()
+        {
+            return  m_strDescription;
+        }
+
+        public ISurveyPoint getStartPoint()
+        {
+            return  m_typeStartPoint;
+        }
+        public ISurveyPoint getEndPoint()
+        {
+            return  m_typeEndPoint;
+        }
+
+        public List<ITraverseClosure> getTraverseClosures()
+        {
+            return  m_listTraverseClosure;
+        }
+        public List<ISurveyMeasurement> getSurveyMeasurements()
+        {
+            return  m_listSurveyMeasurement;
+        }
+
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member Name = " + Traverse.this.m_strName)
+                {
+                    String m_undoName = Traverse.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Traverse.this.m_strName = m_undoName;
+                            if(Traverse.this.m_saveState != m_dataSaveState)
+                            {
+                                Traverse.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setDescription(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member Description = " + Traverse.this.m_strDescription)
+                {
+                    String m_undoDescription = Traverse.this.m_strDescription;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Traverse.this.m_strDescription = m_undoDescription;
+                            if(Traverse.this.m_saveState != m_dataSaveState)
+                            {
+                                Traverse.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strDescription = strSet;
+            setUpdated();
+        }
+
+        public void setStartPoint(ISurveyPoint typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member StartPoint = " + Traverse.this.m_typeStartPoint)
+                {
+                    ISurveyPoint m_undoStartPoint = Traverse.this.m_typeStartPoint;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Traverse.this.m_typeStartPoint = m_undoStartPoint;
+                            if(Traverse.this.m_saveState != m_dataSaveState)
+                            {
+                                Traverse.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typeStartPoint = typeSet;
+            setUpdated();
+        }
+        public void setEndPoint(ISurveyPoint typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member EndPoint = " + Traverse.this.m_typeEndPoint)
+                {
+                    ISurveyPoint m_undoEndPoint = Traverse.this.m_typeEndPoint;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Traverse.this.m_typeEndPoint = m_undoEndPoint;
+                            if(Traverse.this.m_saveState != m_dataSaveState)
+                            {
+                                Traverse.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typeEndPoint = typeSet;
+            setUpdated();
+        }
+
+        public void addTraverseClosure(ITraverseClosure typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member TraverseClosure = " + Traverse.this.m_listTraverseClosure)
+                    {
+                        ITraverseClosure m_undoTraverseClosure = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Traverse.this.m_listTraverseClosure.remove(m_undoTraverseClosure);
+                                if(Traverse.this.m_saveState != m_dataSaveState)
+                                {
+                                    Traverse.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listTraverseClosure.add(typeAdd);
+            ((TraverseClosureAdapter.TraverseClosure) typeAdd).setTraverseID(getID());
+            setUpdated();
+        }
+        public void addSurveyMeasurement(ISurveyMeasurement typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member SurveyMeasurement = " + Traverse.this.m_listSurveyMeasurement)
+                    {
+                        ISurveyMeasurement m_undoSurveyMeasurement = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                Traverse.this.m_listSurveyMeasurement.remove(m_undoSurveyMeasurement);
+                                if(Traverse.this.m_saveState != m_dataSaveState)
+                                {
+                                    Traverse.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listSurveyMeasurement.add(typeAdd);
+            setUpdated();
+        }
+
+        public int getSurveyID()
+        {
+            return m_nSurveyID;
+        }
+        void setSurveyID(int nSurveyID)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Traverse.this.m_saveState, "Undo set Traverse member SurveyID = " + Traverse.this.m_nSurveyID)
+                {
+                    int m_undoSurveyID = Traverse.this.m_nSurveyID;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Traverse.this.m_nSurveyID = m_undoSurveyID;
+                            if(Traverse.this.m_saveState != m_dataSaveState)
+                            {
+                                Traverse.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_nSurveyID = nSurveyID;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+            strJson += "\"StartPointID\":" + ((ISerialiseState) m_typeStartPoint).toJson() + ",";
+            strJson += "\"EndPointID\":" + ((ISerialiseState) m_typeEndPoint).toJson() + ",";
+            strJson += "\"SurveyID\":" + m_nSurveyID + ",";
+            strJson += "\"TraverseClosure\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"Traverse_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "Traverse";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
@@ -364,11 +388,16 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
 
     public static final String PRIMARY_KEY = FIELD_ID;
 
-    public static ITraverse createNewTraverse()
+    public static ITraverse createNewTraverse
+    (
+        int nSurveyID
+    )
     {
-        return new Traverse();
+        return new Traverse
+        (
+            nSurveyID
+        );
     }
-
     public static ITraverse createTraverse
     (
         int nID,

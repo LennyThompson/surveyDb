@@ -17,6 +17,17 @@ public interface SqlProvider
         boolean updateExisting(OutType typeUpdate, PreparedStatement stmtUpdate);
     }
 
+    // TODO: Add interface to apply parameters to jdbc statements...
+
+    public interface SqlParameterHandler<InType>
+    {
+        boolean prepareInsert(PreparedStatement stmt, InType type);
+        boolean prepareInsertFor(PreparedStatement stmt, InType type, String strContext);
+        boolean prepareUpdateUpdate(PreparedStatement stmt, InType type);
+        boolean prepareDelete(PreparedStatement stmt, InType type);
+        boolean prepareDeleteFor(PreparedStatement stmt, InType type);
+    }
+
     public interface SqlScriptProvider
     {
         String target();

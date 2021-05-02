@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -34,170 +34,171 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 {
     private static final Logger LOGGER = LogManager.getLogger(InstrumentAdapter.class.getName());
 
-        // Class implements IInstrument but only accessible through the InstrumentAdapter
+    // Class implements IInstrument but only accessible through the InstrumentAdapter
 
-        public static class Instrument extends UndoTarget implements IInstrument
+    public static class Instrument extends UndoTarget implements IInstrument
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Description")
+        private String m_strDescription;
+
+        @SerializedName("ManufacturerID")
+        private IInstrumentManufacturer m_typeManufacturer;
+
+        Instrument()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Description")
-            private String m_strDescription;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_strDescription = "";
 
-            @SerializedName("ManufacturerID")
-            private IInstrumentManufacturer m_typeManufacturer;
+            m_typeManufacturer = InstrumentManufacturerAdapter.createNewInstrumentManufacturer();
 
-            Instrument()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_strName = "";
-                m_strDescription = "";
-
-                m_typeManufacturer = InstrumentManufacturerAdapter.createNewInstrumentManufacturer();
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            Instrument(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, IInstrumentManufacturer typeManufacturer)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_strName = strName;
-                m_strDescription = strDescription;
-                m_typeManufacturer = typeManufacturer;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public String getDescription()
-            {
-                return  m_strDescription;
-            }
-
-            public IInstrumentManufacturer getManufacturer()
-            {
-                return  m_typeManufacturer;
-            }
-
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Instrument.this.m_saveState, "Undo set Instrument member Name = " + Instrument.this.m_strName)
-                    {
-                        String m_undoName = Instrument.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Instrument.this.m_strName = m_undoName;
-                                if(Instrument.this.m_saveState != m_dataSaveState)
-                                {
-                                    Instrument.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setDescription(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Instrument.this.m_saveState, "Undo set Instrument member Description = " + Instrument.this.m_strDescription)
-                    {
-                        String m_undoDescription = Instrument.this.m_strDescription;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Instrument.this.m_strDescription = m_undoDescription;
-                                if(Instrument.this.m_saveState != m_dataSaveState)
-                                {
-                                    Instrument.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strDescription = strSet;
-                setUpdated();
-            }
-
-            public void setManufacturer(IInstrumentManufacturer typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Instrument.this.m_saveState, "Undo set Instrument member Manufacturer = " + Instrument.this.m_typeManufacturer)
-                    {
-                        IInstrumentManufacturer m_undoManufacturer = Instrument.this.m_typeManufacturer;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Instrument.this.m_typeManufacturer = m_undoManufacturer;
-                                if(Instrument.this.m_saveState != m_dataSaveState)
-                                {
-                                    Instrument.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typeManufacturer = typeSet;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-                strJson += "\"ManufacturerID\":" + ((ISerialiseState) m_typeManufacturer).toJson();
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        Instrument(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, IInstrumentManufacturer typeManufacturer)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_strName = strName;
+            m_strDescription = strDescription;
+            m_typeManufacturer = typeManufacturer;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public String getDescription()
+        {
+            return  m_strDescription;
+        }
+
+        public IInstrumentManufacturer getManufacturer()
+        {
+            return  m_typeManufacturer;
+        }
+
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Instrument.this.m_saveState, "Undo set Instrument member Name = " + Instrument.this.m_strName)
+                {
+                    String m_undoName = Instrument.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Instrument.this.m_strName = m_undoName;
+                            if(Instrument.this.m_saveState != m_dataSaveState)
+                            {
+                                Instrument.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setDescription(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Instrument.this.m_saveState, "Undo set Instrument member Description = " + Instrument.this.m_strDescription)
+                {
+                    String m_undoDescription = Instrument.this.m_strDescription;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Instrument.this.m_strDescription = m_undoDescription;
+                            if(Instrument.this.m_saveState != m_dataSaveState)
+                            {
+                                Instrument.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strDescription = strSet;
+            setUpdated();
+        }
+
+        public void setManufacturer(IInstrumentManufacturer typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Instrument.this.m_saveState, "Undo set Instrument member Manufacturer = " + Instrument.this.m_typeManufacturer)
+                {
+                    IInstrumentManufacturer m_undoManufacturer = Instrument.this.m_typeManufacturer;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Instrument.this.m_typeManufacturer = m_undoManufacturer;
+                            if(Instrument.this.m_saveState != m_dataSaveState)
+                            {
+                                Instrument.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typeManufacturer = typeSet;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+            strJson += "\"ManufacturerID\":" + ((ISerialiseState) m_typeManufacturer).toJson();
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "Instrument";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
@@ -509,7 +510,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         }
         catch (SQLException exc)
         {
-            // TODO: set up error handling
+            LOGGER.error("Unable to insert link table record", exc);
             typeReturn = null;
         }
         finally
@@ -692,7 +693,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
                 + " FROM " +
                 TABLE_NAME  +
                 " INNER JOIN " +
-                "SurveyInstruments tableSurveyInstruments ON tableSurveyInstruments.InstrumentID == " + FIELD_ID +
+                "SurveyInstruments tableSurveyInstruments ON tableSurveyInstruments.InstrumentID = " + FIELD_ID +
                 " WHERE tableSurveyInstruments.SurveyID = ?";
     } 
     private static String getSurveyInsertLinkQuery()
@@ -842,7 +843,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             switch(strContext)
             {
-                case "surveyinstruments":
+                case "survey":
                     return "SELECT " +
                             FIELD_ID + ",  " +
                             FIELD_CREATED + ",  " +
@@ -853,7 +854,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
                             + " FROM " +
                             TABLE_NAME  +
                             " INNER JOIN " +
-                            "SurveyInstruments tableSurveyInstruments ON tableSurveyInstruments.InstrumentID == " + FIELD_ID +
+                            "SurveyInstruments tableSurveyInstruments ON tableSurveyInstruments.InstrumentID = " + FIELD_ID +
                             " WHERE tableSurveyInstruments.SurveyID = ?"; 
                 default:
                     return "";
@@ -897,7 +898,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             switch(strContext)
             {
-                case "surveyinstruments":
+                case "survey":
                     return "INSERT OR IGNORE INTO SurveyInstruments(" +
                             "SurveyID" + ",  " +
                             "InstrumentID"
@@ -929,7 +930,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         {
             switch(strContext)
             {
-                case "surveyinstruments":
+                case "survey":
                         return "DELETE FROM SurveyInstruments WHERE " +
                             "SurveyID = ? && " +
                             "InstrumentID = ?"; 

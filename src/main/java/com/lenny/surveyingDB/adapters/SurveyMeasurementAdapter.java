@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -26,7 +26,9 @@ import com.lenny.Utils.*;
 import com.lenny.surveyingDB.SqlProvider;
 import com.lenny.surveyingDB.interfaces.ISurveyMeasurement;
 import com.lenny.surveyingDB.interfaces.ISurveyPoint;
+import com.lenny.surveyingDB.interfaces.ISurveyAdjustment;
 import com.lenny.surveyingDB.adapters.SurveyPointAdapter;
+import com.lenny.surveyingDB.adapters.SurveyAdjustmentAdapter;
 import com.lenny.surveyingDB.interfaces.ITraverse;
 
 
@@ -34,279 +36,337 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
 {
     private static final Logger LOGGER = LogManager.getLogger(SurveyMeasurementAdapter.class.getName());
 
-        // Class implements ISurveyMeasurement but only accessible through the SurveyMeasurementAdapter
+    // Class implements ISurveyMeasurement but only accessible through the SurveyMeasurementAdapter
 
-        public static class SurveyMeasurement extends UndoTarget implements ISurveyMeasurement
+    public static class SurveyMeasurement extends UndoTarget implements ISurveyMeasurement
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("HorizDistance")
+        private double m_dHorizDistance;
+        @SerializedName("VertDistance")
+        private double m_dVertDistance;
+        @SerializedName("Bearing")
+        private double m_dBearing;
+
+        @SerializedName("FromPtID")
+        private ISurveyPoint m_typePointFrom;
+        @SerializedName("ToPtID")
+        private ISurveyPoint m_typePointTo;
+        @SerializedName("SurveyAdjustmentID")
+        private ISurveyAdjustment m_typeAdjustment;
+
+        @SerializedName("SurveyID")
+        private int m_nSurveyID;
+
+
+        // This constructor is specically for json serialisation, not to be used...
+        SurveyMeasurement()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("HorizDistance")
-            private double m_dHorizDistance;
-            @SerializedName("VertDistance")
-            private double m_dVertDistance;
-            @SerializedName("Bearing")
-            private double m_dBearing;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_dHorizDistance = 0.0;
+            m_dVertDistance = 0.0;
+            m_dBearing = 0.0;
 
-            @SerializedName("FromPtID")
-            private ISurveyPoint m_typePointFrom;
-            @SerializedName("ToPtID")
-            private ISurveyPoint m_typePointTo;
+            m_typePointFrom = SurveyPointAdapter.createNewSurveyPoint();
+            m_typePointTo = SurveyPointAdapter.createNewSurveyPoint();
+            m_typeAdjustment = SurveyAdjustmentAdapter.createNewSurveyAdjustment();
 
-            @SerializedName("SurveyID")
-            private int m_nSurveyID;
+            m_nSurveyID = 0;
 
-
-            SurveyMeasurement()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_dHorizDistance = 0.0;
-                m_dVertDistance = 0.0;
-                m_dBearing = 0.0;
-
-                m_typePointFrom = SurveyPointAdapter.createNewSurveyPoint();
-                m_typePointTo = SurveyPointAdapter.createNewSurveyPoint();
-
-                m_nSurveyID = 0;
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            SurveyMeasurement(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dHorizDistance, double dVertDistance, double dBearing, ISurveyPoint typePointFrom, ISurveyPoint typePointTo, int nSurveyID)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_dHorizDistance = dHorizDistance;
-                m_dVertDistance = dVertDistance;
-                m_dBearing = dBearing;
-                m_typePointFrom = typePointFrom;
-                m_typePointTo = typePointTo;
-                m_nSurveyID = nSurveyID;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public double getHorizDistance()
-            {
-                return  m_dHorizDistance;
-            }
-            public double getVertDistance()
-            {
-                return  m_dVertDistance;
-            }
-            public double getBearing()
-            {
-                return  m_dBearing;
-            }
-
-            public ISurveyPoint getPointFrom()
-            {
-                return  m_typePointFrom;
-            }
-            public ISurveyPoint getPointTo()
-            {
-                return  m_typePointTo;
-            }
-
-            public void setHorizDistance(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member HorizDistance = " + SurveyMeasurement.this.m_dHorizDistance)
-                    {
-                        double m_undoHorizDistance = SurveyMeasurement.this.m_dHorizDistance;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyMeasurement.this.m_dHorizDistance = m_undoHorizDistance;
-                                if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyMeasurement.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dHorizDistance = dSet;
-                setUpdated();
-            }
-            public void setVertDistance(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member VertDistance = " + SurveyMeasurement.this.m_dVertDistance)
-                    {
-                        double m_undoVertDistance = SurveyMeasurement.this.m_dVertDistance;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyMeasurement.this.m_dVertDistance = m_undoVertDistance;
-                                if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyMeasurement.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dVertDistance = dSet;
-                setUpdated();
-            }
-            public void setBearing(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member Bearing = " + SurveyMeasurement.this.m_dBearing)
-                    {
-                        double m_undoBearing = SurveyMeasurement.this.m_dBearing;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyMeasurement.this.m_dBearing = m_undoBearing;
-                                if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyMeasurement.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dBearing = dSet;
-                setUpdated();
-            }
-
-            public void setPointFrom(ISurveyPoint typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member PointFrom = " + SurveyMeasurement.this.m_typePointFrom)
-                    {
-                        ISurveyPoint m_undoPointFrom = SurveyMeasurement.this.m_typePointFrom;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyMeasurement.this.m_typePointFrom = m_undoPointFrom;
-                                if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyMeasurement.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typePointFrom = typeSet;
-                setUpdated();
-            }
-            public void setPointTo(ISurveyPoint typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member PointTo = " + SurveyMeasurement.this.m_typePointTo)
-                    {
-                        ISurveyPoint m_undoPointTo = SurveyMeasurement.this.m_typePointTo;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyMeasurement.this.m_typePointTo = m_undoPointTo;
-                                if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyMeasurement.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typePointTo = typeSet;
-                setUpdated();
-            }
-
-            public int getSurveyID()
-            {
-                return m_nSurveyID;
-            }
-            void setSurveyID(int nSurveyID)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member SurveyID = " + SurveyMeasurement.this.m_nSurveyID)
-                    {
-                        int m_undoSurveyID = SurveyMeasurement.this.m_nSurveyID;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyMeasurement.this.m_nSurveyID = m_undoSurveyID;
-                                if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyMeasurement.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_nSurveyID = nSurveyID;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"HorizDistance\":" + m_dHorizDistance + ",";
-                strJson += "\"VertDistance\":" + m_dVertDistance + ",";
-                strJson += "\"Bearing\":" + m_dBearing + ",";
-                strJson += "\"FromPtID\":" + ((ISerialiseState) m_typePointFrom).toJson() + ",";
-                strJson += "\"ToPtID\":" + ((ISerialiseState) m_typePointTo).toJson() + ",";
-                strJson += "\"SurveyID\":" + m_nSurveyID;
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
         }
 
+        SurveyMeasurement
+        (
+            int nSurveyID
+        )
+        {
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_dHorizDistance = 0.0;
+            m_dVertDistance = 0.0;
+            m_dBearing = 0.0;
+
+            m_typePointFrom = SurveyPointAdapter.createNewSurveyPoint();
+            m_typePointTo = SurveyPointAdapter.createNewSurveyPoint();
+            m_typeAdjustment = SurveyAdjustmentAdapter.createNewSurveyAdjustment();
+
+            m_nSurveyID = nSurveyID;
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        SurveyMeasurement(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dHorizDistance, double dVertDistance, double dBearing, ISurveyPoint typePointFrom, ISurveyPoint typePointTo, ISurveyAdjustment typeAdjustment, int nSurveyID)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_dHorizDistance = dHorizDistance;
+            m_dVertDistance = dVertDistance;
+            m_dBearing = dBearing;
+            m_typePointFrom = typePointFrom;
+            m_typePointTo = typePointTo;
+            m_typeAdjustment = typeAdjustment;
+            m_nSurveyID = nSurveyID;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
+        }
+
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public double getHorizDistance()
+        {
+            return  m_dHorizDistance;
+        }
+        public double getVertDistance()
+        {
+            return  m_dVertDistance;
+        }
+        public double getBearing()
+        {
+            return  m_dBearing;
+        }
+
+        public ISurveyPoint getPointFrom()
+        {
+            return  m_typePointFrom;
+        }
+        public ISurveyPoint getPointTo()
+        {
+            return  m_typePointTo;
+        }
+        public ISurveyAdjustment getAdjustment()
+        {
+            return  m_typeAdjustment;
+        }
+
+        public void setHorizDistance(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member HorizDistance = " + SurveyMeasurement.this.m_dHorizDistance)
+                {
+                    double m_undoHorizDistance = SurveyMeasurement.this.m_dHorizDistance;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_dHorizDistance = m_undoHorizDistance;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dHorizDistance = dSet;
+            setUpdated();
+        }
+        public void setVertDistance(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member VertDistance = " + SurveyMeasurement.this.m_dVertDistance)
+                {
+                    double m_undoVertDistance = SurveyMeasurement.this.m_dVertDistance;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_dVertDistance = m_undoVertDistance;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dVertDistance = dSet;
+            setUpdated();
+        }
+        public void setBearing(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member Bearing = " + SurveyMeasurement.this.m_dBearing)
+                {
+                    double m_undoBearing = SurveyMeasurement.this.m_dBearing;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_dBearing = m_undoBearing;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dBearing = dSet;
+            setUpdated();
+        }
+
+        public void setPointFrom(ISurveyPoint typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member PointFrom = " + SurveyMeasurement.this.m_typePointFrom)
+                {
+                    ISurveyPoint m_undoPointFrom = SurveyMeasurement.this.m_typePointFrom;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_typePointFrom = m_undoPointFrom;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typePointFrom = typeSet;
+            setUpdated();
+        }
+        public void setPointTo(ISurveyPoint typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member PointTo = " + SurveyMeasurement.this.m_typePointTo)
+                {
+                    ISurveyPoint m_undoPointTo = SurveyMeasurement.this.m_typePointTo;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_typePointTo = m_undoPointTo;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typePointTo = typeSet;
+            setUpdated();
+        }
+        public void setAdjustment(ISurveyAdjustment typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member Adjustment = " + SurveyMeasurement.this.m_typeAdjustment)
+                {
+                    ISurveyAdjustment m_undoAdjustment = SurveyMeasurement.this.m_typeAdjustment;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_typeAdjustment = m_undoAdjustment;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typeAdjustment = typeSet;
+            setUpdated();
+        }
+
+        public int getSurveyID()
+        {
+            return m_nSurveyID;
+        }
+        void setSurveyID(int nSurveyID)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyMeasurement.this.m_saveState, "Undo set SurveyMeasurement member SurveyID = " + SurveyMeasurement.this.m_nSurveyID)
+                {
+                    int m_undoSurveyID = SurveyMeasurement.this.m_nSurveyID;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyMeasurement.this.m_nSurveyID = m_undoSurveyID;
+                            if(SurveyMeasurement.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyMeasurement.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_nSurveyID = nSurveyID;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"HorizDistance\":" + m_dHorizDistance + ",";
+            strJson += "\"VertDistance\":" + m_dVertDistance + ",";
+            strJson += "\"Bearing\":" + m_dBearing + ",";
+            strJson += "\"FromPtID\":" + ((ISerialiseState) m_typePointFrom).toJson() + ",";
+            strJson += "\"ToPtID\":" + ((ISerialiseState) m_typePointTo).toJson() + ",";
+            strJson += "\"SurveyAdjustmentID\":" + ((ISerialiseState) m_typeAdjustment).toJson() + ",";
+            strJson += "\"SurveyID\":" + m_nSurveyID;
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "SurveyMeasurement";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
@@ -316,15 +376,21 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
     public static final String FIELD_BEARING = "Bearing";
     public static final String FIELD_FROMPTID = "FromPtID";
     public static final String FIELD_TOPTID = "ToPtID";
+    public static final String FIELD_SURVEYADJUSTMENTID = "SurveyAdjustmentID";
     public static final String FIELD_SURVEYID = "SurveyID";
 
     public static final String PRIMARY_KEY = FIELD_ID;
 
-    public static ISurveyMeasurement createNewSurveyMeasurement()
+    public static ISurveyMeasurement createNewSurveyMeasurement
+    (
+        int nSurveyID
+    )
     {
-        return new SurveyMeasurement();
+        return new SurveyMeasurement
+        (
+            nSurveyID
+        );
     }
-
     public static ISurveyMeasurement createSurveyMeasurement
     (
         int nID,
@@ -335,10 +401,11 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         double dBearing,
         ISurveyPoint typePointFrom,
         ISurveyPoint typePointTo,
+        ISurveyAdjustment typeAdjustment,
         int nSurveyID
     )
     {
-        return new SurveyMeasurement(nID, dateCreated, dateUpdated, dHorizDistance, dVertDistance, dBearing, typePointFrom, typePointTo, nSurveyID);
+        return new SurveyMeasurement(nID, dateCreated, dateUpdated, dHorizDistance, dVertDistance, dBearing, typePointFrom, typePointTo, typeAdjustment, nSurveyID);
     }
 
     public static ISurveyMeasurement updateSurveyMeasurement
@@ -352,6 +419,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         double dBearing,
         ISurveyPoint typePointFrom,
         ISurveyPoint typePointTo,
+        ISurveyAdjustment typeAdjustment,
         int nSurveyID
     )
     {
@@ -364,6 +432,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         updating.m_dBearing = dBearing;;
         updating.m_typePointFrom = typePointFrom;;
         updating.m_typePointTo = typePointTo;;
+        updating.m_typeAdjustment = typeAdjustment;;
         updating.m_nSurveyID = nSurveyID;;
         return updating;
     }
@@ -380,6 +449,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
         gsonBuilder.registerTypeAdapter(ISurveyPoint.class, new SurveyPointAdapter());
+        gsonBuilder.registerTypeAdapter(ISurveyAdjustment.class, new SurveyAdjustmentAdapter());
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyMeasurementAdapter.SurveyMeasurement typeSurveyMeasurement = gsonInstance.fromJson(json, SurveyMeasurementAdapter.SurveyMeasurement.class);
@@ -663,7 +733,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         }
         catch (SQLException exc)
         {
-            // TODO: set up error handling
+            LOGGER.error("Unable to insert link table record", exc);
             typeReturn = null;
         }
         finally
@@ -705,6 +775,14 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         else if (((UndoTarget) typeAdd.getPointTo()).isUpdated())
         {
             typeAdd.setPointTo(SurveyPointAdapter.update(connDb, typeAdd.getPointTo()));
+        }
+        if (((UndoTarget) typeAdd.getAdjustment()).isNew())
+        {
+            typeAdd.setAdjustment(SurveyAdjustmentAdapter.add(connDb, typeAdd.getAdjustment()));
+        }
+        else if (((UndoTarget) typeAdd.getAdjustment()).isUpdated())
+        {
+            typeAdd.setAdjustment(SurveyAdjustmentAdapter.update(connDb, typeAdd.getAdjustment()));
         }
 
         try
@@ -836,6 +914,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_BEARING + ",  " +
             FIELD_FROMPTID + ",  " +
             FIELD_TOPTID + ",  " +
+            FIELD_SURVEYADJUSTMENTID + ",  " +
             FIELD_SURVEYID
             + " FROM " +
             TABLE_NAME;
@@ -856,6 +935,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_BEARING + ",  " +
             FIELD_FROMPTID + ",  " +
             FIELD_TOPTID + ",  " +
+            FIELD_SURVEYADJUSTMENTID + ",  " +
             FIELD_SURVEYID
             + " FROM " +
             TABLE_NAME  +
@@ -873,11 +953,12 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                 FIELD_BEARING + ",  " +
                 FIELD_FROMPTID + ",  " +
                 FIELD_TOPTID + ",  " +
+                FIELD_SURVEYADJUSTMENTID + ",  " +
                 FIELD_SURVEYID
                 + " FROM " +
                 TABLE_NAME  +
                 " INNER JOIN " +
-                "TraverseMeasurement tableTraverseMeasurement ON tableTraverseMeasurement.MeasurementID == " + FIELD_ID +
+                "TraverseMeasurement tableTraverseMeasurement ON tableTraverseMeasurement.MeasurementID = " + FIELD_ID +
                 " WHERE tableTraverseMeasurement.TraverseID = ?";
     } 
     private static String getTraverseInsertLinkQuery()
@@ -901,8 +982,9 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_BEARING + ",  " +
             FIELD_FROMPTID + ",  " +
             FIELD_TOPTID + ",  " +
+            FIELD_SURVEYADJUSTMENTID + ",  " +
             FIELD_SURVEYID
-            + ") VALUES (?,  ?,  ?,  ?,  ?,  ?)";
+            + ") VALUES (?,  ?,  ?,  ?,  ?,  ?,  ?)";
         return strInsert;
     }
     private static String getSelectLastIdQuery()
@@ -920,6 +1002,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_BEARING + ",  " +
             FIELD_FROMPTID + ",  " +
             FIELD_TOPTID + ",  " +
+            FIELD_SURVEYADJUSTMENTID + ",  " +
             FIELD_SURVEYID
             + " FROM " +
             TABLE_NAME;
@@ -933,6 +1016,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_BEARING + " = ?,  " +
             FIELD_FROMPTID + " = ?,  " +
             FIELD_TOPTID + " = ?,  " +
+            FIELD_SURVEYADJUSTMENTID + " = ?,  " +
             FIELD_SURVEYID + " = ?"
         + " WHERE " + PRIMARY_KEY + " = ?";
         return strUpdate;
@@ -948,9 +1032,11 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         "`Bearing`   REAL NOT NULL, " + 
         "`FromPtID`  INTEGER NOT NULL, " + 
         "`ToPtID`    INTEGER NOT NULL, " + 
+        "`SurveyAdjustmentID` INTEGER, " + 
         "FOREIGN KEY (SurveyID) REFERENCES Survey(ID), " + 
         "FOREIGN KEY (FromPtID) REFERENCES SurveyPoint(ID), " + 
-        "FOREIGN KEY (ToPtID) REFERENCES SurveyPoint(ID) " + 
+        "FOREIGN KEY (ToPtID) REFERENCES SurveyPoint(ID), " + 
+        "FOREIGN KEY (SurveyAdjustmentID) REFERENCES SurveyAdjustment(ID) " + 
         ");";
     public static String getCreateTableScript()
     {
@@ -1023,6 +1109,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                        FIELD_BEARING + ",  " +
                        FIELD_FROMPTID + ",  " +
                        FIELD_TOPTID + ",  " +
+                       FIELD_SURVEYADJUSTMENTID + ",  " +
                        FIELD_SURVEYID
                        + " FROM " +
                        TABLE_NAME;
@@ -1039,6 +1126,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             FIELD_BEARING + ",  " +
             FIELD_FROMPTID + ",  " +
             FIELD_TOPTID + ",  " +
+            FIELD_SURVEYADJUSTMENTID + ",  " +
             FIELD_SURVEYID
             + " FROM " +
             TABLE_NAME + " WHERE " + PRIMARY_KEY + " = ?";
@@ -1057,12 +1145,13 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                         FIELD_BEARING + ",  " +
                         FIELD_FROMPTID + ",  " +
                         FIELD_TOPTID + ",  " +
+                        FIELD_SURVEYADJUSTMENTID + ",  " +
                         FIELD_SURVEYID
                         + " FROM " +
                         TABLE_NAME  +
                         " WHERE " +
                         FIELD_SURVEYID + " = ?";
-                case "traversemeasurement":
+                case "traverse":
                     return "SELECT " +
                             FIELD_ID + ",  " +
                             FIELD_CREATED + ",  " +
@@ -1072,11 +1161,12 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                             FIELD_BEARING + ",  " +
                             FIELD_FROMPTID + ",  " +
                             FIELD_TOPTID + ",  " +
+                            FIELD_SURVEYADJUSTMENTID + ",  " +
                             FIELD_SURVEYID
                             + " FROM " +
                             TABLE_NAME  +
                             " INNER JOIN " +
-                            "TraverseMeasurement tableTraverseMeasurement ON tableTraverseMeasurement.MeasurementID == " + FIELD_ID +
+                            "TraverseMeasurement tableTraverseMeasurement ON tableTraverseMeasurement.MeasurementID = " + FIELD_ID +
                             " WHERE tableTraverseMeasurement.TraverseID = ?"; 
                 default:
                     return "";
@@ -1099,6 +1189,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                              FIELD_BEARING + ",  " +
                              FIELD_FROMPTID + ",  " +
                              FIELD_TOPTID + ",  " +
+                             FIELD_SURVEYADJUSTMENTID + ",  " +
                              FIELD_SURVEYID
                              + " FROM " +
                              TABLE_NAME +
@@ -1118,15 +1209,16 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                         FIELD_BEARING + ",  " +
                         FIELD_FROMPTID + ",  " +
                         FIELD_TOPTID + ",  " +
+                        FIELD_SURVEYADJUSTMENTID + ",  " +
                         FIELD_SURVEYID
-                        + ") VALUES (?,  ?,  ?,  ?,  ?,  ?)";
+                        + ") VALUES (?,  ?,  ?,  ?,  ?,  ?,  ?)";
         }
         @Override
         public String insertFor(String strContext)
         {
             switch(strContext)
             {
-                case "traversemeasurement":
+                case "traverse":
                     return "INSERT OR IGNORE INTO TraverseMeasurement(" +
                             "TraverseID" + ",  " +
                             "MeasurementID"
@@ -1144,6 +1236,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                FIELD_BEARING + " = ?,  " +
                                FIELD_FROMPTID + " = ?,  " +
                                FIELD_TOPTID + " = ?,  " +
+                               FIELD_SURVEYADJUSTMENTID + " = ?,  " +
                                FIELD_SURVEYID + " = ?"
                            + " WHERE " + PRIMARY_KEY + " = ?";
         }
@@ -1161,7 +1254,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         {
             switch(strContext)
             {
-                case "traversemeasurement":
+                case "traverse":
                         return "DELETE FROM TraverseMeasurement WHERE " +
                             "TraverseID = ? && " +
                             "MeasurementID = ?"; 
@@ -1208,6 +1301,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                             results.getDouble(FIELD_BEARING),
                                             SurveyPointAdapter.get(connDb, results.getInt(FIELD_FROMPTID)),
                                             SurveyPointAdapter.get(connDb, results.getInt(FIELD_TOPTID)),
+                                            SurveyAdjustmentAdapter.get(connDb, results.getInt(FIELD_SURVEYADJUSTMENTID)),
                                             results.getInt(FIELD_SURVEYID)
                                         );
                                     }
@@ -1233,6 +1327,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                             results.getDouble(FIELD_BEARING),
                                             SurveyPointAdapter.get(connDb, results.getInt(FIELD_FROMPTID)),
                                             SurveyPointAdapter.get(connDb, results.getInt(FIELD_TOPTID)),
+                                            SurveyAdjustmentAdapter.get(connDb, results.getInt(FIELD_SURVEYADJUSTMENTID)),
                                             results.getInt(FIELD_SURVEYID)
                                         );
                                     }
@@ -1252,7 +1347,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                         stmtSelect.setDouble(3, typeInsert.getBearing());
                                         stmtSelect.setInt(4, typeInsert.getPointFrom().getID());
                                         stmtSelect.setInt(5, typeInsert.getPointTo().getID());
-                                        stmtSelect.setInt(6, ((SurveyMeasurementAdapter.SurveyMeasurement) typeInsert).getSurveyID());
+                                        stmtSelect.setInt(6, typeInsert.getAdjustment().getID());
+                                        stmtSelect.setInt(7, ((SurveyMeasurementAdapter.SurveyMeasurement) typeInsert).getSurveyID());
 
                                         return true;
                                     }
@@ -1272,8 +1368,9 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                         stmtSelect.setDouble(3, typeUpdate.getBearing());
                                         stmtSelect.setInt(4, typeUpdate.getPointFrom().getID());
                                         stmtSelect.setInt(5, typeUpdate.getPointTo().getID());
-                                        stmtSelect.setInt(6, ((SurveyMeasurementAdapter.SurveyMeasurement) typeUpdate).getSurveyID());
-                                        stmtSelect.setInt(7, typeUpdate.getID());
+                                        stmtSelect.setInt(6, typeUpdate.getAdjustment().getID());
+                                        stmtSelect.setInt(7, ((SurveyMeasurementAdapter.SurveyMeasurement) typeUpdate).getSurveyID());
+                                        stmtSelect.setInt(8, typeUpdate.getID());
 
                                         return true;
                                     }

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -32,310 +32,332 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 {
     private static final Logger LOGGER = LogManager.getLogger(TraverseClosureAdapter.class.getName());
 
-        // Class implements ITraverseClosure but only accessible through the TraverseClosureAdapter
+    // Class implements ITraverseClosure but only accessible through the TraverseClosureAdapter
 
-        public static class TraverseClosure extends UndoTarget implements ITraverseClosure
+    public static class TraverseClosure extends UndoTarget implements ITraverseClosure
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("MiscZ")
+        private double m_dMiscZ;
+        @SerializedName("MiscY")
+        private double m_dMiscY;
+        @SerializedName("MiscX")
+        private double m_dMiscX;
+        @SerializedName("BearingMisclose")
+        private double m_dBearingMisclose;
+        @SerializedName("TraverseLength")
+        private double m_dTraverseLength;
+        @SerializedName("Adjusted")
+        private boolean m_bAdjusted;
+
+        @SerializedName("TraverseID")
+        private int m_nTraverseID;
+
+
+        // This constructor is specically for json serialisation, not to be used...
+        TraverseClosure()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("MiscZ")
-            private double m_dMiscZ;
-            @SerializedName("MiscY")
-            private double m_dMiscY;
-            @SerializedName("MiscX")
-            private double m_dMiscX;
-            @SerializedName("BearingMisclose")
-            private double m_dBearingMisclose;
-            @SerializedName("TraverseLength")
-            private double m_dTraverseLength;
-            @SerializedName("Adjusted")
-            private boolean m_bAdjusted;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_dMiscZ = 0.0;
+            m_dMiscY = 0.0;
+            m_dMiscX = 0.0;
+            m_dBearingMisclose = 0.0;
+            m_dTraverseLength = 0.0;
+            m_bAdjusted = false;
 
-            @SerializedName("TraverseID")
-            private int m_nTraverseID;
+            m_nTraverseID = 0;
 
-
-            TraverseClosure()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_dMiscZ = 0.0;
-                m_dMiscY = 0.0;
-                m_dMiscX = 0.0;
-                m_dBearingMisclose = 0.0;
-                m_dTraverseLength = 0.0;
-                m_bAdjusted = false;
-
-                m_nTraverseID = 0;
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            TraverseClosure(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dMiscZ, double dMiscY, double dMiscX, double dBearingMisclose, double dTraverseLength, boolean bAdjusted, int nTraverseID)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_dMiscZ = dMiscZ;
-                m_dMiscY = dMiscY;
-                m_dMiscX = dMiscX;
-                m_dBearingMisclose = dBearingMisclose;
-                m_dTraverseLength = dTraverseLength;
-                m_bAdjusted = bAdjusted;
-                m_nTraverseID = nTraverseID;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public double getMiscZ()
-            {
-                return  m_dMiscZ;
-            }
-            public double getMiscY()
-            {
-                return  m_dMiscY;
-            }
-            public double getMiscX()
-            {
-                return  m_dMiscX;
-            }
-            public double getBearingMisclose()
-            {
-                return  m_dBearingMisclose;
-            }
-            public double getTraverseLength()
-            {
-                return  m_dTraverseLength;
-            }
-            public boolean getAdjusted()
-            {
-                return  m_bAdjusted;
-            }
-
-            public void setMiscZ(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member MiscZ = " + TraverseClosure.this.m_dMiscZ)
-                    {
-                        double m_undoMiscZ = TraverseClosure.this.m_dMiscZ;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_dMiscZ = m_undoMiscZ;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dMiscZ = dSet;
-                setUpdated();
-            }
-            public void setMiscY(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member MiscY = " + TraverseClosure.this.m_dMiscY)
-                    {
-                        double m_undoMiscY = TraverseClosure.this.m_dMiscY;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_dMiscY = m_undoMiscY;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dMiscY = dSet;
-                setUpdated();
-            }
-            public void setMiscX(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member MiscX = " + TraverseClosure.this.m_dMiscX)
-                    {
-                        double m_undoMiscX = TraverseClosure.this.m_dMiscX;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_dMiscX = m_undoMiscX;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dMiscX = dSet;
-                setUpdated();
-            }
-            public void setBearingMisclose(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member BearingMisclose = " + TraverseClosure.this.m_dBearingMisclose)
-                    {
-                        double m_undoBearingMisclose = TraverseClosure.this.m_dBearingMisclose;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_dBearingMisclose = m_undoBearingMisclose;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dBearingMisclose = dSet;
-                setUpdated();
-            }
-            public void setTraverseLength(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member TraverseLength = " + TraverseClosure.this.m_dTraverseLength)
-                    {
-                        double m_undoTraverseLength = TraverseClosure.this.m_dTraverseLength;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_dTraverseLength = m_undoTraverseLength;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dTraverseLength = dSet;
-                setUpdated();
-            }
-            public void setAdjusted(boolean bSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member Adjusted = " + TraverseClosure.this.m_bAdjusted)
-                    {
-                        boolean m_undoAdjusted = TraverseClosure.this.m_bAdjusted;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_bAdjusted = m_undoAdjusted;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_bAdjusted = bSet;
-                setUpdated();
-            }
-
-            public int getTraverseID()
-            {
-                return m_nTraverseID;
-            }
-            void setTraverseID(int nTraverseID)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member TraverseID = " + TraverseClosure.this.m_nTraverseID)
-                    {
-                        int m_undoTraverseID = TraverseClosure.this.m_nTraverseID;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                TraverseClosure.this.m_nTraverseID = m_undoTraverseID;
-                                if(TraverseClosure.this.m_saveState != m_dataSaveState)
-                                {
-                                    TraverseClosure.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_nTraverseID = nTraverseID;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"MiscZ\":" + m_dMiscZ + ",";
-                strJson += "\"MiscY\":" + m_dMiscY + ",";
-                strJson += "\"MiscX\":" + m_dMiscX + ",";
-                strJson += "\"BearingMisclose\":" + m_dBearingMisclose + ",";
-                strJson += "\"TraverseLength\":" + m_dTraverseLength + ",";
-                strJson += "\"Adjusted\":" + m_bAdjusted + ",";
-                strJson += "\"TraverseID\":" + m_nTraverseID;
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
         }
 
+        TraverseClosure
+        (
+            int nTraverseID
+        )
+        {
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_dMiscZ = 0.0;
+            m_dMiscY = 0.0;
+            m_dMiscX = 0.0;
+            m_dBearingMisclose = 0.0;
+            m_dTraverseLength = 0.0;
+            m_bAdjusted = false;
+
+            m_nTraverseID = nTraverseID;
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        TraverseClosure(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dMiscZ, double dMiscY, double dMiscX, double dBearingMisclose, double dTraverseLength, boolean bAdjusted, int nTraverseID)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_dMiscZ = dMiscZ;
+            m_dMiscY = dMiscY;
+            m_dMiscX = dMiscX;
+            m_dBearingMisclose = dBearingMisclose;
+            m_dTraverseLength = dTraverseLength;
+            m_bAdjusted = bAdjusted;
+            m_nTraverseID = nTraverseID;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
+        }
+
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public double getMiscZ()
+        {
+            return  m_dMiscZ;
+        }
+        public double getMiscY()
+        {
+            return  m_dMiscY;
+        }
+        public double getMiscX()
+        {
+            return  m_dMiscX;
+        }
+        public double getBearingMisclose()
+        {
+            return  m_dBearingMisclose;
+        }
+        public double getTraverseLength()
+        {
+            return  m_dTraverseLength;
+        }
+        public boolean getAdjusted()
+        {
+            return  m_bAdjusted;
+        }
+
+        public void setMiscZ(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member MiscZ = " + TraverseClosure.this.m_dMiscZ)
+                {
+                    double m_undoMiscZ = TraverseClosure.this.m_dMiscZ;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_dMiscZ = m_undoMiscZ;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dMiscZ = dSet;
+            setUpdated();
+        }
+        public void setMiscY(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member MiscY = " + TraverseClosure.this.m_dMiscY)
+                {
+                    double m_undoMiscY = TraverseClosure.this.m_dMiscY;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_dMiscY = m_undoMiscY;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dMiscY = dSet;
+            setUpdated();
+        }
+        public void setMiscX(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member MiscX = " + TraverseClosure.this.m_dMiscX)
+                {
+                    double m_undoMiscX = TraverseClosure.this.m_dMiscX;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_dMiscX = m_undoMiscX;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dMiscX = dSet;
+            setUpdated();
+        }
+        public void setBearingMisclose(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member BearingMisclose = " + TraverseClosure.this.m_dBearingMisclose)
+                {
+                    double m_undoBearingMisclose = TraverseClosure.this.m_dBearingMisclose;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_dBearingMisclose = m_undoBearingMisclose;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dBearingMisclose = dSet;
+            setUpdated();
+        }
+        public void setTraverseLength(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member TraverseLength = " + TraverseClosure.this.m_dTraverseLength)
+                {
+                    double m_undoTraverseLength = TraverseClosure.this.m_dTraverseLength;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_dTraverseLength = m_undoTraverseLength;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dTraverseLength = dSet;
+            setUpdated();
+        }
+        public void setAdjusted(boolean bSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member Adjusted = " + TraverseClosure.this.m_bAdjusted)
+                {
+                    boolean m_undoAdjusted = TraverseClosure.this.m_bAdjusted;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_bAdjusted = m_undoAdjusted;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_bAdjusted = bSet;
+            setUpdated();
+        }
+
+        public int getTraverseID()
+        {
+            return m_nTraverseID;
+        }
+        void setTraverseID(int nTraverseID)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(TraverseClosure.this.m_saveState, "Undo set TraverseClosure member TraverseID = " + TraverseClosure.this.m_nTraverseID)
+                {
+                    int m_undoTraverseID = TraverseClosure.this.m_nTraverseID;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            TraverseClosure.this.m_nTraverseID = m_undoTraverseID;
+                            if(TraverseClosure.this.m_saveState != m_dataSaveState)
+                            {
+                                TraverseClosure.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_nTraverseID = nTraverseID;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"MiscZ\":" + m_dMiscZ + ",";
+            strJson += "\"MiscY\":" + m_dMiscY + ",";
+            strJson += "\"MiscX\":" + m_dMiscX + ",";
+            strJson += "\"BearingMisclose\":" + m_dBearingMisclose + ",";
+            strJson += "\"TraverseLength\":" + m_dTraverseLength + ",";
+            strJson += "\"Adjusted\":" + m_bAdjusted + ",";
+            strJson += "\"TraverseID\":" + m_nTraverseID;
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "TraverseClosure";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
@@ -350,11 +372,16 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
 
     public static final String PRIMARY_KEY = FIELD_ID;
 
-    public static ITraverseClosure createNewTraverseClosure()
+    public static ITraverseClosure createNewTraverseClosure
+    (
+        int nTraverseID
+    )
     {
-        return new TraverseClosure();
+        return new TraverseClosure
+        (
+            nTraverseID
+        );
     }
-
     public static ITraverseClosure createTraverseClosure
     (
         int nID,

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -31,201 +31,202 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
 {
     private static final Logger LOGGER = LogManager.getLogger(SurveyReferenceAdapter.class.getName());
 
-        // Class implements ISurveyReference but only accessible through the SurveyReferenceAdapter
+    // Class implements ISurveyReference but only accessible through the SurveyReferenceAdapter
 
-        public static class SurveyReference extends UndoTarget implements ISurveyReference
+    public static class SurveyReference extends UndoTarget implements ISurveyReference
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Description")
+        private String m_strDescription;
+        @SerializedName("Date")
+        private OffsetDateTime m_dateDate;
+        @SerializedName("Reference")
+        private String m_strReference;
+
+        SurveyReference()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Description")
-            private String m_strDescription;
-            @SerializedName("Date")
-            private OffsetDateTime m_dateDate;
-            @SerializedName("Reference")
-            private String m_strReference;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_strDescription = "";
+            m_dateDate = OffsetDateTime.now();
+            m_strReference = "";
 
-            SurveyReference()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_strName = "";
-                m_strDescription = "";
-                m_dateDate = OffsetDateTime.now();
-                m_strReference = "";
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            SurveyReference(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, OffsetDateTime dateDate, String strReference)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_strName = strName;
-                m_strDescription = strDescription;
-                m_dateDate = dateDate;
-                m_strReference = strReference;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public String getDescription()
-            {
-                return  m_strDescription;
-            }
-            public OffsetDateTime getDate()
-            {
-                return  m_dateDate;
-            }
-            public String getReference()
-            {
-                return  m_strReference;
-            }
-
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Name = " + SurveyReference.this.m_strName)
-                    {
-                        String m_undoName = SurveyReference.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyReference.this.m_strName = m_undoName;
-                                if(SurveyReference.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyReference.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setDescription(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Description = " + SurveyReference.this.m_strDescription)
-                    {
-                        String m_undoDescription = SurveyReference.this.m_strDescription;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyReference.this.m_strDescription = m_undoDescription;
-                                if(SurveyReference.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyReference.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strDescription = strSet;
-                setUpdated();
-            }
-            public void setDate(OffsetDateTime dateSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Date = " + SurveyReference.this.m_dateDate)
-                    {
-                        OffsetDateTime m_undoDate = SurveyReference.this.m_dateDate;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyReference.this.m_dateDate = m_undoDate;
-                                if(SurveyReference.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyReference.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dateDate = dateSet;
-                setUpdated();
-            }
-            public void setReference(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Reference = " + SurveyReference.this.m_strReference)
-                    {
-                        String m_undoReference = SurveyReference.this.m_strReference;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyReference.this.m_strReference = m_undoReference;
-                                if(SurveyReference.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyReference.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strReference = strSet;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-                strJson += "\"Date\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateDate) + "\"" + ",";
-                strJson += "\"Reference\":" + "\"" + m_strReference + "\"";
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        SurveyReference(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, String strDescription, OffsetDateTime dateDate, String strReference)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_strName = strName;
+            m_strDescription = strDescription;
+            m_dateDate = dateDate;
+            m_strReference = strReference;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public String getDescription()
+        {
+            return  m_strDescription;
+        }
+        public OffsetDateTime getDate()
+        {
+            return  m_dateDate;
+        }
+        public String getReference()
+        {
+            return  m_strReference;
+        }
+
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Name = " + SurveyReference.this.m_strName)
+                {
+                    String m_undoName = SurveyReference.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyReference.this.m_strName = m_undoName;
+                            if(SurveyReference.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyReference.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setDescription(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Description = " + SurveyReference.this.m_strDescription)
+                {
+                    String m_undoDescription = SurveyReference.this.m_strDescription;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyReference.this.m_strDescription = m_undoDescription;
+                            if(SurveyReference.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyReference.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strDescription = strSet;
+            setUpdated();
+        }
+        public void setDate(OffsetDateTime dateSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Date = " + SurveyReference.this.m_dateDate)
+                {
+                    OffsetDateTime m_undoDate = SurveyReference.this.m_dateDate;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyReference.this.m_dateDate = m_undoDate;
+                            if(SurveyReference.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyReference.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dateDate = dateSet;
+            setUpdated();
+        }
+        public void setReference(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyReference.this.m_saveState, "Undo set SurveyReference member Reference = " + SurveyReference.this.m_strReference)
+                {
+                    String m_undoReference = SurveyReference.this.m_strReference;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyReference.this.m_strReference = m_undoReference;
+                            if(SurveyReference.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyReference.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strReference = strSet;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+            strJson += "\"Date\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateDate) + "\"" + ",";
+            strJson += "\"Reference\":" + "\"" + m_strReference + "\"";
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "SurveyReference";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";

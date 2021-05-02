@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -38,351 +38,352 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
 {
     private static final Logger LOGGER = LogManager.getLogger(SurveyPointAdapter.class.getName());
 
-        // Class implements ISurveyPoint but only accessible through the SurveyPointAdapter
+    // Class implements ISurveyPoint but only accessible through the SurveyPointAdapter
 
-        public static class SurveyPoint extends UndoTarget implements ISurveyPoint
+    public static class SurveyPoint extends UndoTarget implements ISurveyPoint
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("X")
+        private double m_dX;
+        @SerializedName("Y")
+        private double m_dY;
+        @SerializedName("Z")
+        private double m_dZ;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Description")
+        private String m_strDescription;
+
+        @SerializedName("PointTypeID")
+        private ISurveyPointType m_typePointType;
+        @SerializedName("RefID")
+        private ISurveyReference m_typeReference;
+
+        @SerializedName("Images")
+        private List<ISurveyImage> m_listSurveyImage;
+
+        SurveyPoint()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("X")
-            private double m_dX;
-            @SerializedName("Y")
-            private double m_dY;
-            @SerializedName("Z")
-            private double m_dZ;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Description")
-            private String m_strDescription;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_dX = 0.0;
+            m_dY = 0.0;
+            m_dZ = 0.0;
+            m_strName = "";
+            m_strDescription = "";
 
-            @SerializedName("PointTypeID")
-            private ISurveyPointType m_typePointType;
-            @SerializedName("RefID")
-            private ISurveyReference m_typeReference;
+            m_typePointType = SurveyPointTypeAdapter.createNewSurveyPointType();
+            m_typeReference = SurveyReferenceAdapter.createNewSurveyReference();
 
-            @SerializedName("Images")
-            private List<ISurveyImage> m_listSurveyImage;
+            m_listSurveyImage = new ArrayList<>();
 
-            SurveyPoint()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_dX = 0.0;
-                m_dY = 0.0;
-                m_dZ = 0.0;
-                m_strName = "";
-                m_strDescription = "";
-
-                m_typePointType = SurveyPointTypeAdapter.createNewSurveyPointType();
-                m_typeReference = SurveyReferenceAdapter.createNewSurveyReference();
-
-                m_listSurveyImage = new ArrayList<>();
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            SurveyPoint(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dX, double dY, double dZ, String strName, String strDescription, ISurveyPointType typePointType, ISurveyReference typeReference, List<ISurveyImage> listSurveyImage)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_dX = dX;
-                m_dY = dY;
-                m_dZ = dZ;
-                m_strName = strName;
-                m_strDescription = strDescription;
-                m_typePointType = typePointType;
-                m_typeReference = typeReference;
-                m_listSurveyImage = listSurveyImage;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public double getX()
-            {
-                return  m_dX;
-            }
-            public double getY()
-            {
-                return  m_dY;
-            }
-            public double getZ()
-            {
-                return  m_dZ;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public String getDescription()
-            {
-                return  m_strDescription;
-            }
-
-            public ISurveyPointType getPointType()
-            {
-                return  m_typePointType;
-            }
-            public ISurveyReference getReference()
-            {
-                return  m_typeReference;
-            }
-
-            public List<ISurveyImage> getSurveyImages()
-            {
-                return  m_listSurveyImage;
-            }
-
-            public void setX(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member X = " + SurveyPoint.this.m_dX)
-                    {
-                        double m_undoX = SurveyPoint.this.m_dX;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_dX = m_undoX;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dX = dSet;
-                setUpdated();
-            }
-            public void setY(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Y = " + SurveyPoint.this.m_dY)
-                    {
-                        double m_undoY = SurveyPoint.this.m_dY;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_dY = m_undoY;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dY = dSet;
-                setUpdated();
-            }
-            public void setZ(double dSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Z = " + SurveyPoint.this.m_dZ)
-                    {
-                        double m_undoZ = SurveyPoint.this.m_dZ;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_dZ = m_undoZ;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dZ = dSet;
-                setUpdated();
-            }
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Name = " + SurveyPoint.this.m_strName)
-                    {
-                        String m_undoName = SurveyPoint.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_strName = m_undoName;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setDescription(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Description = " + SurveyPoint.this.m_strDescription)
-                    {
-                        String m_undoDescription = SurveyPoint.this.m_strDescription;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_strDescription = m_undoDescription;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strDescription = strSet;
-                setUpdated();
-            }
-
-            public void setPointType(ISurveyPointType typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member PointType = " + SurveyPoint.this.m_typePointType)
-                    {
-                        ISurveyPointType m_undoPointType = SurveyPoint.this.m_typePointType;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_typePointType = m_undoPointType;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typePointType = typeSet;
-                setUpdated();
-            }
-            public void setReference(ISurveyReference typeSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Reference = " + SurveyPoint.this.m_typeReference)
-                    {
-                        ISurveyReference m_undoReference = SurveyPoint.this.m_typeReference;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                SurveyPoint.this.m_typeReference = m_undoReference;
-                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                {
-                                    SurveyPoint.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_typeReference = typeSet;
-                setUpdated();
-            }
-
-            public void addSurveyImage(ISurveyImage typeAdd)
-            {
-                addUndoProvider
-                    (
-                        new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member SurveyImage = " + SurveyPoint.this.m_listSurveyImage)
-                        {
-                            ISurveyImage m_undoSurveyImage = typeAdd;
-                            public boolean doUndo()
-                            {
-                                if(isPending())
-                                {
-                                    SurveyPoint.this.m_listSurveyImage.remove(m_undoSurveyImage);
-                                    if(SurveyPoint.this.m_saveState != m_dataSaveState)
-                                    {
-                                        SurveyPoint.this.m_saveState = m_dataSaveState;
-                                    }
-                                    m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                    return true;
-                                }
-                                return false;
-                            }
-                        }
-                    );
-
-                m_listSurveyImage.add(typeAdd);
-                ((SurveyImageAdapter.SurveyImage) typeAdd).setPointAtID(getID());
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"X\":" + m_dX + ",";
-                strJson += "\"Y\":" + m_dY + ",";
-                strJson += "\"Z\":" + m_dZ + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-                strJson += "\"PointTypeID\":" + ((ISerialiseState) m_typePointType).toJson() + ",";
-                strJson += "\"RefID\":" + ((ISerialiseState) m_typeReference).toJson() + ",";
-                strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        SurveyPoint(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, double dX, double dY, double dZ, String strName, String strDescription, ISurveyPointType typePointType, ISurveyReference typeReference, List<ISurveyImage> listSurveyImage)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_dX = dX;
+            m_dY = dY;
+            m_dZ = dZ;
+            m_strName = strName;
+            m_strDescription = strDescription;
+            m_typePointType = typePointType;
+            m_typeReference = typeReference;
+            m_listSurveyImage = listSurveyImage;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public double getX()
+        {
+            return  m_dX;
+        }
+        public double getY()
+        {
+            return  m_dY;
+        }
+        public double getZ()
+        {
+            return  m_dZ;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public String getDescription()
+        {
+            return  m_strDescription;
+        }
+
+        public ISurveyPointType getPointType()
+        {
+            return  m_typePointType;
+        }
+        public ISurveyReference getReference()
+        {
+            return  m_typeReference;
+        }
+
+        public List<ISurveyImage> getSurveyImages()
+        {
+            return  m_listSurveyImage;
+        }
+
+        public void setX(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member X = " + SurveyPoint.this.m_dX)
+                {
+                    double m_undoX = SurveyPoint.this.m_dX;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_dX = m_undoX;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dX = dSet;
+            setUpdated();
+        }
+        public void setY(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Y = " + SurveyPoint.this.m_dY)
+                {
+                    double m_undoY = SurveyPoint.this.m_dY;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_dY = m_undoY;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dY = dSet;
+            setUpdated();
+        }
+        public void setZ(double dSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Z = " + SurveyPoint.this.m_dZ)
+                {
+                    double m_undoZ = SurveyPoint.this.m_dZ;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_dZ = m_undoZ;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dZ = dSet;
+            setUpdated();
+        }
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Name = " + SurveyPoint.this.m_strName)
+                {
+                    String m_undoName = SurveyPoint.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_strName = m_undoName;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setDescription(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Description = " + SurveyPoint.this.m_strDescription)
+                {
+                    String m_undoDescription = SurveyPoint.this.m_strDescription;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_strDescription = m_undoDescription;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strDescription = strSet;
+            setUpdated();
+        }
+
+        public void setPointType(ISurveyPointType typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member PointType = " + SurveyPoint.this.m_typePointType)
+                {
+                    ISurveyPointType m_undoPointType = SurveyPoint.this.m_typePointType;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_typePointType = m_undoPointType;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typePointType = typeSet;
+            setUpdated();
+        }
+        public void setReference(ISurveyReference typeSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member Reference = " + SurveyPoint.this.m_typeReference)
+                {
+                    ISurveyReference m_undoReference = SurveyPoint.this.m_typeReference;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            SurveyPoint.this.m_typeReference = m_undoReference;
+                            if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                            {
+                                SurveyPoint.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_typeReference = typeSet;
+            setUpdated();
+        }
+
+        public void addSurveyImage(ISurveyImage typeAdd)
+        {
+            addUndoProvider
+                (
+                    new UndoProviderImpl(SurveyPoint.this.m_saveState, "Undo set SurveyPoint member SurveyImage = " + SurveyPoint.this.m_listSurveyImage)
+                    {
+                        ISurveyImage m_undoSurveyImage = typeAdd;
+                        public boolean doUndo()
+                        {
+                            if(isPending())
+                            {
+                                SurveyPoint.this.m_listSurveyImage.remove(m_undoSurveyImage);
+                                if(SurveyPoint.this.m_saveState != m_dataSaveState)
+                                {
+                                    SurveyPoint.this.m_saveState = m_dataSaveState;
+                                }
+                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+            m_listSurveyImage.add(typeAdd);
+            ((SurveyImageAdapter.SurveyImage) typeAdd).setPointAtID(getID());
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"X\":" + m_dX + ",";
+            strJson += "\"Y\":" + m_dY + ",";
+            strJson += "\"Z\":" + m_dZ + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
+            strJson += "\"PointTypeID\":" + ((ISerialiseState) m_typePointType).toJson() + ",";
+            strJson += "\"RefID\":" + ((ISerialiseState) m_typeReference).toJson() + ",";
+            strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "SurveyPoint";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
@@ -715,7 +716,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         }
         catch (SQLException exc)
         {
-            // TODO: set up error handling
+            LOGGER.error("Unable to insert link table record", exc);
             typeReturn = null;
         }
         finally
@@ -954,7 +955,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                 + " FROM " +
                 TABLE_NAME  +
                 " INNER JOIN " +
-                "SurveyPointLink tableSurveyPointLink ON tableSurveyPointLink.SurveyPointID == " + FIELD_ID +
+                "SurveyPointLink tableSurveyPointLink ON tableSurveyPointLink.SurveyPointID = " + FIELD_ID +
                 " WHERE tableSurveyPointLink.SurveyID = ?";
     } 
     private static String getSurveyInsertLinkQuery()
@@ -1129,7 +1130,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             switch(strContext)
             {
-                case "surveypointlink":
+                case "survey":
                     return "SELECT " +
                             FIELD_ID + ",  " +
                             FIELD_CREATED + ",  " +
@@ -1144,7 +1145,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
                             + " FROM " +
                             TABLE_NAME  +
                             " INNER JOIN " +
-                            "SurveyPointLink tableSurveyPointLink ON tableSurveyPointLink.SurveyPointID == " + FIELD_ID +
+                            "SurveyPointLink tableSurveyPointLink ON tableSurveyPointLink.SurveyPointID = " + FIELD_ID +
                             " WHERE tableSurveyPointLink.SurveyID = ?"; 
                 default:
                     return "";
@@ -1196,7 +1197,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             switch(strContext)
             {
-                case "surveypointlink":
+                case "survey":
                     return "INSERT OR IGNORE INTO SurveyPointLink(" +
                             "SurveyID" + ",  " +
                             "SurveyPointID"
@@ -1232,7 +1233,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         {
             switch(strContext)
             {
-                case "surveypointlink":
+                case "survey":
                         return "DELETE FROM SurveyPointLink WHERE " +
                             "SurveyID = ? && " +
                             "SurveyPointID = ?"; 

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Apr 30 12:19:02 AEST 2021
+// Generated on Sun May 02 18:32:07 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -31,192 +31,193 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
 {
     private static final Logger LOGGER = LogManager.getLogger(ProjectionAdapter.class.getName());
 
-        // Class implements IProjection but only accessible through the ProjectionAdapter
+    // Class implements IProjection but only accessible through the ProjectionAdapter
 
-        public static class Projection extends UndoTarget implements IProjection
+    public static class Projection extends UndoTarget implements IProjection
+    {
+        @SerializedName("ID")
+        private int m_nID;
+        @SerializedName("created")
+        private OffsetDateTime m_dateCreated;
+        @SerializedName("updated")
+        private OffsetDateTime m_dateUpdated;
+        @SerializedName("Name")
+        private String m_strName;
+        @SerializedName("Date")
+        private OffsetDateTime m_dateDate;
+        @SerializedName("Description")
+        private String m_strDescription;
+
+        Projection()
         {
-            @SerializedName("ID")
-            private int m_nID;
-            @SerializedName("created")
-            private OffsetDateTime m_dateCreated;
-            @SerializedName("updated")
-            private OffsetDateTime m_dateUpdated;
-            @SerializedName("Name")
-            private String m_strName;
-            @SerializedName("Date")
-            private OffsetDateTime m_dateDate;
-            @SerializedName("Description")
-            private String m_strDescription;
+            super();
+            m_nID = 0;
+            m_dateCreated = OffsetDateTime.now();
+            m_dateUpdated = OffsetDateTime.now();
+            m_strName = "";
+            m_dateDate = OffsetDateTime.now();
+            m_strDescription = "";
 
-            Projection()
-            {
-                m_nID = 0;
-                m_dateCreated = OffsetDateTime.now();
-                m_dateUpdated = OffsetDateTime.now();
-                m_strName = "";
-                m_dateDate = OffsetDateTime.now();
-                m_strDescription = "";
-
-                m_saveState = DataSaveState.SAVE_STATE_NEW;
-            }
-            Projection(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, OffsetDateTime dateDate, String strDescription)
-            {
-                m_nID = nID;
-                m_dateCreated = dateCreated;
-                m_dateUpdated = dateUpdated;
-                m_strName = strName;
-                m_dateDate = dateDate;
-                m_strDescription = strDescription;
-                m_saveState = DataSaveState.SAVE_STATE_SAVED;
-            }
-
-            public int getID()
-            {
-                return  m_nID;
-            }
-            public OffsetDateTime getCreated()
-            {
-                return  m_dateCreated;
-            }
-            public OffsetDateTime getUpdated()
-            {
-                return  m_dateUpdated;
-            }
-            public String getName()
-            {
-                return  m_strName;
-            }
-            public OffsetDateTime getDate()
-            {
-                return  m_dateDate;
-            }
-            public String getDescription()
-            {
-                return  m_strDescription;
-            }
-
-            public void setID(int nSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member ID = " + Projection.this.m_nID)
-                    {
-                        int m_undoID = Projection.this.m_nID;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Projection.this.m_nID = m_undoID;
-                                if(Projection.this.m_saveState != m_dataSaveState)
-                                {
-                                    Projection.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_nID = nSet;
-                setUpdated();
-            }
-            public void setName(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Name = " + Projection.this.m_strName)
-                    {
-                        String m_undoName = Projection.this.m_strName;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Projection.this.m_strName = m_undoName;
-                                if(Projection.this.m_saveState != m_dataSaveState)
-                                {
-                                    Projection.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strName = strSet;
-                setUpdated();
-            }
-            public void setDate(OffsetDateTime dateSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Date = " + Projection.this.m_dateDate)
-                    {
-                        OffsetDateTime m_undoDate = Projection.this.m_dateDate;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Projection.this.m_dateDate = m_undoDate;
-                                if(Projection.this.m_saveState != m_dataSaveState)
-                                {
-                                    Projection.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_dateDate = dateSet;
-                setUpdated();
-            }
-            public void setDescription(String strSet)
-            {
-                addUndoProvider
-                (
-                    new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Description = " + Projection.this.m_strDescription)
-                    {
-                        String m_undoDescription = Projection.this.m_strDescription;
-                        public boolean doUndo()
-                        {
-                            if(isPending())
-                            {
-                                Projection.this.m_strDescription = m_undoDescription;
-                                if(Projection.this.m_saveState != m_dataSaveState)
-                                {
-                                    Projection.this.m_saveState = m_dataSaveState;
-                                }
-                                m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-                m_strDescription = strSet;
-                setUpdated();
-            }
-
-            public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
-            public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
-
-            public String toJson()
-            {
-                String strJson = "{";
-                strJson += "\"ID\":" + m_nID + ",";
-                strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
-                strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
-                strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
-                strJson += "\"Date\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateDate) + "\"" + ",";
-                strJson += "\"Description\":" + "\"" + m_strDescription + "\"";
-                strJson += "}";
-                return strJson;
-            }
+            m_saveState = DataSaveState.SAVE_STATE_NEW;
+        }
+        Projection(int nID, OffsetDateTime dateCreated, OffsetDateTime dateUpdated, String strName, OffsetDateTime dateDate, String strDescription)
+        {
+            super();
+            m_nID = nID;
+            m_dateCreated = dateCreated;
+            m_dateUpdated = dateUpdated;
+            m_strName = strName;
+            m_dateDate = dateDate;
+            m_strDescription = strDescription;
+            m_saveState = DataSaveState.SAVE_STATE_SAVED;
         }
 
+        public int getID()
+        {
+            return  m_nID;
+        }
+        public OffsetDateTime getCreated()
+        {
+            return  m_dateCreated;
+        }
+        public OffsetDateTime getUpdated()
+        {
+            return  m_dateUpdated;
+        }
+        public String getName()
+        {
+            return  m_strName;
+        }
+        public OffsetDateTime getDate()
+        {
+            return  m_dateDate;
+        }
+        public String getDescription()
+        {
+            return  m_strDescription;
+        }
+
+        public void setID(int nSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member ID = " + Projection.this.m_nID)
+                {
+                    int m_undoID = Projection.this.m_nID;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Projection.this.m_nID = m_undoID;
+                            if(Projection.this.m_saveState != m_dataSaveState)
+                            {
+                                Projection.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_nID = nSet;
+            setUpdated();
+        }
+        public void setName(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Name = " + Projection.this.m_strName)
+                {
+                    String m_undoName = Projection.this.m_strName;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Projection.this.m_strName = m_undoName;
+                            if(Projection.this.m_saveState != m_dataSaveState)
+                            {
+                                Projection.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strName = strSet;
+            setUpdated();
+        }
+        public void setDate(OffsetDateTime dateSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Date = " + Projection.this.m_dateDate)
+                {
+                    OffsetDateTime m_undoDate = Projection.this.m_dateDate;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Projection.this.m_dateDate = m_undoDate;
+                            if(Projection.this.m_saveState != m_dataSaveState)
+                            {
+                                Projection.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_dateDate = dateSet;
+            setUpdated();
+        }
+        public void setDescription(String strSet)
+        {
+            addUndoProvider
+            (
+                new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member Description = " + Projection.this.m_strDescription)
+                {
+                    String m_undoDescription = Projection.this.m_strDescription;
+                    public boolean doUndo()
+                    {
+                        if(isPending())
+                        {
+                            Projection.this.m_strDescription = m_undoDescription;
+                            if(Projection.this.m_saveState != m_dataSaveState)
+                            {
+                                Projection.this.m_saveState = m_dataSaveState;
+                            }
+                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            );
+            m_strDescription = strSet;
+            setUpdated();
+        }
+
+        public void setSaved(){ onSave(); m_saveState = DataSaveState.SAVE_STATE_SAVED; }
+        public void setUpdated(){ if(!isNew()) { onSave(); m_saveState = DataSaveState.SAVE_STATE_UPDATE; } }
+
+        public String toJson()
+        {
+            String strJson = "{";
+            strJson += "\"ID\":" + m_nID + ",";
+            strJson += "\"created\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateCreated) + "\"" + ",";
+            strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
+            strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
+            strJson += "\"Date\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateDate) + "\"" + ",";
+            strJson += "\"Description\":" + "\"" + m_strDescription + "\"";
+            strJson += "}";
+            return strJson;
+        }
+    }
     public static final String TABLE_NAME = "Projection";
     public static final String FIELD_ID = "ID";
     public static final String FIELD_CREATED = "created";
