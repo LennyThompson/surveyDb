@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 18:32:07 AEST 2021
+// Generated on Mon May 03 16:27:59 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -517,14 +517,14 @@ public class SurveySummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getString(FIELD_NAME),
-                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                             results.getString(FIELD_DESCRIPTION),
                             results.getInt(FIELD_PROJID),
                             results.getString(FIELD_PROJNAME),
                             results.getInt(FIELD_TRAVID),
                             results.getString(FIELD_TRAVNAME),
-                            OffsetDateTime.parse(results.getString(FIELD_TRAVUPDATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
                             results.getString(FIELD_PTTRAVSTART),
                             results.getString(FIELD_PTTRAVEND),
                             results.getInt(FIELD_PTID),
@@ -596,14 +596,14 @@ public class SurveySummaryAdapter
                         (
                             results.getInt(FIELD_ID),
                             results.getString(FIELD_NAME),
-                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                             results.getString(FIELD_DESCRIPTION),
                             results.getInt(FIELD_PROJID),
                             results.getString(FIELD_PROJNAME),
                             results.getInt(FIELD_TRAVID),
                             results.getString(FIELD_TRAVNAME),
-                            OffsetDateTime.parse(results.getString(FIELD_TRAVUPDATED)),
+                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
                             results.getString(FIELD_PTTRAVSTART),
                             results.getString(FIELD_PTTRAVEND),
                             results.getInt(FIELD_PTID),
@@ -810,29 +810,24 @@ public class SurveySummaryAdapter
         return VIEW_EXTRA_SCRIPTS;
     }
 
-    public static void createInDatabase(Connection connDb) throws SQLException
+    public static void createInDatabase(Connection connDb)
     {
-        Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(CREATE_VIEW_SCRIPT);
-        for (String strScript : VIEW_EXTRA_SCRIPTS)
-        {
-            stmtExecute.execute(strScript);
-        }
+        SQL_PROVIDER.createInDatabase(connDb);
     }
 
-     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
-     {
-         if(provider != null)
-         {
-             SQL_PROVIDER = provider;
-             return true;
-         }
-         else
-         {
-             SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
-         }
-         return false;
-     }
+    public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
+    {
+        if(provider != null)
+        {
+            SQL_PROVIDER = provider;
+            return true;
+        }
+        else
+        {
+            SQL_PROVIDER = SQL_PROVIDER_DEFAULT;
+        }
+        return false;
+    }
 
     private static SqlProvider.SqlScriptProvider SQL_PROVIDER_DEFAULT = new SqlProvider.SqlScriptProvider()
     {
@@ -846,7 +841,7 @@ public class SurveySummaryAdapter
         {
             return "SELECT " +
                     "id,  name,  created,  updated,  description,  projid,  projname,  travid,  travname,  travupdated,  pttravstart,  pttravend,  ptid,  ptname,  ptx,  pty,  ptz " +
-                    " FROM surveysummary;";
+                    " FROM surveysummary";
         }
         @Override
         public String selectByPrimaryKeyScript()
@@ -951,6 +946,22 @@ public class SurveySummaryAdapter
         {
             return "";
         }
+        @Override
+        public boolean createInDatabase(Connection connDb)
+        {
+            try
+            {
+                Statement stmtExecute = connDb.createStatement();
+                stmtExecute.execute(createScript());
+                return true;
+            }
+            catch(SQLException exc)
+            {
+                LOGGER.error("Error creating view in database", exc);
+            }
+            return false;
+        }
+
 
         private SqlProvider.SqlResultHandler<ISurveySummary> m_resultsHandler;
         @Override
@@ -969,14 +980,14 @@ public class SurveySummaryAdapter
                                         (
                                             results.getInt(FIELD_ID),
                                             results.getString(FIELD_NAME),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_DESCRIPTION),
                                             results.getInt(FIELD_PROJID),
                                             results.getString(FIELD_PROJNAME),
                                             results.getInt(FIELD_TRAVID),
                                             results.getString(FIELD_TRAVNAME),
-                                            OffsetDateTime.parse(results.getString(FIELD_TRAVUPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
                                             results.getString(FIELD_PTTRAVSTART),
                                             results.getString(FIELD_PTTRAVEND),
                                             results.getInt(FIELD_PTID),

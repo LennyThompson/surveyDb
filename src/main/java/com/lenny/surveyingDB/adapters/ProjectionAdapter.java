@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 18:32:07 AEST 2021
+// Generated on Mon May 03 16:27:59 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -680,16 +680,9 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         return TABLE_EXTRA_SCRIPTS;
     }
 
-    public static void createInDatabase(Connection connDb) throws SQLException
+    public static void createInDatabase(Connection connDb)
     {
-        LOGGER.debug("Creating Projection in database");
-        Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(SQL_PROVIDER.createScript());
-        LOGGER.debug("Projection create script - " + SQL_PROVIDER.createScript());
-        stmtExecute.execute(SQL_PROVIDER.triggerScript());
-        LOGGER.debug("Projection extra script - " + SQL_PROVIDER.triggerScript());
-        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
-        LOGGER.debug("Projection extra script - " + SQL_PROVIDER.staticInsertsScript());
+        SQL_PROVIDER.createInDatabase(connDb);
     }
 
     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
@@ -741,7 +734,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         }
         public String selectFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -750,7 +743,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         @Override
         public String selectLastId()
         {
-            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK FROM " + TABLE_NAME;
         }
         @Override
         public String selectLast()
@@ -764,7 +757,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
                              FIELD_DESCRIPTION
                              + " FROM " +
                              TABLE_NAME +
-                             " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
+                             " WHERE " + PRIMARY_KEY + " = (" + selectLastId() + ")";
         }
         @Override
         public String selectForPath(Integer[] path)
@@ -783,7 +776,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         @Override
         public String insertFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -810,7 +803,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         }
         public String deleteFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -831,6 +824,39 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         {
             return "";
         }
+        @Override
+        public boolean createInDatabase(Connection connDb)
+        {
+            try
+            {
+                LOGGER.debug("Creating Projection in database");
+                Statement stmtExecute = connDb.createStatement();
+                stmtExecute.execute(createScript());
+                LOGGER.debug("Projection create script - " + createScript());
+
+                for(String strStatement : TABLE_EXTRA_SCRIPTS)
+                {
+                    stmtExecute.execute(strStatement);
+                }
+                LOGGER.debug("Projection extra script - " + triggerScript());
+
+                if(!SQL_PROVIDER.staticInsertsScript().isEmpty())
+                {
+                    String[] listStatements = staticInsertsScript().split(";");
+                    for(String strStatement : listStatements)
+                    {
+                        stmtExecute.execute(strStatement);
+                    }
+                    LOGGER.debug("Projection extra script - " + staticInsertsScript());
+                }
+                return true;
+            }
+            catch(SQLException exc)
+            {
+                LOGGER.error("Error executing scripts", exc);
+            }
+            return false;
+        }
 
         private SqlProvider.SqlResultHandler<IProjection> m_resultsHandler;
         @Override
@@ -848,10 +874,10 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
                                         return createProjection
                                         (
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_NAME),
-                                            OffsetDateTime.parse(results.getString(FIELD_DATE)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
                                             results.getString(FIELD_DESCRIPTION)
                                         );
                                     }
@@ -870,10 +896,10 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
                                         (
                                             typeUpdate,
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_NAME),
-                                            OffsetDateTime.parse(results.getString(FIELD_DATE)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
                                             results.getString(FIELD_DESCRIPTION)
                                         );
                                     }

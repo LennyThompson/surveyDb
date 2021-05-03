@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 18:32:07 AEST 2021
+// Generated on Mon May 03 16:27:59 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -698,16 +698,9 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         return TABLE_EXTRA_SCRIPTS;
     }
 
-    public static void createInDatabase(Connection connDb) throws SQLException
+    public static void createInDatabase(Connection connDb)
     {
-        LOGGER.debug("Creating SurveyReference in database");
-        Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(SQL_PROVIDER.createScript());
-        LOGGER.debug("SurveyReference create script - " + SQL_PROVIDER.createScript());
-        stmtExecute.execute(SQL_PROVIDER.triggerScript());
-        LOGGER.debug("SurveyReference extra script - " + SQL_PROVIDER.triggerScript());
-        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
-        LOGGER.debug("SurveyReference extra script - " + SQL_PROVIDER.staticInsertsScript());
+        SQL_PROVIDER.createInDatabase(connDb);
     }
 
     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
@@ -761,7 +754,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         }
         public String selectFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -770,7 +763,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         @Override
         public String selectLastId()
         {
-            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK FROM " + TABLE_NAME;
         }
         @Override
         public String selectLast()
@@ -785,7 +778,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
                              FIELD_REFERENCE
                              + " FROM " +
                              TABLE_NAME +
-                             " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
+                             " WHERE " + PRIMARY_KEY + " = (" + selectLastId() + ")";
         }
         @Override
         public String selectForPath(Integer[] path)
@@ -805,7 +798,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         @Override
         public String insertFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -833,7 +826,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         }
         public String deleteFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -854,6 +847,39 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         {
             return "";
         }
+        @Override
+        public boolean createInDatabase(Connection connDb)
+        {
+            try
+            {
+                LOGGER.debug("Creating SurveyReference in database");
+                Statement stmtExecute = connDb.createStatement();
+                stmtExecute.execute(createScript());
+                LOGGER.debug("SurveyReference create script - " + createScript());
+
+                for(String strStatement : TABLE_EXTRA_SCRIPTS)
+                {
+                    stmtExecute.execute(strStatement);
+                }
+                LOGGER.debug("SurveyReference extra script - " + triggerScript());
+
+                if(!SQL_PROVIDER.staticInsertsScript().isEmpty())
+                {
+                    String[] listStatements = staticInsertsScript().split(";");
+                    for(String strStatement : listStatements)
+                    {
+                        stmtExecute.execute(strStatement);
+                    }
+                    LOGGER.debug("SurveyReference extra script - " + staticInsertsScript());
+                }
+                return true;
+            }
+            catch(SQLException exc)
+            {
+                LOGGER.error("Error executing scripts", exc);
+            }
+            return false;
+        }
 
         private SqlProvider.SqlResultHandler<ISurveyReference> m_resultsHandler;
         @Override
@@ -871,11 +897,11 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
                                         return createSurveyReference
                                         (
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_NAME),
                                             results.getString(FIELD_DESCRIPTION),
-                                            OffsetDateTime.parse(results.getString(FIELD_DATE)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
                                             results.getString(FIELD_REFERENCE)
                                         );
                                     }
@@ -894,11 +920,11 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
                                         (
                                             typeUpdate,
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_NAME),
                                             results.getString(FIELD_DESCRIPTION),
-                                            OffsetDateTime.parse(results.getString(FIELD_DATE)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
                                             results.getString(FIELD_REFERENCE)
                                         );
                                     }

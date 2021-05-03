@@ -32,11 +32,11 @@ public class SQLiteConverter
         return nValue == 0 ? false : true;
     }
 
-    public static LocalDateTime convertStringToDateTime(String strDate)
+    public static OffsetDateTime convertStringToDateTime(String strDate)
     {
         if(strDate == null)
         {
-            return LocalDateTime.now();
+            return OffsetDateTime.now();
         }
         try
         {
@@ -45,9 +45,8 @@ public class SQLiteConverter
             {
                 throw new IllegalArgumentException("Date format is not correct: " + strDate);
             }
-            ZonedDateTime timeZone = ZonedDateTime.parse(dateTimeParts[0] + "T" + dateTimeParts[1] + "Z");
-            LocalDateTime localDateTime = timeZone.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-            return localDateTime;
+            String strOffsetDateTime = dateTimeParts[0] + "T" + dateTimeParts[1] + "Z";
+            return OffsetDateTime.parse(strOffsetDateTime);
         }
         catch (IllegalArgumentException exc)
         {

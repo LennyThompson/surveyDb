@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 18:32:07 AEST 2021
+// Generated on Mon May 03 16:27:59 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -696,16 +696,9 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         return TABLE_EXTRA_SCRIPTS;
     }
 
-    public static void createInDatabase(Connection connDb) throws SQLException
+    public static void createInDatabase(Connection connDb)
     {
-        LOGGER.debug("Creating SurveyAdjustment in database");
-        Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(SQL_PROVIDER.createScript());
-        LOGGER.debug("SurveyAdjustment create script - " + SQL_PROVIDER.createScript());
-        stmtExecute.execute(SQL_PROVIDER.triggerScript());
-        LOGGER.debug("SurveyAdjustment extra script - " + SQL_PROVIDER.triggerScript());
-        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
-        LOGGER.debug("SurveyAdjustment extra script - " + SQL_PROVIDER.staticInsertsScript());
+        SQL_PROVIDER.createInDatabase(connDb);
     }
 
     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
@@ -759,7 +752,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         }
         public String selectFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -768,7 +761,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         @Override
         public String selectLastId()
         {
-            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK FROM " + TABLE_NAME;
         }
         @Override
         public String selectLast()
@@ -783,7 +776,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                              FIELD_BEARINGADJ
                              + " FROM " +
                              TABLE_NAME +
-                             " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
+                             " WHERE " + PRIMARY_KEY + " = (" + selectLastId() + ")";
         }
         @Override
         public String selectForPath(Integer[] path)
@@ -803,7 +796,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         @Override
         public String insertFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -831,7 +824,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         }
         public String deleteFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -852,6 +845,39 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         {
             return "";
         }
+        @Override
+        public boolean createInDatabase(Connection connDb)
+        {
+            try
+            {
+                LOGGER.debug("Creating SurveyAdjustment in database");
+                Statement stmtExecute = connDb.createStatement();
+                stmtExecute.execute(createScript());
+                LOGGER.debug("SurveyAdjustment create script - " + createScript());
+
+                for(String strStatement : TABLE_EXTRA_SCRIPTS)
+                {
+                    stmtExecute.execute(strStatement);
+                }
+                LOGGER.debug("SurveyAdjustment extra script - " + triggerScript());
+
+                if(!SQL_PROVIDER.staticInsertsScript().isEmpty())
+                {
+                    String[] listStatements = staticInsertsScript().split(";");
+                    for(String strStatement : listStatements)
+                    {
+                        stmtExecute.execute(strStatement);
+                    }
+                    LOGGER.debug("SurveyAdjustment extra script - " + staticInsertsScript());
+                }
+                return true;
+            }
+            catch(SQLException exc)
+            {
+                LOGGER.error("Error executing scripts", exc);
+            }
+            return false;
+        }
 
         private SqlProvider.SqlResultHandler<ISurveyAdjustment> m_resultsHandler;
         @Override
@@ -869,8 +895,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                         return createSurveyAdjustment
                                         (
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getDouble(FIELD_DELTAX),
                                             results.getDouble(FIELD_DELTAY),
                                             results.getDouble(FIELD_DELTAZ),
@@ -892,8 +918,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
                                         (
                                             typeUpdate,
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getDouble(FIELD_DELTAX),
                                             results.getDouble(FIELD_DELTAY),
                                             results.getDouble(FIELD_DELTAZ),

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 18:32:07 AEST 2021
+// Generated on Mon May 03 16:27:59 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -1018,16 +1018,9 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         return TABLE_EXTRA_SCRIPTS;
     }
 
-    public static void createInDatabase(Connection connDb) throws SQLException
+    public static void createInDatabase(Connection connDb)
     {
-        LOGGER.debug("Creating Traverse in database");
-        Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(SQL_PROVIDER.createScript());
-        LOGGER.debug("Traverse create script - " + SQL_PROVIDER.createScript());
-        stmtExecute.execute(SQL_PROVIDER.triggerScript());
-        LOGGER.debug("Traverse extra script - " + SQL_PROVIDER.triggerScript());
-        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
-        LOGGER.debug("Traverse extra script - " + SQL_PROVIDER.staticInsertsScript());
+        SQL_PROVIDER.createInDatabase(connDb);
     }
 
     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
@@ -1083,7 +1076,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         }
         public String selectFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 case "survey":
                     return "SELECT " +
@@ -1106,7 +1099,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         @Override
         public String selectLastId()
         {
-            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK FROM " + TABLE_NAME;
         }
         @Override
         public String selectLast()
@@ -1122,7 +1115,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                              FIELD_SURVEYID
                              + " FROM " +
                              TABLE_NAME +
-                             " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
+                             " WHERE " + PRIMARY_KEY + " = (" + selectLastId() + ")";
         }
         @Override
         public String selectForPath(Integer[] path)
@@ -1143,7 +1136,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         @Override
         public String insertFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -1172,7 +1165,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         }
         public String deleteFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 default:
                     return "";
@@ -1193,6 +1186,39 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         {
             return "";
         }
+        @Override
+        public boolean createInDatabase(Connection connDb)
+        {
+            try
+            {
+                LOGGER.debug("Creating Traverse in database");
+                Statement stmtExecute = connDb.createStatement();
+                stmtExecute.execute(createScript());
+                LOGGER.debug("Traverse create script - " + createScript());
+
+                for(String strStatement : TABLE_EXTRA_SCRIPTS)
+                {
+                    stmtExecute.execute(strStatement);
+                }
+                LOGGER.debug("Traverse extra script - " + triggerScript());
+
+                if(!SQL_PROVIDER.staticInsertsScript().isEmpty())
+                {
+                    String[] listStatements = staticInsertsScript().split(";");
+                    for(String strStatement : listStatements)
+                    {
+                        stmtExecute.execute(strStatement);
+                    }
+                    LOGGER.debug("Traverse extra script - " + staticInsertsScript());
+                }
+                return true;
+            }
+            catch(SQLException exc)
+            {
+                LOGGER.error("Error executing scripts", exc);
+            }
+            return false;
+        }
 
         private SqlProvider.SqlResultHandler<ITraverse> m_resultsHandler;
         @Override
@@ -1210,8 +1236,8 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                                         return createTraverse
                                         (
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_NAME),
                                             results.getString(FIELD_DESCRIPTION),
                                             SurveyPointAdapter.get(connDb, results.getInt(FIELD_STARTPOINTID)),
@@ -1236,8 +1262,8 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
                                         (
                                             typeUpdate,
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getString(FIELD_NAME),
                                             results.getString(FIELD_DESCRIPTION),
                                             SurveyPointAdapter.get(connDb, results.getInt(FIELD_STARTPOINTID)),

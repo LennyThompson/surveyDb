@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 18:32:07 AEST 2021
+// Generated on Mon May 03 16:27:59 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -1064,16 +1064,9 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         return TABLE_EXTRA_SCRIPTS;
     }
 
-    public static void createInDatabase(Connection connDb) throws SQLException
+    public static void createInDatabase(Connection connDb)
     {
-        LOGGER.debug("Creating SurveyMeasurement in database");
-        Statement stmtExecute = connDb.createStatement();
-        stmtExecute.execute(SQL_PROVIDER.createScript());
-        LOGGER.debug("SurveyMeasurement create script - " + SQL_PROVIDER.createScript());
-        stmtExecute.execute(SQL_PROVIDER.triggerScript());
-        LOGGER.debug("SurveyMeasurement extra script - " + SQL_PROVIDER.triggerScript());
-        stmtExecute.execute(SQL_PROVIDER.staticInsertsScript());
-        LOGGER.debug("SurveyMeasurement extra script - " + SQL_PROVIDER.staticInsertsScript());
+        SQL_PROVIDER.createInDatabase(connDb);
     }
 
     public static boolean setSqlProvider(SqlProvider.SqlScriptProvider provider)
@@ -1133,7 +1126,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         }
         public String selectFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 case "survey":
                     return "SELECT " +
@@ -1175,7 +1168,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         @Override
         public String selectLastId()
         {
-            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK, FROM " + TABLE_NAME;
+            return "SELECT MAX(" + PRIMARY_KEY + ") AS maxPK FROM " + TABLE_NAME;
         }
         @Override
         public String selectLast()
@@ -1193,7 +1186,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                              FIELD_SURVEYID
                              + " FROM " +
                              TABLE_NAME +
-                             " WHERE PRIMARY_KEY = (" + selectLastId() + ")";
+                             " WHERE " + PRIMARY_KEY + " = (" + selectLastId() + ")";
         }
         @Override
         public String selectForPath(Integer[] path)
@@ -1216,7 +1209,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         @Override
         public String insertFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 case "traverse":
                     return "INSERT OR IGNORE INTO TraverseMeasurement(" +
@@ -1252,7 +1245,7 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         }
         public String deleteFor(String strContext)
         {
-            switch(strContext)
+            switch(strContext.toLowerCase())
             {
                 case "traverse":
                         return "DELETE FROM TraverseMeasurement WHERE " +
@@ -1277,6 +1270,39 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
         {
             return "";
         }
+        @Override
+        public boolean createInDatabase(Connection connDb)
+        {
+            try
+            {
+                LOGGER.debug("Creating SurveyMeasurement in database");
+                Statement stmtExecute = connDb.createStatement();
+                stmtExecute.execute(createScript());
+                LOGGER.debug("SurveyMeasurement create script - " + createScript());
+
+                for(String strStatement : TABLE_EXTRA_SCRIPTS)
+                {
+                    stmtExecute.execute(strStatement);
+                }
+                LOGGER.debug("SurveyMeasurement extra script - " + triggerScript());
+
+                if(!SQL_PROVIDER.staticInsertsScript().isEmpty())
+                {
+                    String[] listStatements = staticInsertsScript().split(";");
+                    for(String strStatement : listStatements)
+                    {
+                        stmtExecute.execute(strStatement);
+                    }
+                    LOGGER.debug("SurveyMeasurement extra script - " + staticInsertsScript());
+                }
+                return true;
+            }
+            catch(SQLException exc)
+            {
+                LOGGER.error("Error executing scripts", exc);
+            }
+            return false;
+        }
 
         private SqlProvider.SqlResultHandler<ISurveyMeasurement> m_resultsHandler;
         @Override
@@ -1294,8 +1320,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                         return createSurveyMeasurement
                                         (
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getDouble(FIELD_HORIZDISTANCE),
                                             results.getDouble(FIELD_VERTDISTANCE),
                                             results.getDouble(FIELD_BEARING),
@@ -1320,8 +1346,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
                                         (
                                             typeUpdate,
                                             results.getInt(FIELD_ID),
-                                            OffsetDateTime.parse(results.getString(FIELD_CREATED)),
-                                            OffsetDateTime.parse(results.getString(FIELD_UPDATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
                                             results.getDouble(FIELD_HORIZDISTANCE),
                                             results.getDouble(FIELD_VERTDISTANCE),
                                             results.getDouble(FIELD_BEARING),

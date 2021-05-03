@@ -47,6 +47,8 @@ public interface SqlProvider
         String triggerScript();
         String staticInsertsScript();
 
+        boolean createInDatabase(Connection connDb);
+
         <OutType> SqlResultHandler<OutType> resultsHandler();
     }
     String getProviderName();

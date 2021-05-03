@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.*;
 
-public class TestSurveyDbAdapaters
+public class TestSurveyDbAdaptersPostgres
 {
     private static final String POSTGRE_CONNECTION_STRING = "jdbc:postgresql://localhost:5432/postgres";
     private static final String POSTGRE_USER = "lenny";
