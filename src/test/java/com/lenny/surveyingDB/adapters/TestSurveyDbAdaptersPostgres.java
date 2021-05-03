@@ -454,17 +454,10 @@ public class TestSurveyDbAdaptersPostgres
         assertEquals(20, measSummary.getVertical(), 0.01);
         assertEquals("Trav 1", measSummary.getPtFrom().getPtFromName());
         assertEquals("Trav 2", measSummary.getPtTo().getPtToName());
-    }
 
+        List<ITraverseMeasurementSummary> listTrav = TraverseMeasurementSummaryAdapter.getForPathQuery(m_connDb, 1, 1);
 
-    @Test
-    public void testViewList() throws SQLException
-    {
-        Connection m_connDb = DriverManager.getConnection("jdbc:sqlite:surveyDb.db");
-
-        List<ITraverseMeasurementSummary> listTrav = TraverseMeasurementSummaryAdapter.getForPathQuery(m_connDb, -1, 1);
-
-        //assertEquals(2, listTrav.size());
+        assertEquals(1, listTrav.size());
     }
 }
 

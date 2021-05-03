@@ -38,6 +38,7 @@ public class TestSurveyDbAdaptersSqlite
     @Before
     public void setUp() throws SQLException, IOException
     {
+        SurveyDb.resetSqlProvider();
         File fileDb = new File("test.db");
         if (Files.exists(Path.of("test.db")))
         {
@@ -455,17 +456,11 @@ public class TestSurveyDbAdaptersSqlite
         assertEquals(20, measSummary.getVertical(), 0.01);
         assertEquals("Trav 1", measSummary.getPtFrom().getPtFromName());
         assertEquals("Trav 2", measSummary.getPtTo().getPtToName());
-    }
 
+        List<ITraverseMeasurementSummary> listTrav = TraverseMeasurementSummaryAdapter.getForPathQuery(m_connDb, 1, 1);
 
-    @Test
-    public void testViewList() throws SQLException
-    {
-        Connection m_connDb = DriverManager.getConnection("jdbc:sqlite:surveyDb.db");
+        assertEquals(1, listTrav.size());
 
-        List<ITraverseMeasurementSummary> listTrav = TraverseMeasurementSummaryAdapter.getForPathQuery(m_connDb, -1, 1);
-
-        //assertEquals(2, listTrav.size());
     }
 }
 

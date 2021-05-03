@@ -32,4 +32,23 @@ public class SurveyDb
 
     }
 
+    public static void resetSqlProvider()
+    {
+        SurveyPointTypeAdapter.setSqlProvider(null);
+        SurveyReferenceAdapter.setSqlProvider(null);
+        InstrumentManufacturerAdapter.setSqlProvider(null);
+        InstrumentAdapter.setSqlProvider(null);
+        ProjectionAdapter.setSqlProvider(null);
+        SurveyPointAdapter.setSqlProvider(null);
+        SurveyAdapter.setSqlProvider(null);
+        SurveyMeasurementAdapter.setSqlProvider(null);
+        SurveyImageAdapter.setSqlProvider(null);
+        TraverseAdapter.setSqlProvider(null);
+        SurveyAdjustmentAdapter.setSqlProvider(null);
+        TraverseClosureAdapter.setSqlProvider(null);
+        TraverseSummaryAdapter.setSqlProvider(null);
+        TraverseMeasurementSummaryAdapter.setSqlProvider(null);
+        SurveyPointSummaryAdapter.setSqlProvider(null);
+        SurveySummaryAdapter.setSqlProvider(null);
+    }
 }
