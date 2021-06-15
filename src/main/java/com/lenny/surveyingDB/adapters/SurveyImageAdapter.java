@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Mon May 03 16:27:58 AEST 2021
+// Generated on Tue Jun 15 10:35:38 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -983,6 +983,11 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         public String createScript()
         {
             return CREATE_TABLE_SCRIPT;
+        }
+        @Override
+        public String removeScript()
+        {
+            return "";
         }
         @Override
         public String triggerScript()

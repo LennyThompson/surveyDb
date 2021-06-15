@@ -44,6 +44,7 @@ public interface SqlProvider
         String deleteByPrimaryKeyScript();
         String deleteFor(String strContext);
         String createScript();
+        String removeScript();
         String triggerScript();
         String staticInsertsScript();
 
@@ -53,5 +54,6 @@ public interface SqlProvider
     }
     String getProviderName();
     SqlScriptProvider getScriptProvider(String strTarget);
+    boolean removeDatabase(Connection connDb);
     boolean createDatabase(Connection connDb);
 }

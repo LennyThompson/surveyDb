@@ -3,14 +3,11 @@ package com.lenny.surveyingDB.adapters;
 import com.google.gson.*;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
-import com.lenny.surveyingDB.*;
 import com.lenny.surveyingDB.SurveyDb;
 import com.lenny.surveyingDB.interfaces.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
 
-import javax.swing.text.DateFormatter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,13 +15,11 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSurveyDbAdaptersSqlite
 {
@@ -35,7 +30,7 @@ public class TestSurveyDbAdaptersSqlite
 
     Connection m_connDb;
 
-    @Before
+    @BeforeEach
     public void setUp() throws SQLException, IOException
     {
         SurveyDb.resetSqlProvider();
@@ -48,7 +43,7 @@ public class TestSurveyDbAdaptersSqlite
         m_connDb = DriverManager.getConnection(SQLITE_CONNECTION_STRING);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws SQLException, IOException
     {
         try

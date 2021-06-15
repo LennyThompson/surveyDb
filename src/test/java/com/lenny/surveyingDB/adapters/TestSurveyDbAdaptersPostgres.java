@@ -4,14 +4,13 @@ import com.google.gson.*;
 import com.lenny.Utils.ISerialiseState;
 import com.lenny.Utils.UndoTarget;
 import com.lenny.surveyingDB.*;
-import com.lenny.surveyingDB.SurveyDb;
 import com.lenny.surveyingDB.interfaces.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.swing.text.DateFormatter;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -21,29 +20,30 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static com.lenny.surveyingDB.adapters.PostgreSQLTestImages.POSTGRES_TEST_IMAGE;
+import static org.junit.jupiter.api.Assertions.*;
 
+@Testcontainers
 public class TestSurveyDbAdaptersPostgres
 {
-    private static final String POSTGRE_CONNECTION_STRING = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String POSTGRE_USER = "lenny";
-    private static final String POSTGRE_PASSWORD = "pqxy(!%k";
     private static final String POSTGRE_SCHEMA = "test";
-    private static final String POSTGRE_DROP_SCHEMA = "DROP SCHEMA IF EXISTS " + POSTGRE_SCHEMA + " CASCADE";
     private static final String POSTGRE_CREATE_SCHEMA = "CREATE SCHEMA IF NOT EXISTS " + POSTGRE_SCHEMA;
 
     Connection m_connDb;
 
-    @Before
+    @Container
+    public PostgreSQLContainer<?> m_postgresContainer = new PostgreSQLContainer<>(POSTGRES_TEST_IMAGE)
+                    .withExposedPorts(8080, 8081);
+
+    @BeforeEach
     public void setUp() throws SQLException
     {
         Properties propsConn = new Properties();
-        propsConn.put( "user", POSTGRE_USER);
-        propsConn.put("password", POSTGRE_PASSWORD);
+        propsConn.put("user", m_postgresContainer.getUsername());
+        propsConn.put("password", m_postgresContainer.getPassword());
         propsConn.put("currentSchema", POSTGRE_SCHEMA);
-        m_connDb = DriverManager.getConnection(POSTGRE_CONNECTION_STRING, propsConn);
+        m_connDb = DriverManager.getConnection(m_postgresContainer.getJdbcUrl(), propsConn);
         Statement stmtExecute = m_connDb.createStatement();
-        stmtExecute.execute(POSTGRE_DROP_SCHEMA);
         stmtExecute.execute(POSTGRE_CREATE_SCHEMA);
         PLPGSQlScriptProvider.initProvider();
         SqlProvider sqlProvider = new PLPGSQlScriptProvider();
@@ -52,16 +52,12 @@ public class TestSurveyDbAdaptersPostgres
         assertTrue(sqlProvider.createDatabase(m_connDb));
     }
 
-    void dropSchema(Properties propsConn, String strSchemaName) throws SQLException
-    {
-    }
-
-    @After
+    @AfterEach
     public void tearDown() throws SQLException
     {
-        Statement stmtExecute = m_connDb.createStatement();
-        stmtExecute.execute(POSTGRE_DROP_SCHEMA);
         m_connDb.close();
+
+        m_postgresContainer.stop();
     }
 
     static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss.ss");
