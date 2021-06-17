@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 10:35:38 AEST 2021
+// Generated on Thu Jun 17 16:53:48 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -97,32 +97,6 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             return  m_strDescription;
         }
 
-        public void setID(int nSet)
-        {
-            addUndoProvider
-            (
-                new UndoProviderImpl(Projection.this.m_saveState, "Undo set Projection member ID = " + Projection.this.m_nID)
-                {
-                    int m_undoID = Projection.this.m_nID;
-                    public boolean doUndo()
-                    {
-                        if(isPending())
-                        {
-                            Projection.this.m_nID = m_undoID;
-                            if(Projection.this.m_saveState != m_dataSaveState)
-                            {
-                                Projection.this.m_saveState = m_dataSaveState;
-                            }
-                            m_pendingUndo = PendingUndoState.UNDO_COMPLETE;
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-            );
-            m_nID = nSet;
-            setUpdated();
-        }
         public void setName(String strSet)
         {
             addUndoProvider

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Sun May 02 10:25:13 AEST 2021
+// Generated on Thu Jun 17 16:53:49 AEST 2021
 
 package com.lenny.surveyingDB.interfaces;
 
@@ -16,7 +16,6 @@ public interface IProjection
     OffsetDateTime getDate();
     String getDescription();
 
-    void setID(int nSet);
     void setName(String strSet);
     void setDate(OffsetDateTime dateSet);
     void setDescription(String strSet);
