@@ -416,20 +416,7 @@ public class SurveyPointSummaryAdapter
             {
                 listRawData.add
                     (
-                        createSurveyPointSummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getInt(FIELD_PTID),
-                            results.getString(FIELD_PTNAME),
-                            results.getString(FIELD_PTDESC),
-                            results.getDouble(FIELD_X),
-                            results.getDouble(FIELD_Y),
-                            results.getDouble(FIELD_Z),
-                            results.getString(FIELD_PTTYPENAME),
-                            results.getString(FIELD_PTTYPEABBREVIATION),
-                            results.getString(FIELD_REFNAME),
-                            results.getString(FIELD_REFDESCRIPTION)
-                        )
+                        (ISurveyPointSummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())

@@ -411,24 +411,7 @@ public class TraverseSummaryAdapter
             {
                 listRawData.add
                     (
-                        createTraverseSummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getInt(FIELD_SURVEYID),
-                            results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                            results.getString(FIELD_DESCRIPTION),
-                            results.getInt(FIELD_PTSTARTID),
-                            results.getString(FIELD_PTSTARTNAME),
-                            results.getDouble(FIELD_PTSTARTX),
-                            results.getDouble(FIELD_PTSTARTY),
-                            results.getDouble(FIELD_PTSTARTZ),
-                            results.getInt(FIELD_PTENDID),
-                            results.getString(FIELD_PTENDNAME),
-                            results.getDouble(FIELD_PTENDX),
-                            results.getDouble(FIELD_PTENDY),
-                            results.getDouble(FIELD_PTENDZ)
-                        )
+                        (ITraverseSummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())

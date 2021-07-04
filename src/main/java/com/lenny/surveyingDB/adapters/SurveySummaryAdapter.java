@@ -513,26 +513,7 @@ public class SurveySummaryAdapter
             {
                 listRawData.add
                     (
-                        createSurveySummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getString(FIELD_NAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                            results.getString(FIELD_DESCRIPTION),
-                            results.getInt(FIELD_PROJID),
-                            results.getString(FIELD_PROJNAME),
-                            results.getInt(FIELD_TRAVID),
-                            results.getString(FIELD_TRAVNAME),
-                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
-                            results.getString(FIELD_PTTRAVSTART),
-                            results.getString(FIELD_PTTRAVEND),
-                            results.getInt(FIELD_PTID),
-                            results.getString(FIELD_PTNAME),
-                            results.getDouble(FIELD_PTX),
-                            results.getDouble(FIELD_PTY),
-                            results.getDouble(FIELD_PTZ)
-                        )
+                        (ISurveySummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())

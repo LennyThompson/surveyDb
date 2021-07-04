@@ -19,6 +19,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import static com.lenny.surveyingDB.adapters.PostgreSQLTestImages.POSTGRES_TEST_IMAGE;
 import static org.junit.jupiter.api.Assertions.*;
@@ -82,6 +83,9 @@ public class TestSurveyDbAdaptersPostgres
         String strJson = ((ISerialiseState) listPointTypes.get(0)).toJson();
         Gson gsonInstance = gsonBuild.create();
         ISurveyPointType ptTypeSerialised = gsonInstance.fromJson(strJson, ISurveyPointType.class);
+        String strPtTypeJson = "[" + listPointTypes.stream()
+                            .map(ptType -> ((ISerialiseState) ptType).toJson())
+                            .collect(Collectors.joining(",")) + "]";
 
         assertEquals("SM", ptTypeSerialised.getAbbreviation());
         assertEquals("Survey Mark", ptTypeSerialised.getName());
@@ -273,14 +277,18 @@ public class TestSurveyDbAdaptersPostgres
 
         survMeas = SurveyMeasurementAdapter.add(m_connDb, survMeas);
 
+        String strJson = ((UndoTarget) survMeas).toJson();
         assertEquals(90.0, survMeas.getBearing(), 0.01);
         assertEquals(100.0, survMeas.getHorizDistance(), 0.01);
         assertEquals(50.0, survMeas.getVertDistance(), 0.01);
         assertEquals("First Point", survMeas.getPointFrom().getName());
         assertEquals("Second Point", survMeas.getPointTo().getName());
         assertTrue(((UndoTarget) survMeas).isSaved());
+
+
     }
 
+    String TRAVERSE_JSON = "{\"ID\":1,\"created\":\"2021-07-01T04:00:43.244Z\",\"updated\":\"2021-07-01T04:00:43.244Z\",\"Name\":\"New Traverse\",\"Description\":\"A new traverse\",\"StartPointID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.171Z\",\"updated\":\"2021-07-01T04:00:43.171Z\",\"X\":1000.0,\"Y\":2000.0,\"Z\":500.0,\"Name\":\"First Point\",\"Description\":\"The first point in the survey\",\"PointTypeID\":{\"ID\":4,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Trig Point\",\"Abbreviation\":\"Trig\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"EndPointID\":{\"ID\":4,\"created\":\"2021-07-01T04:00:43.222Z\",\"updated\":\"2021-07-01T04:00:43.222Z\",\"X\":1100.0,\"Y\":2000.0,\"Z\":550.0,\"Name\":\"Second Point\",\"Description\":\"The second point in the survey\",\"PointTypeID\":{\"ID\":8,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Boundary\",\"Abbreviation\":\"Bdy\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"TraverseClosure\":[],\"Traverse_SurveyMeasurement\":[{\"ID\":1,\"created\":\"2021-07-01T04:00:43.188Z\",\"updated\":\"2021-07-01T04:00:43.188Z\",\"HorizDistance\":100.0,\"VertDistance\":10.0,\"Bearing\":0.0,\"FromPtID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.171Z\",\"updated\":\"2021-07-01T04:00:43.171Z\",\"X\":1000.0,\"Y\":2000.0,\"Z\":500.0,\"Name\":\"First Point\",\"Description\":\"The first point in the survey\",\"PointTypeID\":{\"ID\":4,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Trig Point\",\"Abbreviation\":\"Trig\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"ToPtID\":{\"ID\":2,\"created\":\"2021-07-01T04:00:43.178Z\",\"updated\":\"2021-07-01T04:00:43.178Z\",\"X\":1000.0,\"Y\":2100.0,\"Z\":510.0,\"Name\":\"Trav 1\",\"Description\":\"First traverse point\",\"PointTypeID\":{\"ID\":8,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Boundary\",\"Abbreviation\":\"Bdy\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"SurveyAdjustmentID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.184Z\",\"updated\":\"2021-07-01T04:00:43.184Z\",\"DeltaX\":0.0,\"DeltaY\":0.0,\"DeltaZ\":0.0,\"BearingAdj\":0.0},\"SurveyID\":1},{\"ID\":2,\"created\":\"2021-07-01T04:00:43.211Z\",\"updated\":\"2021-07-01T04:00:43.211Z\",\"HorizDistance\":100.0,\"VertDistance\":20.0,\"Bearing\":90.0,\"FromPtID\":{\"ID\":2,\"created\":\"2021-07-01T04:00:43.178Z\",\"updated\":\"2021-07-01T04:00:43.178Z\",\"X\":1000.0,\"Y\":2100.0,\"Z\":510.0,\"Name\":\"Trav 1\",\"Description\":\"First traverse point\",\"PointTypeID\":{\"ID\":8,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Boundary\",\"Abbreviation\":\"Bdy\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"ToPtID\":{\"ID\":3,\"created\":\"2021-07-01T04:00:43.203Z\",\"updated\":\"2021-07-01T04:00:43.203Z\",\"X\":1100.0,\"Y\":2100.0,\"Z\":530.0,\"Name\":\"Trav 2\",\"Description\":\"Second traverse point\",\"PointTypeID\":{\"ID\":8,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Boundary\",\"Abbreviation\":\"Bdy\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"SurveyAdjustmentID\":{\"ID\":2,\"created\":\"2021-07-01T04:00:43.209Z\",\"updated\":\"2021-07-01T04:00:43.209Z\",\"DeltaX\":0.0,\"DeltaY\":0.0,\"DeltaZ\":0.0,\"BearingAdj\":0.0},\"SurveyID\":1},{\"ID\":3,\"created\":\"2021-07-01T04:00:43.228Z\",\"updated\":\"2021-07-01T04:00:43.228Z\",\"HorizDistance\":100.0,\"VertDistance\":20.0,\"Bearing\":180.0,\"FromPtID\":{\"ID\":3,\"created\":\"2021-07-01T04:00:43.203Z\",\"updated\":\"2021-07-01T04:00:43.203Z\",\"X\":1100.0,\"Y\":2100.0,\"Z\":530.0,\"Name\":\"Trav 2\",\"Description\":\"Second traverse point\",\"PointTypeID\":{\"ID\":8,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Boundary\",\"Abbreviation\":\"Bdy\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"ToPtID\":{\"ID\":4,\"created\":\"2021-07-01T04:00:43.222Z\",\"updated\":\"2021-07-01T04:00:43.222Z\",\"X\":1100.0,\"Y\":2000.0,\"Z\":550.0,\"Name\":\"Second Point\",\"Description\":\"The second point in the survey\",\"PointTypeID\":{\"ID\":8,\"created\":\"2021-07-01T04:00:43.023Z\",\"updated\":\"2021-07-01T04:00:43.023Z\",\"Name\":\"Boundary\",\"Abbreviation\":\"Bdy\",\"UserDefined\":false},\"RefID\":{\"ID\":1,\"created\":\"2021-07-01T04:00:43.030Z\",\"updated\":\"2021-07-01T04:00:43.030Z\",\"Name\":\"Current Survey\",\"Description\":\"Current Survey\",\"Date\":\"1999-12-31T14:00:00.000Z\",\"Reference\":\"No Ref\"},\"Images\":[]},\"SurveyAdjustmentID\":{\"ID\":3,\"created\":\"2021-07-01T04:00:43.227Z\",\"updated\":\"2021-07-01T04:00:43.227Z\",\"DeltaX\":0.0,\"DeltaY\":0.0,\"DeltaZ\":0.0,\"BearingAdj\":0.0},\"SurveyID\":1}],\"SurveyID\":1}";
     @Test
     public void testTraverse() throws SQLException
     {
@@ -292,6 +300,8 @@ public class TestSurveyDbAdaptersPostgres
         survey.setDescription("Testing...");
         survey.setProjection(ProjectionAdapter.getAll(m_connDb).get(0));
         survey = SurveyAdapter.add(m_connDb, survey);
+
+        String strJson = ((ISerialiseState) survey).toJson();
 
         ITraverse travTest = TraverseAdapter.createNewTraverse(survey.getID());
         travTest.setName("New Traverse");
@@ -385,6 +395,7 @@ public class TestSurveyDbAdaptersPostgres
         SurveyMeasurementAdapter.add(m_connDb, survMeas);
 
         travTest = TraverseAdapter.add(m_connDb, travTest);
+        strJson = ((ISerialiseState)travTest).toJson();
         survey = SurveyAdapter.update(m_connDb, survey);
 
         assertEquals("New Traverse", travTest.getName());
@@ -406,7 +417,7 @@ public class TestSurveyDbAdaptersPostgres
         assertEquals(1, listSurveys.size());
         assertEquals(1, listSurveys.get(0).getTraverses().size());
 
-        String strJson = ((ISerialiseState) listSurveys.get(0)).toJson();
+        strJson = ((ISerialiseState) listSurveys.get(0)).toJson();
         GsonBuilder gsonBuild = new GsonBuilder()
                                     .registerTypeAdapter(ISurvey.class, new SurveyAdapter())
                                     .setDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -417,6 +428,12 @@ public class TestSurveyDbAdaptersPostgres
         assertEquals("Testing...", surveySerial.getDescription());
         assertEquals(1, surveySerial.getTraverses().size());
         assertEquals(3, surveySerial.getTraverses().get(0).getSurveyMeasurements().size());
+
+        ITraverseSummary travSummary = TraverseSummaryAdapter.get(m_connDb, travTest.getID());
+        assertEquals(travTest.getStartPoint().getID(), travSummary.getPtStart().getPtStartID());
+        assertEquals(travTest.getEndPoint().getID(), travSummary.getPtEnd().getPtEndID());
+
+        strJson = ((ISerialiseState) travSummary).toJson();
 
         // Test that the survey points can be accessed through the SurveyPointSummary view
 
@@ -429,6 +446,8 @@ public class TestSurveyDbAdaptersPostgres
         assertEquals(500, ptSummary.getPts().get(0).getZ(), 0.01);
         assertEquals("Trig Point", ptSummary.getPts().get(0).getPtType().getPtTypeName());
         assertEquals("Current Survey", ptSummary.getPts().get(0).getRef().getRefName());
+
+        strJson = ((ISerialiseState) ptSummary).toJson();
 
         // And for a specific survey
 
@@ -451,9 +470,19 @@ public class TestSurveyDbAdaptersPostgres
         assertEquals("Trav 1", measSummary.getPtFrom().getPtFromName());
         assertEquals("Trav 2", measSummary.getPtTo().getPtToName());
 
+        strJson = ((ISerialiseState) travMeasSummary).toJson();
+
         List<ITraverseMeasurementSummary> listTrav = TraverseMeasurementSummaryAdapter.getForPathQuery(m_connDb, 1, 1);
 
         assertEquals(1, listTrav.size());
+
+        gsonBuild = new GsonBuilder()
+            .registerTypeAdapter(ITraverse.class, new TraverseAdapter())
+            .setDateFormat("yyyy-MM-dd hh:mm:ss");
+        gsonInstance = gsonBuild.create();
+        ITraverse traverseSerial = gsonInstance.fromJson(TRAVERSE_JSON, ITraverse.class);
+
+        assertNotNull(traverseSerial);
     }
 }
 

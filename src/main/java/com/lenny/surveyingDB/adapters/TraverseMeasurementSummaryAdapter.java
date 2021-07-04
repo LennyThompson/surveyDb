@@ -516,26 +516,7 @@ public class TraverseMeasurementSummaryAdapter
             {
                 listRawData.add
                     (
-                        createTraverseMeasurementSummary
-                        (
-                            results.getInt(FIELD_ID),
-                            results.getInt(FIELD_SURVEYID),
-                            results.getString(FIELD_NAME),
-                            results.getInt(FIELD_MEASID),
-                            results.getDouble(FIELD_HORIZONTAL),
-                            results.getDouble(FIELD_VERTICAL),
-                            results.getDouble(FIELD_BEARING),
-                            results.getInt(FIELD_PTFROMID),
-                            results.getString(FIELD_PTFROMNAME),
-                            results.getDouble(FIELD_PTFROMX),
-                            results.getDouble(FIELD_PTFROMY),
-                            results.getDouble(FIELD_PTFROMZ),
-                            results.getInt(FIELD_PTTOID),
-                            results.getString(FIELD_PTTONAME),
-                            results.getDouble(FIELD_PTTOX),
-                            results.getDouble(FIELD_PTTOY),
-                            results.getDouble(FIELD_PTTOZ)
-                        )
+                        (ITraverseMeasurementSummary) SQL_PROVIDER.resultsHandler().fromResults(connDb, results)
                     );
             }
             if(!listRawData.isEmpty())
