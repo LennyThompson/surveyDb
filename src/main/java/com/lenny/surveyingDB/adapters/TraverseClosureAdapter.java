@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:10 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -683,7 +683,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -721,7 +721,7 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -780,6 +780,41 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ITraverseClosure typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing TraverseClosure data in db");
+        LOGGER.debug("Removing TraverseClosure data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed TraverseClosure data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove TraverseClosure data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing TraverseClosure from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -1045,6 +1080,11 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -1133,109 +1173,146 @@ public class TraverseClosureAdapter implements JsonDeserializer<ITraverseClosure
         @Override
         public SqlProvider.SqlResultHandler<ITraverseClosure> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverseClosure>()
+                   {
+                        @Override
+                        public ITraverseClosure fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createTraverseClosure
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getDouble(FIELD_MISCZ),
+                                    results.getDouble(FIELD_MISCY),
+                                    results.getDouble(FIELD_MISCX),
+                                    results.getDouble(FIELD_BEARINGMISCLOSE),
+                                    results.getDouble(FIELD_TRAVERSELENGTH),
+                                    SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
+                                    results.getInt(FIELD_TRAVERSEID)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ITraverseClosure updateFromResults(ITraverseClosure typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateTraverseClosure
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getDouble(FIELD_MISCZ),
+                                    results.getDouble(FIELD_MISCY),
+                                    results.getDouble(FIELD_MISCX),
+                                    results.getDouble(FIELD_BEARINGMISCLOSE),
+                                    results.getDouble(FIELD_TRAVERSELENGTH),
+                                    SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
+                                    results.getInt(FIELD_TRAVERSEID)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ITraverseClosure> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ITraverseClosure> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ITraverseClosure>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverseClosure>()
-                           {
-                                @Override
-                                public ITraverseClosure fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createTraverseClosure
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getDouble(FIELD_MISCZ),
-                                            results.getDouble(FIELD_MISCY),
-                                            results.getDouble(FIELD_MISCX),
-                                            results.getDouble(FIELD_BEARINGMISCLOSE),
-                                            results.getDouble(FIELD_TRAVERSELENGTH),
-                                            SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
-                                            results.getInt(FIELD_TRAVERSEID)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ITraverseClosure updateFromResults(ITraverseClosure typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateTraverseClosure
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getDouble(FIELD_MISCZ),
-                                            results.getDouble(FIELD_MISCY),
-                                            results.getDouble(FIELD_MISCX),
-                                            results.getDouble(FIELD_BEARINGMISCLOSE),
-                                            results.getDouble(FIELD_TRAVERSELENGTH),
-                                            SQLiteConverter.convertIntegerToBoolean(results.getInt(FIELD_ADJUSTED)),
-                                            results.getInt(FIELD_TRAVERSEID)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ITraverseClosure typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setDouble(1, typeInsert.getMiscZ());
-                                        stmtSelect.setDouble(2, typeInsert.getMiscY());
-                                        stmtSelect.setDouble(3, typeInsert.getMiscX());
-                                        stmtSelect.setDouble(4, typeInsert.getBearingMisclose());
-                                        stmtSelect.setDouble(5, typeInsert.getTraverseLength());
-                                        stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeInsert.getAdjusted()));
-                                        stmtSelect.setInt(7, ((TraverseClosureAdapter.TraverseClosure) typeInsert).getTraverseID());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ITraverseClosure typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setDouble(1, typeInsert.getMiscZ());
+                            stmtSelect.setDouble(2, typeInsert.getMiscY());
+                            stmtSelect.setDouble(3, typeInsert.getMiscX());
+                            stmtSelect.setDouble(4, typeInsert.getBearingMisclose());
+                            stmtSelect.setDouble(5, typeInsert.getTraverseLength());
+                            stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeInsert.getAdjusted()));
+                            stmtSelect.setInt(7, ((TraverseClosureAdapter.TraverseClosure) typeInsert).getTraverseID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ITraverseClosure typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setDouble(1, typeUpdate.getMiscZ());
-                                        stmtSelect.setDouble(2, typeUpdate.getMiscY());
-                                        stmtSelect.setDouble(3, typeUpdate.getMiscX());
-                                        stmtSelect.setDouble(4, typeUpdate.getBearingMisclose());
-                                        stmtSelect.setDouble(5, typeUpdate.getTraverseLength());
-                                        stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeUpdate.getAdjusted()));
-                                        stmtSelect.setInt(7, ((TraverseClosureAdapter.TraverseClosure) typeUpdate).getTraverseID());
-                                        stmtSelect.setInt(8, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ITraverseClosure type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ITraverseClosure typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setDouble(1, typeUpdate.getMiscZ());
+                            stmtSelect.setDouble(2, typeUpdate.getMiscY());
+                            stmtSelect.setDouble(3, typeUpdate.getMiscX());
+                            stmtSelect.setDouble(4, typeUpdate.getBearingMisclose());
+                            stmtSelect.setDouble(5, typeUpdate.getTraverseLength());
+                            stmtSelect.setInt(6, SQLiteConverter.convertBooleanToInteger(typeUpdate.getAdjusted()));
+                            stmtSelect.setInt(7, ((TraverseClosureAdapter.TraverseClosure) typeUpdate).getTraverseID());
+                            stmtSelect.setInt(8, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ITraverseClosure typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ITraverseClosure type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -847,28 +847,32 @@ public class SurveySummaryAdapter
         @Override
         public String selectForPath(Integer[] path)
         {
-        String strSelect = "SELECT "
-             + "id,  name,  created,  updated,  description,  projid,  projname,  travid,  travname,  travupdated,  pttravstart,  pttravend,  ptid,  ptname,  ptx,  pty,  ptz"
-             + " FROM surveysummary";
-        String strWhere = "";
-        if (path[0] > 0)
-        {
-            if (strWhere.isEmpty())
+            String strSelect = "SELECT "
+                 + "id,  name,  created,  updated,  description,  projid,  projname,  travid,  travname,  travupdated,  pttravstart,  pttravend,  ptid,  ptname,  ptx,  pty,  ptz"
+                 + " FROM surveysummary";
+            String strWhere = "";
+            if (path[0] > 0)
             {
-                strWhere = " WHERE ";
+                if (strWhere.isEmpty())
+                {
+                    strWhere = " WHERE ";
+                }
+                else
+                {
+                    strWhere += " AND ";
+                }
+                strWhere += FIELD_TRAVID + " = ?";
             }
-            else
+            if (!strWhere.isEmpty())
             {
-                strWhere += " AND ";
+                strSelect += strWhere;
             }
-            strWhere += FIELD_TRAVID + " = ?";
+            return strSelect;
         }
-        if (!strWhere.isEmpty())
+        @Override
+        public String selectHistory()
         {
-            strSelect += strWhere;
-        }
-        return strSelect;
-
+            return "";
         }
         @Override
         public String insertScript()
@@ -956,57 +960,51 @@ public class SurveySummaryAdapter
             if(m_resultsHandler == null)
             {
                 m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveySummary>()
-                       {
-                            @Override
-                            public ISurveySummary fromResults(Connection connDb, ResultSet results)
-                            {
-                                try
-                                {
-                                    return SurveySummaryAdapter.createSurveySummary
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            results.getString(FIELD_NAME),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            results.getInt(FIELD_PROJID),
-                                            results.getString(FIELD_PROJNAME),
-                                            results.getInt(FIELD_TRAVID),
-                                            results.getString(FIELD_TRAVNAME),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
-                                            results.getString(FIELD_PTTRAVSTART),
-                                            results.getString(FIELD_PTTRAVEND),
-                                            results.getInt(FIELD_PTID),
-                                            results.getString(FIELD_PTNAME),
-                                            results.getDouble(FIELD_PTX),
-                                            results.getDouble(FIELD_PTY),
-                                            results.getDouble(FIELD_PTZ)
-                                        );
-                                }
-                                catch(SQLException exc)
-                                {
-                                    LOGGER.error("Error parsing result set", exc);
-                                }
-                                return null;
-                            }
-                            @Override
-                            public ISurveySummary updateFromResults(ISurveySummary typeUpdate, Connection connDb, ResultSet results)
-                            {
-                                return typeUpdate;
-                            }
-                            @Override
-                            public boolean insertNew(ISurveySummary typeInsert, PreparedStatement stmtNew)
-                            {
-                                return false;
-                            }
-                            @Override
-                            public boolean updateExisting(ISurveySummary typeUpdate, PreparedStatement stmtUpdate)
-                            {
-                                return false;
-                            }
-                       };
+                {
+                    @Override
+                    public ISurveySummary fromResults(Connection connDb, ResultSet results)
+                    {
+                        try
+                        {
+                            return SurveySummaryAdapter.createSurveySummary
+                                (
+                                    results.getInt(FIELD_ID),
+                                    results.getString(FIELD_NAME),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    results.getInt(FIELD_PROJID),
+                                    results.getString(FIELD_PROJNAME),
+                                    results.getInt(FIELD_TRAVID),
+                                    results.getString(FIELD_TRAVNAME),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_TRAVUPDATED)),
+                                    results.getString(FIELD_PTTRAVSTART),
+                                    results.getString(FIELD_PTTRAVEND),
+                                    results.getInt(FIELD_PTID),
+                                    results.getString(FIELD_PTNAME),
+                                    results.getDouble(FIELD_PTX),
+                                    results.getDouble(FIELD_PTY),
+                                    results.getDouble(FIELD_PTZ)
+                                );
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error parsing result set", exc);
+                        }
+                        return null;
+                    }
+                    @Override
+                    public ISurveySummary updateFromResults(ISurveySummary typeUpdate, Connection connDb, ResultSet results)
+                    {
+                        return typeUpdate;
+                    }
+                };
            }
            return m_resultsHandler;
+        }
+        public SqlProvider.SqlParameterHandler<ISurveySummary> parametersHandler()
+        {
+            return null;
         }
 
     };

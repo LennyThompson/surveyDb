@@ -13,19 +13,15 @@ public interface SqlProvider
     {
         OutType fromResults(Connection connDb, ResultSet results);
         OutType updateFromResults(OutType typUpdate, Connection connDb, ResultSet results);
-        boolean insertNew(OutType typeInsert, PreparedStatement stmtNew);
-        boolean updateExisting(OutType typeUpdate, PreparedStatement stmtUpdate);
     }
-
-    // TODO: Add interface to apply parameters to jdbc statements...
 
     public interface SqlParameterHandler<InType>
     {
         boolean prepareInsert(PreparedStatement stmt, InType type);
         boolean prepareInsertFor(PreparedStatement stmt, InType type, String strContext);
-        boolean prepareUpdateUpdate(PreparedStatement stmt, InType type);
+        boolean prepareUpdate(PreparedStatement stmt, InType type);
         boolean prepareDelete(PreparedStatement stmt, InType type);
-        boolean prepareDeleteFor(PreparedStatement stmt, InType type);
+        boolean prepareDeleteFor(PreparedStatement stmt, InType type, String strContext);
     }
 
     public interface SqlScriptProvider
@@ -37,6 +33,7 @@ public interface SqlProvider
         String selectLastId();
         String selectLast();
         String selectForPath(Integer[] path);
+        String selectHistory();
         String insertScript();
         String insertFor(String strContext);
         String updateScript();
@@ -51,6 +48,7 @@ public interface SqlProvider
         boolean createInDatabase(Connection connDb);
 
         <OutType> SqlResultHandler<OutType> resultsHandler();
+        <InType> SqlParameterHandler<InType> parametersHandler();
     }
     String getProviderName();
     SqlScriptProvider getScriptProvider(String strTarget);

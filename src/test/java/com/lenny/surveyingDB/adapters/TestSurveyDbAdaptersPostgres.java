@@ -237,6 +237,57 @@ public class TestSurveyDbAdaptersPostgres
     }
 
     @Test
+    public void testRemoveSurveyPoint() throws SQLException
+    {
+        List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(m_connDb);
+        List<ISurveyReference> listRefs = SurveyReferenceAdapter.getAll(m_connDb);
+
+        ISurveyPoint ptSurvey = SurveyPointAdapter.createNewSurveyPoint();
+
+        ptSurvey.setName("First Point");
+        ptSurvey.setDescription("The first point in the survey");
+        ptSurvey.setX(1000.0);
+        ptSurvey.setY(2000.0);
+        ptSurvey.setZ(500.0);
+        ptSurvey.setPointType(listPointTypes.get(3));
+        ptSurvey.setReference(listRefs.get(0));
+
+        ptSurvey = SurveyPointAdapter.add(m_connDb, ptSurvey);
+
+
+        // Now delete the survey point and show that it no longer exists...
+
+        assertTrue(SurveyPointAdapter.remove(m_connDb, ptSurvey));
+        assertNull(SurveyPointAdapter.get(m_connDb, ptSurvey.getID()));
+
+        // Now add a survey point type and show this cannot be deleted until all foreign key references are gone.
+
+        ISurveyPointType ptType = SurveyPointTypeAdapter.createNewSurveyPointType();
+        ptType.setName("Bobby");
+        ptType.setAbbreviation("BOB");
+        ptType.setUserDefined(true);
+        ptType = SurveyPointTypeAdapter.add(m_connDb, ptType);
+
+        ptSurvey = SurveyPointAdapter.createNewSurveyPoint();
+
+        ptSurvey.setName("First Point");
+        ptSurvey.setDescription("The first point in the survey");
+        ptSurvey.setX(1000.0);
+        ptSurvey.setY(2000.0);
+        ptSurvey.setZ(500.0);
+        ptSurvey.setPointType(ptType);
+        ptSurvey.setReference(listRefs.get(0));
+
+        SurveyPointAdapter.add(m_connDb, ptSurvey);
+
+        assertFalse(SurveyPointTypeAdapter.remove(m_connDb, ptType));
+
+        ptSurvey.setPointType(listPointTypes.get(3));
+        SurveyPointAdapter.update(m_connDb, ptSurvey);
+
+        assertTrue(SurveyPointTypeAdapter.remove(m_connDb, ptType));
+    }
+    @Test
     public void testSurveyMeasurement() throws SQLException
     {
         List<ISurveyPointType> listPointTypes = SurveyPointTypeAdapter.getAll(m_connDb);

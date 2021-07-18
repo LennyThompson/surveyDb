@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:16 AEST 2021
+// Generated on Fri Jul 09 17:31:10 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -596,7 +596,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -634,7 +634,7 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -693,6 +693,41 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ISurveyImage typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing SurveyImage data in db");
+        LOGGER.debug("Removing SurveyImage data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed SurveyImage data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove SurveyImage data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing SurveyImage from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -952,6 +987,11 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -1037,97 +1077,134 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         @Override
         public SqlProvider.SqlResultHandler<ISurveyImage> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyImage>()
+                   {
+                        @Override
+                        public ISurveyImage fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createSurveyImage
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_PATH),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    results.getInt(FIELD_SURVEYID),
+                                    results.getInt(FIELD_POINTATID)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ISurveyImage updateFromResults(ISurveyImage typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateSurveyImage
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_PATH),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    results.getInt(FIELD_SURVEYID),
+                                    results.getInt(FIELD_POINTATID)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ISurveyImage> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ISurveyImage> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ISurveyImage>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyImage>()
-                           {
-                                @Override
-                                public ISurveyImage fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createSurveyImage
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_PATH),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            results.getInt(FIELD_SURVEYID),
-                                            results.getInt(FIELD_POINTATID)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ISurveyImage updateFromResults(ISurveyImage typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateSurveyImage
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_PATH),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            results.getInt(FIELD_SURVEYID),
-                                            results.getInt(FIELD_POINTATID)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ISurveyImage typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeInsert.getPath());
-                                        stmtSelect.setString(2, typeInsert.getDescription());
-                                        stmtSelect.setInt(3, ((SurveyImageAdapter.SurveyImage) typeInsert).getSurveyID());
-                                        stmtSelect.setInt(4, ((SurveyImageAdapter.SurveyImage) typeInsert).getPointAtID());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ISurveyImage typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeInsert.getPath());
+                            stmtSelect.setString(2, typeInsert.getDescription());
+                            stmtSelect.setInt(3, ((SurveyImageAdapter.SurveyImage) typeInsert).getSurveyID());
+                            stmtSelect.setInt(4, ((SurveyImageAdapter.SurveyImage) typeInsert).getPointAtID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ISurveyImage typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeUpdate.getPath());
-                                        stmtSelect.setString(2, typeUpdate.getDescription());
-                                        stmtSelect.setInt(3, ((SurveyImageAdapter.SurveyImage) typeUpdate).getSurveyID());
-                                        stmtSelect.setInt(4, ((SurveyImageAdapter.SurveyImage) typeUpdate).getPointAtID());
-                                        stmtSelect.setInt(5, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ISurveyImage type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ISurveyImage typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeUpdate.getPath());
+                            stmtSelect.setString(2, typeUpdate.getDescription());
+                            stmtSelect.setInt(3, ((SurveyImageAdapter.SurveyImage) typeUpdate).getSurveyID());
+                            stmtSelect.setInt(4, ((SurveyImageAdapter.SurveyImage) typeUpdate).getPointAtID());
+                            stmtSelect.setInt(5, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ISurveyImage typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ISurveyImage type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

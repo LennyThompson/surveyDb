@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -752,39 +752,43 @@ public class TraverseSummaryAdapter
         @Override
         public String selectForPath(Integer[] path)
         {
-        String strSelect = "SELECT "
-             + "id,  surveyid,  name,  updated,  description,  ptstartid,  ptstartname,  ptstartx,  ptstarty,  ptstartz,  ptendid,  ptendname,  ptendx,  ptendy,  ptendz"
-             + " FROM traversesummary";
-        String strWhere = "";
-        if (path[0] > 0)
-        {
-            if (strWhere.isEmpty())
+            String strSelect = "SELECT "
+                 + "id,  surveyid,  name,  updated,  description,  ptstartid,  ptstartname,  ptstartx,  ptstarty,  ptstartz,  ptendid,  ptendname,  ptendx,  ptendy,  ptendz"
+                 + " FROM traversesummary";
+            String strWhere = "";
+            if (path[0] > 0)
             {
-                strWhere = " WHERE ";
-            }
-            else
+                if (strWhere.isEmpty())
+                {
+                    strWhere = " WHERE ";
+                }
+                else
+                {
+                    strWhere += " AND ";
+                }
+                strWhere += FIELD_SURVEYID + " = ?";
+            }if (path[1] > 0)
             {
-                strWhere += " AND ";
+                if (strWhere.isEmpty())
+                {
+                    strWhere = " WHERE ";
+                }
+                else
+                {
+                    strWhere += " AND ";
+                }
+                strWhere += FIELD_ID + " = ?";
             }
-            strWhere += FIELD_SURVEYID + " = ?";
-        }if (path[1] > 0)
-        {
-            if (strWhere.isEmpty())
+            if (!strWhere.isEmpty())
             {
-                strWhere = " WHERE ";
+                strSelect += strWhere;
             }
-            else
-            {
-                strWhere += " AND ";
-            }
-            strWhere += FIELD_ID + " = ?";
+            return strSelect;
         }
-        if (!strWhere.isEmpty())
+        @Override
+        public String selectHistory()
         {
-            strSelect += strWhere;
-        }
-        return strSelect;
-
+            return "";
         }
         @Override
         public String insertScript()
@@ -870,55 +874,49 @@ public class TraverseSummaryAdapter
             if(m_resultsHandler == null)
             {
                 m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverseSummary>()
-                       {
-                            @Override
-                            public ITraverseSummary fromResults(Connection connDb, ResultSet results)
-                            {
-                                try
-                                {
-                                    return TraverseSummaryAdapter.createTraverseSummary
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            results.getInt(FIELD_SURVEYID),
-                                            results.getString(FIELD_NAME),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            results.getInt(FIELD_PTSTARTID),
-                                            results.getString(FIELD_PTSTARTNAME),
-                                            results.getDouble(FIELD_PTSTARTX),
-                                            results.getDouble(FIELD_PTSTARTY),
-                                            results.getDouble(FIELD_PTSTARTZ),
-                                            results.getInt(FIELD_PTENDID),
-                                            results.getString(FIELD_PTENDNAME),
-                                            results.getDouble(FIELD_PTENDX),
-                                            results.getDouble(FIELD_PTENDY),
-                                            results.getDouble(FIELD_PTENDZ)
-                                        );
-                                }
-                                catch(SQLException exc)
-                                {
-                                    LOGGER.error("Error parsing result set", exc);
-                                }
-                                return null;
-                            }
-                            @Override
-                            public ITraverseSummary updateFromResults(ITraverseSummary typeUpdate, Connection connDb, ResultSet results)
-                            {
-                                return typeUpdate;
-                            }
-                            @Override
-                            public boolean insertNew(ITraverseSummary typeInsert, PreparedStatement stmtNew)
-                            {
-                                return false;
-                            }
-                            @Override
-                            public boolean updateExisting(ITraverseSummary typeUpdate, PreparedStatement stmtUpdate)
-                            {
-                                return false;
-                            }
-                       };
+                {
+                    @Override
+                    public ITraverseSummary fromResults(Connection connDb, ResultSet results)
+                    {
+                        try
+                        {
+                            return TraverseSummaryAdapter.createTraverseSummary
+                                (
+                                    results.getInt(FIELD_ID),
+                                    results.getInt(FIELD_SURVEYID),
+                                    results.getString(FIELD_NAME),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    results.getInt(FIELD_PTSTARTID),
+                                    results.getString(FIELD_PTSTARTNAME),
+                                    results.getDouble(FIELD_PTSTARTX),
+                                    results.getDouble(FIELD_PTSTARTY),
+                                    results.getDouble(FIELD_PTSTARTZ),
+                                    results.getInt(FIELD_PTENDID),
+                                    results.getString(FIELD_PTENDNAME),
+                                    results.getDouble(FIELD_PTENDX),
+                                    results.getDouble(FIELD_PTENDY),
+                                    results.getDouble(FIELD_PTENDZ)
+                                );
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error parsing result set", exc);
+                        }
+                        return null;
+                    }
+                    @Override
+                    public ITraverseSummary updateFromResults(ITraverseSummary typeUpdate, Connection connDb, ResultSet results)
+                    {
+                        return typeUpdate;
+                    }
+                };
            }
            return m_resultsHandler;
+        }
+        public SqlProvider.SqlParameterHandler<ITraverseSummary> parametersHandler()
+        {
+            return null;
         }
 
     };

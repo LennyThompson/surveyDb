@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:10 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -721,7 +721,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             ((Traverse) typeAdd).m_nID = getLastId(connDb);
@@ -796,7 +796,7 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 ((Traverse) typeUpdate).m_listTraverseClosure = typeUpdate.getTraverseClosures().stream()
                     .map
                     (
@@ -890,6 +890,41 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ITraverse typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing Traverse data in db");
+        LOGGER.debug("Removing Traverse data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed Traverse data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove Traverse data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing Traverse from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -1143,6 +1178,11 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -1229,105 +1269,142 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
         @Override
         public SqlProvider.SqlResultHandler<ITraverse> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverse>()
+                   {
+                        @Override
+                        public ITraverse fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createTraverse
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    SurveyPointAdapter.get(connDb, results.getInt(FIELD_STARTPOINTID)),
+                                    SurveyPointAdapter.get(connDb, results.getInt(FIELD_ENDPOINTID)),
+                                    results.getInt(FIELD_SURVEYID),
+                                    TraverseClosureAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID)),
+                                    SurveyMeasurementAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ITraverse updateFromResults(ITraverse typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateTraverse
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    SurveyPointAdapter.get(connDb, results.getInt(FIELD_STARTPOINTID)),
+                                    SurveyPointAdapter.get(connDb, results.getInt(FIELD_ENDPOINTID)),
+                                    results.getInt(FIELD_SURVEYID),
+                                    TraverseClosureAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID)),
+                                    SurveyMeasurementAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ITraverse> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ITraverse> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ITraverse>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ITraverse>()
-                           {
-                                @Override
-                                public ITraverse fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createTraverse
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            SurveyPointAdapter.get(connDb, results.getInt(FIELD_STARTPOINTID)),
-                                            SurveyPointAdapter.get(connDb, results.getInt(FIELD_ENDPOINTID)),
-                                            results.getInt(FIELD_SURVEYID),
-                                            TraverseClosureAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID)),
-                                            SurveyMeasurementAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ITraverse updateFromResults(ITraverse typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateTraverse
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            SurveyPointAdapter.get(connDb, results.getInt(FIELD_STARTPOINTID)),
-                                            SurveyPointAdapter.get(connDb, results.getInt(FIELD_ENDPOINTID)),
-                                            results.getInt(FIELD_SURVEYID),
-                                            TraverseClosureAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID)),
-                                            SurveyMeasurementAdapter.getAllForTraverseParent(connDb, results.getInt(FIELD_ID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ITraverse typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeInsert.getName());
-                                        stmtSelect.setString(2, typeInsert.getDescription());
-                                        stmtSelect.setInt(3, typeInsert.getStartPoint().getID());
-                                        stmtSelect.setInt(4, typeInsert.getEndPoint().getID());
-                                        stmtSelect.setInt(5, ((TraverseAdapter.Traverse) typeInsert).getSurveyID());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ITraverse typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeInsert.getName());
+                            stmtSelect.setString(2, typeInsert.getDescription());
+                            stmtSelect.setInt(3, typeInsert.getStartPoint().getID());
+                            stmtSelect.setInt(4, typeInsert.getEndPoint().getID());
+                            stmtSelect.setInt(5, ((TraverseAdapter.Traverse) typeInsert).getSurveyID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ITraverse typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeUpdate.getName());
-                                        stmtSelect.setString(2, typeUpdate.getDescription());
-                                        stmtSelect.setInt(3, typeUpdate.getStartPoint().getID());
-                                        stmtSelect.setInt(4, typeUpdate.getEndPoint().getID());
-                                        stmtSelect.setInt(5, ((TraverseAdapter.Traverse) typeUpdate).getSurveyID());
-                                        stmtSelect.setInt(6, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ITraverse type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ITraverse typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeUpdate.getName());
+                            stmtSelect.setString(2, typeUpdate.getDescription());
+                            stmtSelect.setInt(3, typeUpdate.getStartPoint().getID());
+                            stmtSelect.setInt(4, typeUpdate.getEndPoint().getID());
+                            stmtSelect.setInt(5, ((TraverseAdapter.Traverse) typeUpdate).getSurveyID());
+                            stmtSelect.setInt(6, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ITraverse typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ITraverse type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:10 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -503,7 +503,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -541,7 +541,7 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -600,6 +600,41 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ISurveyReference typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing SurveyReference data in db");
+        LOGGER.debug("Removing SurveyReference data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed SurveyReference data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove SurveyReference data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing SurveyReference from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -805,6 +840,11 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -890,97 +930,134 @@ public class SurveyReferenceAdapter implements JsonDeserializer<ISurveyReference
         @Override
         public SqlProvider.SqlResultHandler<ISurveyReference> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyReference>()
+                   {
+                        @Override
+                        public ISurveyReference fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createSurveyReference
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
+                                    results.getString(FIELD_REFERENCE)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ISurveyReference updateFromResults(ISurveyReference typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateSurveyReference
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
+                                    results.getString(FIELD_REFERENCE)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ISurveyReference> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ISurveyReference> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ISurveyReference>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyReference>()
-                           {
-                                @Override
-                                public ISurveyReference fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createSurveyReference
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
-                                            results.getString(FIELD_REFERENCE)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ISurveyReference updateFromResults(ISurveyReference typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateSurveyReference
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
-                                            results.getString(FIELD_REFERENCE)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ISurveyReference typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeInsert.getName());
-                                        stmtSelect.setString(2, typeInsert.getDescription());
-                                        stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeInsert.getDate()));
-                                        stmtSelect.setString(4, typeInsert.getReference());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ISurveyReference typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeInsert.getName());
+                            stmtSelect.setString(2, typeInsert.getDescription());
+                            stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeInsert.getDate()));
+                            stmtSelect.setString(4, typeInsert.getReference());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ISurveyReference typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeUpdate.getName());
-                                        stmtSelect.setString(2, typeUpdate.getDescription());
-                                        stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
-                                        stmtSelect.setString(4, typeUpdate.getReference());
-                                        stmtSelect.setInt(5, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ISurveyReference type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ISurveyReference typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeUpdate.getName());
+                            stmtSelect.setString(2, typeUpdate.getDescription());
+                            stmtSelect.setString(3, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
+                            stmtSelect.setString(4, typeUpdate.getReference());
+                            stmtSelect.setInt(5, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ISurveyReference typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ISurveyReference type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

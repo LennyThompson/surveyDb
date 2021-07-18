@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Thu Jun 17 16:53:48 AEST 2021
+// Generated on Fri Jul 09 17:31:10 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -464,7 +464,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -502,7 +502,7 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -561,6 +561,41 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, IProjection typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing Projection data in db");
+        LOGGER.debug("Removing Projection data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed Projection data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove Projection data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing Projection from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -757,6 +792,11 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -841,93 +881,130 @@ public class ProjectionAdapter implements JsonDeserializer<IProjection>
         @Override
         public SqlProvider.SqlResultHandler<IProjection> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<IProjection>()
+                   {
+                        @Override
+                        public IProjection fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createProjection
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
+                                    results.getString(FIELD_DESCRIPTION)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public IProjection updateFromResults(IProjection typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateProjection
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
+                                    results.getString(FIELD_DESCRIPTION)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<IProjection> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<IProjection> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<IProjection>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<IProjection>()
-                           {
-                                @Override
-                                public IProjection fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createProjection
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
-                                            results.getString(FIELD_DESCRIPTION)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public IProjection updateFromResults(IProjection typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateProjection
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_DATE)),
-                                            results.getString(FIELD_DESCRIPTION)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(IProjection typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeInsert.getName());
-                                        stmtSelect.setString(2, SQLiteConverter.convertDateTimeToString(typeInsert.getDate()));
-                                        stmtSelect.setString(3, typeInsert.getDescription());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, IProjection typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeInsert.getName());
+                            stmtSelect.setString(2, SQLiteConverter.convertDateTimeToString(typeInsert.getDate()));
+                            stmtSelect.setString(3, typeInsert.getDescription());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(IProjection typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeUpdate.getName());
-                                        stmtSelect.setString(2, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
-                                        stmtSelect.setString(3, typeUpdate.getDescription());
-                                        stmtSelect.setInt(4, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, IProjection type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, IProjection typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeUpdate.getName());
+                            stmtSelect.setString(2, SQLiteConverter.convertDateTimeToString(typeUpdate.getDate()));
+                            stmtSelect.setString(3, typeUpdate.getDescription());
+                            stmtSelect.setInt(4, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, IProjection typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, IProjection type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

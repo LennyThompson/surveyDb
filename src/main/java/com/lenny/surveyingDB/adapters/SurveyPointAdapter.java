@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -763,7 +763,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             ((SurveyPoint) typeAdd).m_nID = getLastId(connDb);
@@ -827,7 +827,7 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 ((SurveyPoint) typeUpdate).m_listSurveyImage = typeUpdate.getSurveyImages().stream()
                     .map
                     (
@@ -904,6 +904,41 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ISurveyPoint typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing SurveyPoint data in db");
+        LOGGER.debug("Removing SurveyPoint data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed SurveyPoint data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove SurveyPoint data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing SurveyPoint from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -1200,6 +1235,11 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -1292,111 +1332,148 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
         @Override
         public SqlProvider.SqlResultHandler<ISurveyPoint> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyPoint>()
+                   {
+                        @Override
+                        public ISurveyPoint fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createSurveyPoint
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getDouble(FIELD_X),
+                                    results.getDouble(FIELD_Y),
+                                    results.getDouble(FIELD_Z),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    SurveyPointTypeAdapter.get(connDb, results.getInt(FIELD_POINTTYPEID)),
+                                    SurveyReferenceAdapter.get(connDb, results.getInt(FIELD_REFID)),
+                                    SurveyImageAdapter.getAllForSurveyPointParent(connDb, results.getInt(FIELD_ID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ISurveyPoint updateFromResults(ISurveyPoint typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateSurveyPoint
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getDouble(FIELD_X),
+                                    results.getDouble(FIELD_Y),
+                                    results.getDouble(FIELD_Z),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    SurveyPointTypeAdapter.get(connDb, results.getInt(FIELD_POINTTYPEID)),
+                                    SurveyReferenceAdapter.get(connDb, results.getInt(FIELD_REFID)),
+                                    SurveyImageAdapter.getAllForSurveyPointParent(connDb, results.getInt(FIELD_ID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ISurveyPoint> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ISurveyPoint> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ISurveyPoint>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyPoint>()
-                           {
-                                @Override
-                                public ISurveyPoint fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createSurveyPoint
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getDouble(FIELD_X),
-                                            results.getDouble(FIELD_Y),
-                                            results.getDouble(FIELD_Z),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            SurveyPointTypeAdapter.get(connDb, results.getInt(FIELD_POINTTYPEID)),
-                                            SurveyReferenceAdapter.get(connDb, results.getInt(FIELD_REFID)),
-                                            SurveyImageAdapter.getAllForSurveyPointParent(connDb, results.getInt(FIELD_ID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ISurveyPoint updateFromResults(ISurveyPoint typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateSurveyPoint
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getDouble(FIELD_X),
-                                            results.getDouble(FIELD_Y),
-                                            results.getDouble(FIELD_Z),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            SurveyPointTypeAdapter.get(connDb, results.getInt(FIELD_POINTTYPEID)),
-                                            SurveyReferenceAdapter.get(connDb, results.getInt(FIELD_REFID)),
-                                            SurveyImageAdapter.getAllForSurveyPointParent(connDb, results.getInt(FIELD_ID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ISurveyPoint typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setDouble(1, typeInsert.getX());
-                                        stmtSelect.setDouble(2, typeInsert.getY());
-                                        stmtSelect.setDouble(3, typeInsert.getZ());
-                                        stmtSelect.setString(4, typeInsert.getName());
-                                        stmtSelect.setString(5, typeInsert.getDescription());
-                                        stmtSelect.setInt(6, typeInsert.getPointType().getID());
-                                        stmtSelect.setInt(7, typeInsert.getReference().getID());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ISurveyPoint typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setDouble(1, typeInsert.getX());
+                            stmtSelect.setDouble(2, typeInsert.getY());
+                            stmtSelect.setDouble(3, typeInsert.getZ());
+                            stmtSelect.setString(4, typeInsert.getName());
+                            stmtSelect.setString(5, typeInsert.getDescription());
+                            stmtSelect.setInt(6, typeInsert.getPointType().getID());
+                            stmtSelect.setInt(7, typeInsert.getReference().getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ISurveyPoint typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setDouble(1, typeUpdate.getX());
-                                        stmtSelect.setDouble(2, typeUpdate.getY());
-                                        stmtSelect.setDouble(3, typeUpdate.getZ());
-                                        stmtSelect.setString(4, typeUpdate.getName());
-                                        stmtSelect.setString(5, typeUpdate.getDescription());
-                                        stmtSelect.setInt(6, typeUpdate.getPointType().getID());
-                                        stmtSelect.setInt(7, typeUpdate.getReference().getID());
-                                        stmtSelect.setInt(8, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ISurveyPoint type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ISurveyPoint typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setDouble(1, typeUpdate.getX());
+                            stmtSelect.setDouble(2, typeUpdate.getY());
+                            stmtSelect.setDouble(3, typeUpdate.getZ());
+                            stmtSelect.setString(4, typeUpdate.getName());
+                            stmtSelect.setString(5, typeUpdate.getDescription());
+                            stmtSelect.setInt(6, typeUpdate.getPointType().getID());
+                            stmtSelect.setInt(7, typeUpdate.getReference().getID());
+                            stmtSelect.setInt(8, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ISurveyPoint typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ISurveyPoint type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

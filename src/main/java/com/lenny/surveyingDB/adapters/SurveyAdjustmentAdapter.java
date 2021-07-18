@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -503,7 +503,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -541,7 +541,7 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -600,6 +600,41 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ISurveyAdjustment typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing SurveyAdjustment data in db");
+        LOGGER.debug("Removing SurveyAdjustment data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed SurveyAdjustment data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove SurveyAdjustment data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing SurveyAdjustment from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -803,6 +838,11 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -888,97 +928,134 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         @Override
         public SqlProvider.SqlResultHandler<ISurveyAdjustment> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyAdjustment>()
+                   {
+                        @Override
+                        public ISurveyAdjustment fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createSurveyAdjustment
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getDouble(FIELD_DELTAX),
+                                    results.getDouble(FIELD_DELTAY),
+                                    results.getDouble(FIELD_DELTAZ),
+                                    results.getDouble(FIELD_BEARINGADJ)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ISurveyAdjustment updateFromResults(ISurveyAdjustment typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateSurveyAdjustment
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getDouble(FIELD_DELTAX),
+                                    results.getDouble(FIELD_DELTAY),
+                                    results.getDouble(FIELD_DELTAZ),
+                                    results.getDouble(FIELD_BEARINGADJ)
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ISurveyAdjustment> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ISurveyAdjustment> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ISurveyAdjustment>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyAdjustment>()
-                           {
-                                @Override
-                                public ISurveyAdjustment fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createSurveyAdjustment
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getDouble(FIELD_DELTAX),
-                                            results.getDouble(FIELD_DELTAY),
-                                            results.getDouble(FIELD_DELTAZ),
-                                            results.getDouble(FIELD_BEARINGADJ)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ISurveyAdjustment updateFromResults(ISurveyAdjustment typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateSurveyAdjustment
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getDouble(FIELD_DELTAX),
-                                            results.getDouble(FIELD_DELTAY),
-                                            results.getDouble(FIELD_DELTAZ),
-                                            results.getDouble(FIELD_BEARINGADJ)
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ISurveyAdjustment typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setDouble(1, typeInsert.getDeltaX());
-                                        stmtSelect.setDouble(2, typeInsert.getDeltaY());
-                                        stmtSelect.setDouble(3, typeInsert.getDeltaZ());
-                                        stmtSelect.setDouble(4, typeInsert.getBearingAdj());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ISurveyAdjustment typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setDouble(1, typeInsert.getDeltaX());
+                            stmtSelect.setDouble(2, typeInsert.getDeltaY());
+                            stmtSelect.setDouble(3, typeInsert.getDeltaZ());
+                            stmtSelect.setDouble(4, typeInsert.getBearingAdj());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ISurveyAdjustment typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setDouble(1, typeUpdate.getDeltaX());
-                                        stmtSelect.setDouble(2, typeUpdate.getDeltaY());
-                                        stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
-                                        stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
-                                        stmtSelect.setInt(5, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ISurveyAdjustment type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ISurveyAdjustment typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setDouble(1, typeUpdate.getDeltaX());
+                            stmtSelect.setDouble(2, typeUpdate.getDeltaY());
+                            stmtSelect.setDouble(3, typeUpdate.getDeltaZ());
+                            stmtSelect.setDouble(4, typeUpdate.getBearingAdj());
+                            stmtSelect.setInt(5, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ISurveyAdjustment typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ISurveyAdjustment type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -549,7 +549,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             // This will cancel any pending undo items
@@ -593,7 +593,7 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 stmtSelect.executeUpdate();
                 // This will cancel any pending undo items
                 ((ISerialiseState) typeUpdate).setSaved();
@@ -652,6 +652,41 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, IInstrument typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing Instrument data in db");
+        LOGGER.debug("Removing Instrument data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed Instrument data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove Instrument data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing Instrument from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -901,6 +936,11 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -989,93 +1029,130 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
         @Override
         public SqlProvider.SqlResultHandler<IInstrument> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<IInstrument>()
+                   {
+                        @Override
+                        public IInstrument fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createInstrument
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    InstrumentManufacturerAdapter.get(connDb, results.getInt(FIELD_MANUFACTURERID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public IInstrument updateFromResults(IInstrument typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateInstrument
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    InstrumentManufacturerAdapter.get(connDb, results.getInt(FIELD_MANUFACTURERID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<IInstrument> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<IInstrument> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<IInstrument>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<IInstrument>()
-                           {
-                                @Override
-                                public IInstrument fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createInstrument
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            InstrumentManufacturerAdapter.get(connDb, results.getInt(FIELD_MANUFACTURERID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public IInstrument updateFromResults(IInstrument typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateInstrument
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            InstrumentManufacturerAdapter.get(connDb, results.getInt(FIELD_MANUFACTURERID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(IInstrument typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeInsert.getName());
-                                        stmtSelect.setString(2, typeInsert.getDescription());
-                                        stmtSelect.setInt(3, typeInsert.getManufacturer().getID());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, IInstrument typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeInsert.getName());
+                            stmtSelect.setString(2, typeInsert.getDescription());
+                            stmtSelect.setInt(3, typeInsert.getManufacturer().getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(IInstrument typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeUpdate.getName());
-                                        stmtSelect.setString(2, typeUpdate.getDescription());
-                                        stmtSelect.setInt(3, typeUpdate.getManufacturer().getID());
-                                        stmtSelect.setInt(4, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, IInstrument type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, IInstrument typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeUpdate.getName());
+                            stmtSelect.setString(2, typeUpdate.getDescription());
+                            stmtSelect.setInt(3, typeUpdate.getManufacturer().getID());
+                            stmtSelect.setInt(4, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, IInstrument typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, IInstrument type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };

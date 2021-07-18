@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -619,16 +619,20 @@ public class SurveyPointSummaryAdapter
         @Override
         public String selectForPath(Integer[] path)
         {
-        String strSelect = "SELECT "
-             + "id,  ptid,  ptname,  ptdesc,  x,  y,  z,  pttypename,  pttypeabbreviation,  refname,  refdescription"
-             + " FROM surveypointsummary";
-        String strWhere = "";
-        if (!strWhere.isEmpty())
-        {
-            strSelect += strWhere;
+            String strSelect = "SELECT "
+                 + "id,  ptid,  ptname,  ptdesc,  x,  y,  z,  pttypename,  pttypeabbreviation,  refname,  refdescription"
+                 + " FROM surveypointsummary";
+            String strWhere = "";
+            if (!strWhere.isEmpty())
+            {
+                strSelect += strWhere;
+            }
+            return strSelect;
         }
-        return strSelect;
-
+        @Override
+        public String selectHistory()
+        {
+            return "";
         }
         @Override
         public String insertScript()
@@ -717,51 +721,45 @@ public class SurveyPointSummaryAdapter
             if(m_resultsHandler == null)
             {
                 m_resultsHandler = new SqlProvider.SqlResultHandler<ISurveyPointSummary>()
-                       {
-                            @Override
-                            public ISurveyPointSummary fromResults(Connection connDb, ResultSet results)
-                            {
-                                try
-                                {
-                                    return SurveyPointSummaryAdapter.createSurveyPointSummary
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            results.getInt(FIELD_PTID),
-                                            results.getString(FIELD_PTNAME),
-                                            results.getString(FIELD_PTDESC),
-                                            results.getDouble(FIELD_X),
-                                            results.getDouble(FIELD_Y),
-                                            results.getDouble(FIELD_Z),
-                                            results.getString(FIELD_PTTYPENAME),
-                                            results.getString(FIELD_PTTYPEABBREVIATION),
-                                            results.getString(FIELD_REFNAME),
-                                            results.getString(FIELD_REFDESCRIPTION)
-                                        );
-                                }
-                                catch(SQLException exc)
-                                {
-                                    LOGGER.error("Error parsing result set", exc);
-                                }
-                                return null;
-                            }
-                            @Override
-                            public ISurveyPointSummary updateFromResults(ISurveyPointSummary typeUpdate, Connection connDb, ResultSet results)
-                            {
-                                return typeUpdate;
-                            }
-                            @Override
-                            public boolean insertNew(ISurveyPointSummary typeInsert, PreparedStatement stmtNew)
-                            {
-                                return false;
-                            }
-                            @Override
-                            public boolean updateExisting(ISurveyPointSummary typeUpdate, PreparedStatement stmtUpdate)
-                            {
-                                return false;
-                            }
-                       };
+                {
+                    @Override
+                    public ISurveyPointSummary fromResults(Connection connDb, ResultSet results)
+                    {
+                        try
+                        {
+                            return SurveyPointSummaryAdapter.createSurveyPointSummary
+                                (
+                                    results.getInt(FIELD_ID),
+                                    results.getInt(FIELD_PTID),
+                                    results.getString(FIELD_PTNAME),
+                                    results.getString(FIELD_PTDESC),
+                                    results.getDouble(FIELD_X),
+                                    results.getDouble(FIELD_Y),
+                                    results.getDouble(FIELD_Z),
+                                    results.getString(FIELD_PTTYPENAME),
+                                    results.getString(FIELD_PTTYPEABBREVIATION),
+                                    results.getString(FIELD_REFNAME),
+                                    results.getString(FIELD_REFDESCRIPTION)
+                                );
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error parsing result set", exc);
+                        }
+                        return null;
+                    }
+                    @Override
+                    public ISurveyPointSummary updateFromResults(ISurveyPointSummary typeUpdate, Connection connDb, ResultSet results)
+                    {
+                        return typeUpdate;
+                    }
+                };
            }
            return m_resultsHandler;
+        }
+        public SqlProvider.SqlParameterHandler<ISurveyPointSummary> parametersHandler()
+        {
+            return null;
         }
 
     };

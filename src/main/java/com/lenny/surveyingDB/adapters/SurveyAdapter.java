@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Tue Jun 15 14:08:17 AEST 2021
+// Generated on Fri Jul 09 17:31:11 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -698,7 +698,7 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
         try
         {
             stmtSelect = connDb.prepareStatement(SQL_PROVIDER.insertScript());
-            SQL_PROVIDER.resultsHandler().insertNew(typeAdd, stmtSelect);
+            SQL_PROVIDER.parametersHandler().prepareInsert(stmtSelect, typeAdd);
             stmtSelect.executeUpdate();
 
             ((Survey) typeAdd).m_nID = getLastId(connDb);
@@ -824,7 +824,7 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             try
             {
                 stmtSelect = connDb.prepareStatement(SQL_PROVIDER.updateScript());
-                SQL_PROVIDER.resultsHandler().updateExisting(typeUpdate, stmtSelect);
+                SQL_PROVIDER.parametersHandler().prepareUpdate(stmtSelect, typeUpdate);
                 ((Survey) typeUpdate).m_listSurveyMeasurement = typeUpdate.getSurveyMeasurements().stream()
                     .map
                     (
@@ -969,6 +969,41 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             }
         }
         return null;
+    }
+    public static boolean remove(Connection connDb, ISurvey typeRemove) throws SQLException
+    {
+        LOGGER.info("Removing Survey data in db");
+        LOGGER.debug("Removing Survey data - " + ((ISerialiseState) typeRemove).toJson());
+        PreparedStatement stmtSelect = null;
+        try
+        {
+            stmtSelect = connDb.prepareStatement(SQL_PROVIDER.deleteByPrimaryKeyScript());
+            SQL_PROVIDER.parametersHandler().prepareDelete(stmtSelect, typeRemove);
+            if(stmtSelect.executeUpdate() == 1)
+            {
+                LOGGER.info("Removed Survey data from db");
+                LOGGER.debug("Removed " + ((ISerialiseState) typeRemove).toJson());
+                return true;
+            }
+            else
+            {
+                LOGGER.info("Could not remove Survey data from db");
+                return false;
+            }
+        }
+        catch (SQLException exc)
+        {
+            // TODO: set up error handling
+            LOGGER.error("Removing Survey from db failed", exc);
+        }
+        finally
+        {
+            if (stmtSelect != null)
+            {
+                stmtSelect.close();
+            }
+        }
+        return false;
     }
 
 
@@ -1180,6 +1215,11 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             }
         }
         @Override
+        public String selectHistory()
+        {
+            return "";
+        }
+        @Override
         public String updateScript()
         {
             return "UPDATE " + TABLE_NAME + " SET " +
@@ -1264,103 +1304,140 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
         @Override
         public SqlProvider.SqlResultHandler<ISurvey> resultsHandler()
         {
-                if(m_resultsHandler == null)
+            if(m_resultsHandler == null)
+            {
+                m_resultsHandler = new SqlProvider.SqlResultHandler<ISurvey>()
+                   {
+                        @Override
+                        public ISurvey fromResults(Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return createSurvey
+                                (
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    ProjectionAdapter.get(connDb, results.getInt(FIELD_PROJECTIONID)),
+                                    SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                        @Override
+                        public ISurvey updateFromResults(ISurvey typeUpdate, Connection connDb, ResultSet results)
+                        {
+                            try
+                            {
+                                return updateSurvey
+                                (
+                                    typeUpdate,
+                                    results.getInt(FIELD_ID),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
+                                    SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
+                                    results.getString(FIELD_NAME),
+                                    results.getString(FIELD_DESCRIPTION),
+                                    ProjectionAdapter.get(connDb, results.getInt(FIELD_PROJECTIONID)),
+                                    SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
+                                    SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID))
+                                );
+                            }
+                            catch(SQLException exc)
+                            {
+                                LOGGER.error("Error parsing result set", exc);
+                            }
+                            return null;
+                        }
+                   };
+            }
+            return m_resultsHandler;
+        }
+        private SqlProvider.SqlParameterHandler<ISurvey> m_parametersHandler;
+        @Override
+        public SqlProvider.SqlParameterHandler<ISurvey> parametersHandler()
+        {
+            if(m_parametersHandler == null)
+            {
+                m_parametersHandler = new SqlProvider.SqlParameterHandler<ISurvey>()
                 {
-                    m_resultsHandler = new SqlProvider.SqlResultHandler<ISurvey>()
-                           {
-                                @Override
-                                public ISurvey fromResults(Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return createSurvey
-                                        (
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            ProjectionAdapter.get(connDb, results.getInt(FIELD_PROJECTIONID)),
-                                            SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public ISurvey updateFromResults(ISurvey typeUpdate, Connection connDb, ResultSet results)
-                                {
-                                    try
-                                    {
-                                        return updateSurvey
-                                        (
-                                            typeUpdate,
-                                            results.getInt(FIELD_ID),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_CREATED)),
-                                            SQLiteConverter.convertStringToDateTime(results.getString(FIELD_UPDATED)),
-                                            results.getString(FIELD_NAME),
-                                            results.getString(FIELD_DESCRIPTION),
-                                            ProjectionAdapter.get(connDb, results.getInt(FIELD_PROJECTIONID)),
-                                            SurveyMeasurementAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            SurveyImageAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            TraverseAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            InstrumentAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID)),
-                                            SurveyPointAdapter.getAllForSurveyParent(connDb, results.getInt(FIELD_ID))
-                                        );
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error parsing result set", exc);
-                                    }
-                                    return null;
-                                }
-                                @Override
-                                public boolean insertNew(ISurvey typeInsert, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeInsert.getName());
-                                        stmtSelect.setString(2, typeInsert.getDescription());
-                                        stmtSelect.setInt(3, typeInsert.getProjection().getID());
+                    @Override
+                    public boolean prepareInsert(PreparedStatement stmtSelect, ISurvey typeInsert)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeInsert.getName());
+                            stmtSelect.setString(2, typeInsert.getDescription());
+                            stmtSelect.setInt(3, typeInsert.getProjection().getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
-                                }
-                                @Override
-                                public boolean updateExisting(ISurvey typeUpdate, PreparedStatement stmtSelect)
-                                {
-                                    try
-                                    {
-                                        stmtSelect.setString(1, typeUpdate.getName());
-                                        stmtSelect.setString(2, typeUpdate.getDescription());
-                                        stmtSelect.setInt(3, typeUpdate.getProjection().getID());
-                                        stmtSelect.setInt(4, typeUpdate.getID());
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareInsertFor(PreparedStatement stmt, ISurvey type, String strContext)
+                    {
+                        return false;
+                    }
+                    @Override
+                    public boolean prepareUpdate(PreparedStatement stmtSelect, ISurvey typeUpdate)
+                    {
+                        try
+                        {
+                            stmtSelect.setString(1, typeUpdate.getName());
+                            stmtSelect.setString(2, typeUpdate.getDescription());
+                            stmtSelect.setInt(3, typeUpdate.getProjection().getID());
+                            stmtSelect.setInt(4, typeUpdate.getID());
 
-                                        return true;
-                                    }
-                                    catch(SQLException exc)
-                                    {
-                                        LOGGER.error("Error setting data to prepared statement", exc);
-                                    }
-                                    return false;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
 
-                                }
+                    }
+                    @Override
+                    public boolean prepareDelete(PreparedStatement stmtSelect, ISurvey typeDelete)
+                    {
+                        try
+                        {
+                            stmtSelect.setInt(1, typeDelete.getID());
 
-                           };
-               }
-               return m_resultsHandler;
+                            return true;
+                        }
+                        catch(SQLException exc)
+                        {
+                            LOGGER.error("Error setting data to prepared statement", exc);
+                        }
+                        return false;
+
+                    }
+                    @Override
+                    public boolean prepareDeleteFor(PreparedStatement stmt, ISurvey type, String strContext)
+                    {
+                        return false;
+                    }
+                };
+            }
+            return m_parametersHandler;
         }
 
     };
