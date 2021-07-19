@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:10 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -371,7 +371,8 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
             strJson += "\"EndPointID\":" + ((ISerialiseState) m_typeEndPoint).toJson() + ",";
             strJson += "\"SurveyID\":" + m_nSurveyID + ",";
             strJson += "\"TraverseClosure\":[" + m_listTraverseClosure.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-            strJson += "\"Traverse_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "\"Traverse_SurveyMeasurement\":[" + m_listSurveyMeasurement.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -461,10 +462,6 @@ public class TraverseAdapter implements JsonDeserializer<ITraverse>
 
         Gson gsonInstance = gsonBuilder.create();
         TraverseAdapter.Traverse typeTraverse = gsonInstance.fromJson(json, TraverseAdapter.Traverse.class);
-        if (typeTraverse.m_nID > 0)
-        {
-            typeTraverse.setSaved();
-        }
         return typeTraverse;
     }
 

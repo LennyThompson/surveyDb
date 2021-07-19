@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:11 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -390,7 +390,8 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
             strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
             strJson += "\"Traverses\":[" + m_listTraverse.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
             strJson += "\"Survey_Instrument\":[" + m_listInstrument.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
-            strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "\"Survey_SurveyPoint\":[" + m_listSurveyPoint.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -478,10 +479,6 @@ public class SurveyAdapter implements JsonDeserializer<ISurvey>
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyAdapter.Survey typeSurvey = gsonInstance.fromJson(json, SurveyAdapter.Survey.class);
-        if (typeSurvey.m_nID > 0)
-        {
-            typeSurvey.setSaved();
-        }
         return typeSurvey;
     }
 

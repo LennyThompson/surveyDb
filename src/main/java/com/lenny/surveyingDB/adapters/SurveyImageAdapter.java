@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:10 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -245,7 +245,8 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
             strJson += "\"Path\":" + "\"" + m_strPath + "\"" + ",";
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
             strJson += "\"SurveyID\":" + m_nSurveyID + ",";
-            strJson += "\"PointAtID\":" + m_nPointAtID;
+            strJson += "\"PointAtID\":" + m_nPointAtID + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -322,10 +323,6 @@ public class SurveyImageAdapter implements JsonDeserializer<ISurveyImage>
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         SurveyImageAdapter.SurveyImage typeSurveyImage = gsonInstance.fromJson(json, SurveyImageAdapter.SurveyImage.class);
-        if (typeSurveyImage.m_nID > 0)
-        {
-            typeSurveyImage.setSaved();
-        }
         return typeSurveyImage;
     }
 

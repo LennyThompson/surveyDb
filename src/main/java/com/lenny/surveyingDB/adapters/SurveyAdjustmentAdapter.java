@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:11 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -222,7 +222,8 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
             strJson += "\"DeltaX\":" + m_dDeltaX + ",";
             strJson += "\"DeltaY\":" + m_dDeltaY + ",";
             strJson += "\"DeltaZ\":" + m_dDeltaZ + ",";
-            strJson += "\"BearingAdj\":" + m_dBearingAdj;
+            strJson += "\"BearingAdj\":" + m_dBearingAdj + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -292,10 +293,6 @@ public class SurveyAdjustmentAdapter implements JsonDeserializer<ISurveyAdjustme
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         SurveyAdjustmentAdapter.SurveyAdjustment typeSurveyAdjustment = gsonInstance.fromJson(json, SurveyAdjustmentAdapter.SurveyAdjustment.class);
-        if (typeSurveyAdjustment.m_nID > 0)
-        {
-            typeSurveyAdjustment.setSaved();
-        }
         return typeSurveyAdjustment;
     }
 

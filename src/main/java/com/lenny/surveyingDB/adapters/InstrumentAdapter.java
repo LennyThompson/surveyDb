@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:11 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -194,7 +194,8 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
             strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
             strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
-            strJson += "\"ManufacturerID\":" + ((ISerialiseState) m_typeManufacturer).toJson();
+            strJson += "\"ManufacturerID\":" + ((ISerialiseState) m_typeManufacturer).toJson() + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -262,10 +263,6 @@ public class InstrumentAdapter implements JsonDeserializer<IInstrument>
 
         Gson gsonInstance = gsonBuilder.create();
         InstrumentAdapter.Instrument typeInstrument = gsonInstance.fromJson(json, InstrumentAdapter.Instrument.class);
-        if (typeInstrument.m_nID > 0)
-        {
-            typeInstrument.setSaved();
-        }
         return typeInstrument;
     }
 

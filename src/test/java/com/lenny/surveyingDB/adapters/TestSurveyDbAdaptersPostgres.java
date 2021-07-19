@@ -234,6 +234,17 @@ public class TestSurveyDbAdaptersPostgres
         assertEquals("PSM", ptSurvey.getPointType().getAbbreviation());
         assertEquals("Current Survey", ptSurvey.getReference().getName());
         assertTrue(((UndoTarget) ptSurvey).isSaved());
+
+        ptSurvey = SurveyPointAdapter.get(m_connDb, ptSurvey.getID());
+
+        assertEquals("First Point", ptSurvey.getName());
+        assertEquals("The first point in the survey", ptSurvey.getDescription());
+        assertEquals(1010.0, ptSurvey.getX(), 0.001);
+        assertEquals(2020.0, ptSurvey.getY(), 0.001);
+        assertEquals(505.0, ptSurvey.getZ(), 0.001);
+        assertEquals("PSM", ptSurvey.getPointType().getAbbreviation());
+        assertEquals("Current Survey", ptSurvey.getReference().getName());
+        assertTrue(((UndoTarget) ptSurvey).isSaved());
     }
 
     @Test

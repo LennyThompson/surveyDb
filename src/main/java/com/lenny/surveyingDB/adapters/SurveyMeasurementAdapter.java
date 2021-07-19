@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:11 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -362,7 +362,8 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
             strJson += "\"FromPtID\":" + ((ISerialiseState) m_typePointFrom).toJson() + ",";
             strJson += "\"ToPtID\":" + ((ISerialiseState) m_typePointTo).toJson() + ",";
             strJson += "\"SurveyAdjustmentID\":" + ((ISerialiseState) m_typeAdjustment).toJson() + ",";
-            strJson += "\"SurveyID\":" + m_nSurveyID;
+            strJson += "\"SurveyID\":" + m_nSurveyID + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -453,10 +454,6 @@ public class SurveyMeasurementAdapter implements JsonDeserializer<ISurveyMeasure
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyMeasurementAdapter.SurveyMeasurement typeSurveyMeasurement = gsonInstance.fromJson(json, SurveyMeasurementAdapter.SurveyMeasurement.class);
-        if (typeSurveyMeasurement.m_nID > 0)
-        {
-            typeSurveyMeasurement.setSaved();
-        }
         return typeSurveyMeasurement;
     }
 

@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:11 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -379,7 +379,8 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
             strJson += "\"Description\":" + "\"" + m_strDescription + "\"" + ",";
             strJson += "\"PointTypeID\":" + ((ISerialiseState) m_typePointType).toJson() + ",";
             strJson += "\"RefID\":" + ((ISerialiseState) m_typeReference).toJson() + ",";
-            strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]";
+            strJson += "\"Images\":[" + m_listSurveyImage.stream().map(item -> ((ISerialiseState) item).toJson()).collect(Collectors.joining(",")) + "]" + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -468,10 +469,6 @@ public class SurveyPointAdapter implements JsonDeserializer<ISurveyPoint>
 
         Gson gsonInstance = gsonBuilder.create();
         SurveyPointAdapter.SurveyPoint typeSurveyPoint = gsonInstance.fromJson(json, SurveyPointAdapter.SurveyPoint.class);
-        if (typeSurveyPoint.m_nID > 0)
-        {
-            typeSurveyPoint.setSaved();
-        }
         return typeSurveyPoint;
     }
 

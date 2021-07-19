@@ -1,5 +1,5 @@
 // ****THIS IS A CODE GENERATED FILE DO NOT EDIT****
-// Generated on Fri Jul 09 17:31:10 AEST 2021
+// Generated on Mon Jul 19 20:45:27 AEST 2021
 
 package com.lenny.surveyingDB.adapters;
 
@@ -187,7 +187,8 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
             strJson += "\"updated\":" + "\"" + SQLiteConverter.convertDateTimeToJSString(m_dateUpdated) + "\"" + ",";
             strJson += "\"Name\":" + "\"" + m_strName + "\"" + ",";
             strJson += "\"Abbreviation\":" + "\"" + m_strAbbreviation + "\"" + ",";
-            strJson += "\"UserDefined\":" + m_bUserDefined;
+            strJson += "\"UserDefined\":" + m_bUserDefined + ",";
+            strJson += "\"SaveState\":\"" + m_saveState + "\"";
             strJson += "}";
             return strJson;
         }
@@ -253,10 +254,6 @@ public class SurveyPointTypeAdapter implements JsonDeserializer<ISurveyPointType
         GsonBuilder gsonBuilder = new GsonBuilder().registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerialiser());
         Gson gsonInstance = gsonBuilder.create();
         SurveyPointTypeAdapter.SurveyPointType typeSurveyPointType = gsonInstance.fromJson(json, SurveyPointTypeAdapter.SurveyPointType.class);
-        if (typeSurveyPointType.m_nID > 0)
-        {
-            typeSurveyPointType.setSaved();
-        }
         return typeSurveyPointType;
     }
 
